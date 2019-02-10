@@ -1,0 +1,26 @@
+---
+- hosts: localhost
+  become: true
+  gather_facts: false
+
+  tasks:
+      
+  - name: Generate RSA key
+    command : ssh-keygen -q -t rsa -f ~/.ssh/host_key_co -C "" -N ""
+    args:
+           creates: ~/.ssh/host_key_co
+           
+  - file: 
+      path: ~/.ssh/host_key_co
+      mode: 0600
+      
+  - file:
+      path: ~/.ssh/host_key_co.pub
+      mode: 0644      
+  
+           
+  - name: Copy key to web server
+    command : ssh-copy-id -i ~/.ssh/host_key_co vagrant@192.168.33.100
+    
+  - name: Check connection to remote host
+    command : ssh -i ~/.ssh/host_key_co vagrant@192.168.33.100
