@@ -1,3 +1,7 @@
 ---
 # tasks file for jenkins
-- name: test
+- name: Installing and Configuring Jenkins
+  include: jenkins.yml
+
+- name: Creating and running a build Job for iTrust
+  include: itrust.yml
