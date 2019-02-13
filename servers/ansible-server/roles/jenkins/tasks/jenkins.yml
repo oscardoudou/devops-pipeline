@@ -86,10 +86,6 @@
     with_items: "{{ plugins }}"
 
   - name: Restart jenkins
-    become_user: jenkins
-    shell: curl --head --silent http://192.168.33.200:8080/cli/
-    register: output
-    until:  output.stdout.find("200 OK") !=-1
-    retries: 12
-    delay: 5
+    become: true
+    command: systemctl restart jenkins 
 
