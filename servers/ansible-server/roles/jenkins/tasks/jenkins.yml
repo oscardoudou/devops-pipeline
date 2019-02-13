@@ -25,39 +25,39 @@
      update_cache: yes
     become: true
 
-   - name: Start Jenkins service and enable on boot
-     service:
-       name: jenkins
-       state: started
-       enabled: yes
+  - name: Start Jenkins service and enable on boot
+    service:
+      name: jenkins
+      state: started
+      enabled: yes
 
 
 # configuring
    
-   - name: reading admin password
-     shell: cat /var/lib/jenkins/secrets/initialAdminPassword
-     register: adminpwd
-     become: true
+  - name: reading admin password
+    shell: cat /var/lib/jenkins/secrets/initialAdminPassword
+    register: adminpwd
+    become: true
    
   
-   - name: Add admin and unlock Jenkins automatically
-     jenkins_script: 
-      script: "{{ lookup('file' , 'templates/groovy_add_user.groovy') }}"
-      user: admin
-      password: "{{ adminpwd.stdout }}"
+  - name: Add admin and unlock Jenkins automatically
+    jenkins_script: 
+     script: "{{ lookup('file' , 'templates/groovy_add_user.groovy') }}"
+     user: admin
+     password: "{{ adminpwd.stdout }}"
 
-   - name: sign into jenkins and complete setup
-     jenkins_script:
-      script: "{{ lookup('file' , 'templates/groovy_setup_user.groovy') }}"
-      user: admin
-      password: "{{ adminpwd.stdout }}"
+  - name: sign into jenkins and complete setup
+    jenkins_script:
+     script: "{{ lookup('file' , 'templates/groovy_setup_user.groovy') }}"
+     user: admin
+     password: "{{ adminpwd.stdout }}"
 
-   - name: disable security for installation
-     become: true
-     lineinfile: 
-        dest: /var/lib/jenkins/config.xml
-        regexp: '<useSecurity>true</useSecurity>'
-        line: '  <useSecurity>false</useSecurity>'
+  - name: disable security for installation
+    become: true
+    lineinfile: 
+      dest: /var/lib/jenkins/config.xml
+      regexp: '<useSecurity>true</useSecurity>'
+      line: '  <useSecurity>false</useSecurity>'
 
 
    #- name: give enough time for jenkins to reload
@@ -73,20 +73,23 @@
      #until: "'stat' in jenk_status and jenk_status['stat'] == 200"
 
 
-   - name: plugins installation
-     become: true
-     jenkins_plugin:
-       name: "{{ item }}"
-       state: latest
-       url_username: admin
-       url_password: "{{ adminpwd.stdout }}"
-       url: http://192.168.33.200:8080
-       validate_certs: no
-     with_items: "{{ plugins }}"
+  - name: plugins installation
+    become: true
+    become_user: jenkins
+    jenkins_plugin:
+      name: "{{ item }}"
+      state: latest
+      url_username: admin
+      url_password: "{{ adminpwd.stdout }}"
+      url: http://192.168.33.200:8080
+      validate_certs: no
+    with_items: "{{ plugins }}"
 
-   - name: Restart jenkins
-     service:
-       name: jenkins
-       state: restarted
-       enabled: true  
+  - name: Restart jenkins
+    become_user: jenkins
+    shell: curl --head --silent http://192.168.33.200:8080/cli/
+    register: output
+    until:  output.stdout.find("200 OK") !=-1
+    retries: 12
+    delay: 5
 
