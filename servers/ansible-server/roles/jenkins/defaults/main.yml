@@ -1,2 +1,13 @@
 ---
 # defaults file for jenkins
+plugins: 
+   - script-security
+   - command-launcher
+   - git
+   - pipeline
+   - docker-workflow
+   - template-project
+   - config-file-provider
+   - disk-usage
+   - slack
+  
