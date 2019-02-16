@@ -37,6 +37,7 @@
   - name: reading admin password
     shell: cat /var/lib/jenkins/secrets/initialAdminPassword
     register: adminpwd
+    become_user: jenkins
     become: true
    
   
@@ -71,7 +72,6 @@
      #retries: 20
      #delay: 5
      #until: "'stat' in jenk_status and jenk_status['stat'] == 200"
-
 
   - name: plugins installation
     become: true

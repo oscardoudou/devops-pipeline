@@ -4,4 +4,4 @@
   include: jenkins.yml
 
 - name: Creating and running a build Job for iTrust
-  include: itrust.yml
+  include: maven.yml

@@ -1,0 +1,46 @@
+---
+# tasks file for apache-maven
+- name: Checking if Maven is already installed
+  stat: 
+    path: '/opt/apache-maven-{{ maven_version }}'
+  register: maven_installed
+
+- name: Downloading Maven Binaries
+  become: true
+  get_url:
+    url: '{{ maven_download_url }}'
+    dest: '/opt/{{ maven_file_name }}'
+    url_username: '{{ maven_download_username }}'
+    url_password: '{{ maven_download_password }}'
+  when: maven_installed.stat.exists != True
+
+- name: Unarchive Maven Binaries
+  become: true
+  unarchive:
+    src: '/opt/{{ maven_file_name }}'
+    dest: '/opt'
+    copy: no
+  when: maven_installed.stat.exists != True
+
+- name: Remove old path configuration
+  become: true
+  file:
+    path: /etc/profile.d/maven.sh
+    state: absent
+
+- name: Maven path configuration
+  become: true
+  lineinfile:
+    dest: /etc/profile.d/maven.sh
+    line: '{{ item.line }}'
+    create: yes
+    state: present
+  with_items:
+    - { line: 'M2_HOME={{maven_home_parent_directory}}/apache-maven-{{maven_version}}' }
+    - { line: 'PATH=$PATH:$M2_HOME/bin' }
+
+- name: Cleaning Up
+  become: true
+  file:
+    state: absent
+    path: '/opt/{{ maven_file_name }}'
