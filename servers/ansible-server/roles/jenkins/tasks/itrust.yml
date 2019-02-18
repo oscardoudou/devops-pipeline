@@ -1,9 +1,101 @@
 ---
-  - job:
-    name: test_job 
+  - name: Check for already cloned iTrust repository
+    stat:
+      path: "{{itrust_folder}}"
+    register: itrust_repo
+
+  - name: Cloning iTrust repository
     become: true
-    builders:
-      - maven-builder:
-          name: mvn3
-          pom: modules/pom.xml
-          goals: clean install
+    git:
+      repo: "https://{{github_username}}:{{github_password|urlencode}}@github.ncsu.edu/engr-csc326-staff/iTrust2-v4.git"
+      dest: "{{itrust_folder}}"
+      update: no
+    when: itrust_repo.stat.isdir is not defined
+
+  - name: Check if db.properties file exists
+    stat:
+      path: "{{itrust_folder}}/iTrust2/src/main/java/db.properties"
+    register: db_property
+
+  - name: Copy the contents of db.properties file
+    become: true
+    when: db_property.stat.isdir is not defined
+    copy: 
+      src: "/ansible-server/roles/jenkins/templates/db.properties"
+      dest: "{{itrust_folder}}/iTrust2/src/main/java"
+
+  - name: Check if email.properties file exists
+    stat:
+      path: "{{itrust_folder}}/iTrust2/src/main/java/email.properties"
+    register: email_property
+
+  - name: Copy the contents of email.properties file
+    become: true
+    when: email_property.stat.isdir is not defined
+    copy: 
+      src: "/ansible-server/roles/jenkins/templates/email.properties"
+      dest: "{{itrust_folder}}/iTrust2/src/main/java"
+  
+  # - name: Setting MySQL root password before installing
+  #   become: true
+  #   debconf:
+  #     name: mysql-server
+  #     question: mysql-server/root_password
+  #     value: test
+  #     vtype: password
+
+  # - name: Confirm MySQL password before installing
+  #   become: true
+  #   debconf:
+  #     name: mysql-server
+  #     question: mysql-server/root_password_again
+  #     value: test
+  #     vtype: password
+
+  - name: Install MySql Server
+    become: true
+    apt: 
+      name: mysql-server 
+      state: present
+  
+  - name: Update the configuration file for mySQL
+    copy: 
+      src: "/ansible-server/roles/jenkins/templates/my.cnf"
+      dest: /etc/mysql/my.cnf force=yes
+    become: true
+
+  - name: Restart MySQL
+    service: 
+      name: mysql 
+      state: restarted
+    become: true
+
+  - name: Install Maven
+    become: true
+    apt: 
+      pkg: 'maven' 
+      state: latest 
+      update_cache: yes 
+      cache_valid_time: 3600
+
+  - name: Run process-test-classes
+    become: true
+    become_user: root
+    shell: mvn process-test-classes
+    args:
+      chdir: "{{itrust_folder}}/iTrust2/"
+     
+  - name: Check if iTrust is running in port 8080
+    become: true
+    become_user: root
+    shell: nohup bash -c "sudo mvn jetty:run" &
+    args:
+      chdir: "{{itrust_folder}}/iTrust2/"
+
+  - name: Run test to verify iTrust Build
+    become: true
+    become_user: root
+    shell: mvn clean test verify checkstyle:checkstyle
+    args:
+      chdir: "{{itrust_folder}}/iTrust2/"
+    

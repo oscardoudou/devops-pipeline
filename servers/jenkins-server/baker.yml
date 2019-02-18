@@ -1,3 +1,4 @@
 name: jenkins-server
 vm:
   ip: 192.168.33.200
+  memory: 4096

@@ -1,2 +1,14 @@
 ---
 # vars file for jenkins
+maven_major: 3
+maven_version: 3.6.0
+maven_home_parent_directory: /opt
+maven_file_name: apache-maven-{{ maven_version }}-bin.tar.gz
+maven_download_url: 'http://www.apache.org/dist/maven/maven-{{ maven_major }}/{{ maven_version }}/binaries/{{ maven_file_name }}'
+maven_download_username: ''
+maven_download_password: '' 
+
+itrust_folder: "/home/vagrant/iTrust"
+itrust_repo: "https://{{github_username}}:{{github_password}}@github.ncsu.edu/engr-csc326-staff/iTrust2-v4.git"
+github_username: "{{ lookup('env', 'GITHUB_USERNAME') }}"
+github_password: "{{ lookup('env', 'GITHUB_PASSWORD') }}"
