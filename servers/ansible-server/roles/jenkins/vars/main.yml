@@ -12,3 +12,6 @@ itrust_folder: "/home/vagrant/iTrust"
 itrust_repo: "https://{{github_username}}:{{github_password}}@github.ncsu.edu/engr-csc326-staff/iTrust2-v4.git"
 github_username: "{{ lookup('env', 'GITHUB_USERNAME') }}"
 github_password: "{{ lookup('env', 'GITHUB_PASSWORD') }}"
+
+ansible_distribution_release: "xenial"
+mongodb_version: "3.6"
