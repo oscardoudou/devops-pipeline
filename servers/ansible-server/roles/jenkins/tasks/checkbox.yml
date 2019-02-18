@@ -1,0 +1,55 @@
+---
+- name: Install node on server
+  become: true
+  apt:
+    name: nodejs
+    update_cache: yes
+
+- name: Install npm on server
+  become: true
+  apt:
+    name: npm
+    state: present
+
+- name: Symlink nodejs and node
+  become: true
+  file:
+    src: /usr/bin/nodejs
+    dest: /usr/bin/node
+    state: link
+
+- name: Installing Python pip 3
+  become: true
+  apt:
+    pkg: python3-pip
+    state: latest
+
+- name: Install nginx
+  become: true
+  apt:
+    pkg: nginx
+    state: latest
+    update_cache: yes
+
+- name: Add mongo ppa key
+  apt_key:
+    keyserver: hkp://keyserver.ubuntu.com:80
+    id: 2930ADAE8CAF5059EE73BB4B58712A2291FA4AD5
+    state: present 
+  become: true
+  
+- name: Add mongo sources list
+  apt_repository:
+    repo: "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu {{ansible_distribution_release}}/mongodb-org/{{mongodb_version}} multiverse"
+  become: true
+
+- name: Installing MongoDB
+  become: true
+  apt: 
+    name: mongodb-org
+    update-cache: yes
+
+- name: Install the pymongo package
+  pip: 
+    name: pymongo 
+    state: latest

@@ -36,21 +36,21 @@
       src: "/ansible-server/roles/jenkins/templates/email.properties"
       dest: "{{itrust_folder}}/iTrust2/src/main/java"
   
-  # - name: Setting MySQL root password before installing
-  #   become: true
-  #   debconf:
-  #     name: mysql-server
-  #     question: mysql-server/root_password
-  #     value: test
-  #     vtype: password
+  - name: Setting MySQL root password before installing
+    become: true
+    debconf:
+      name: mysql-server
+      question: mysql-server/root_password
+      value: test
+      vtype: password
 
-  # - name: Confirm MySQL password before installing
-  #   become: true
-  #   debconf:
-  #     name: mysql-server
-  #     question: mysql-server/root_password_again
-  #     value: test
-  #     vtype: password
+  - name: Confirm MySQL password before installing
+    become: true
+    debconf:
+      name: mysql-server
+      question: mysql-server/root_password_again
+      value: test
+      vtype: password
 
   - name: Install MySql Server
     become: true
