@@ -3,5 +3,8 @@
 - name: Installing and Configuring Jenkins
   include: jenkins.yml
 
-- name: Creating and running a build Job for iTrust
-  include: maven.yml
+#- name: Creating and running a build Job for iTrust
+#  include: maven.yml
+
+- name: Installing mocha and pm2 for testing node applications
+  include: mocha.yml

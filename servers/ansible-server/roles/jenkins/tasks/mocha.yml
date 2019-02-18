@@ -1,0 +1,37 @@
+---
+- name: Install node on server
+  become: true
+  apt:
+          name: nodejs
+          update_cache: yes
+
+- name: Install npm on server
+  become: true
+  apt:
+          name: npm
+          state: present
+
+- name: Symlink nodejs and node
+  become: true
+  file:
+          src: /usr/bin/nodejs
+          dest: /usr/bin/node
+          state: link
+
+- name: Install request module for test 
+  become: true
+  command: npm install request --save      
+
+- name: Install mocha on server
+  become: true
+  npm:
+          name: mocha
+          global: yes          
+
+- name: Install pm2 on server
+  become: true
+  npm:
+          name: pm2
+          global: yes
+
+
