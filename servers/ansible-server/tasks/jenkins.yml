@@ -1,4 +1,8 @@
 ---
+- hosts: all
+  vars_files:
+    - ../vars/main.yml
+  tasks:
   - name: Install jre8
     apt:
      name: openjdk-8-jre
@@ -61,16 +65,16 @@
       enabled: yes
 
 # configuring
-   
+   # @Todo: figure out why it's/itsn't working with jenkins user
   - name: reading admin password
     shell: cat /var/lib/jenkins/secrets/initialAdminPassword
     register: adminpwd
-    become_user: jenkins
+    become_user: root
     become: true
    
   - name: Add admin and unlock Jenkins automatically
     jenkins_script: 
-     script: "{{ lookup('file' , 'templates/groovy_add_user.groovy') }}"
+     script: "{{ lookup('file' , '../templates/groovy_add_user.groovy') }}"
      user: admin
      password: "{{ adminpwd.stdout }}"
     when: jenkins_state.changed
@@ -78,7 +82,7 @@
 
   - name: sign into jenkins and complete setup
     jenkins_script:
-     script: "{{ lookup('file' , 'templates/groovy_setup_user.groovy') }}"
+     script: "{{ lookup('file' , '../templates/groovy_setup_user.groovy') }}"
      user: admin
      password: "{{ adminpwd.stdout }}"
     when: jenkins_state.changed 

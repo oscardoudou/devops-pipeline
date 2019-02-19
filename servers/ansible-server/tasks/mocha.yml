@@ -1,0 +1,23 @@
+---
+- hosts: all
+  vars_files:
+    - ../vars/main.yml
+
+  tasks:
+  - name: Install request module for test 
+    become: true
+    command: npm install request --save      
+
+  - name: Install mocha on server
+    become: true
+    npm:
+        name: mocha
+        global: yes          
+
+  - name: Install pm2 on server
+    become: true
+    npm:
+        name: pm2
+        global: yes
+
+
