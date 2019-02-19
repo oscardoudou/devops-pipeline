@@ -55,7 +55,7 @@
   - name: Install MySql Server
     become: true
     apt: 
-      name: mysql-server 
+      name: ['python3-mysqldb', 'mysql-server', 'python-pymysql']
       state: present
   
   - name: Update the configuration file for mySQL

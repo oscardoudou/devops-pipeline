@@ -1,0 +1,35 @@
+- job:
+  name: test_job
+  description: 'automated build job'
+  project-type: freestyle
+  builders:
+    - shell: 'ls'
+      # - '{name}_job':
+      #      name: checkbox.io
+      #      command: |
+      #        rm -rf *
+      #        git clone https://github.com/chrisparnin/checkbox.io.git
+      #        cd checkbox.io/server-side/site/
+      #        npm install
+      #      post_build_script: |
+      #        sudo nodejs /home/ubuntu/JenkinsProvisioner/provisioners/aws-checkbox-trusty.js
+      #        sudo chown ubuntu /home/ubuntu/checkbox-trusty.key
+      #        sudo sleep 30
+      #        sudo ansible-playbook /home/ubuntu/JenkinsProvisioner/playbooks/checkbox.yml -i /home/ubuntu/inventory-checkbox
+      # - '{name}_job':
+      #      name: iTrust2
+      #      command: |
+      #        rm -rf *
+      #        git clone https://{{ lookup('env', 'GITHUB_USERNAME') }}:{{ lookup('env', 'GITHUB_PASSWORD') }}@github.ncsu.edu/engr-csc326-staff/iTrust2-v2.git
+      #        cd iTrust2-v2/iTrust2/
+      #        cp src/main/java/db.properties.template src/main/java/db.properties
+      #        cp src/main/resources/hibernate.properties.template src/main/resources/hibernate.properties
+      #        cp  src/main/java/email.properties.template src/main/java/email.properties
+      #        sed -i -e 's/hibernate.connection.password = /hibernate.connection.password = root/g' src/main/resources/hibernate.properties
+      #        sed -i -e 's/password/password root/g' src/main/java/db.properties
+      #        mvn clean test verify checkstyle:checkstyle
+      #      post_build_script: |
+      #        sudo nodejs /home/ubuntu/JenkinsProvisioner/provisioners/aws-itrust.js
+      #        sudo chown ubuntu /home/ubuntu/itrust.key
+      #        sudo sleep 30
+      #        sudo ansible-playbook /home/ubuntu/JenkinsProvisioner/playbooks/itrust.yml -i /home/ubuntu/inventory-itrust
