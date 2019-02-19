@@ -9,9 +9,21 @@ maven_download_username: ''
 maven_download_password: '' 
 
 itrust_folder: "/home/vagrant/iTrust"
-itrust_repo: "https://{{github_username}}:{{github_password}}@github.ncsu.edu/engr-csc326-staff/iTrust2-v4.git"
+
+checkbox_folder: "/home/vagrant/checkbox"
+
 github_username: "{{ lookup('env', 'GITHUB_USERNAME') }}"
 github_password: "{{ lookup('env', 'GITHUB_PASSWORD') }}"
 
 ansible_distribution_release: "xenial"
 mongodb_version: "3.6"
+mongodb_db_path: "/srv/data/mongodb"
+
+# env_vars: 
+#     MONGO_PORT: "3002"
+#     MONGO_IP: "localhost"
+#     MONGO_USER: "admin"
+#     MONGO_PASSWORD: "root"
+#     MAIL_USER: "CSC519S19.ashekha"
+#     MAIL_PASSWORD: "userpassword"
+#     MAIL_SMTP: "smtp.gmail.com"
