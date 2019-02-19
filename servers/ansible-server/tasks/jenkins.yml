@@ -2,6 +2,7 @@
 - hosts: all
   vars_files:
     - ../vars/main.yml
+
   tasks:
   - name: Install jre8
     apt:
@@ -36,7 +37,6 @@
      state: present
     become: true
     
-
   - name: add jenkins repo list file into sources.list.d
     apt_repository:
      repo: deb http://pkg.jenkins.io/debian-stable binary/
@@ -172,7 +172,7 @@
   - name: Copy jenkins_jobs.ini script
     become: true
     template:
-      src: /ansible-server/roles/jenkins/templates/jenkins_jobs.ini
+      src: /ansible-server/templates/jenkins_jobs.ini
       dest: /etc/jenkins_jobs/jenkins_jobs.ini
       mode: 0755
       force: yes
@@ -186,13 +186,13 @@
   - name: Copy job file templates
     become: yes
     template:
-      src: "/ansible-server/roles/jenkins/templates/{{ item }}"
+      src: "/ansible-server/templates/{{ item }}"
       dest: "/home/vagrant/jobs/{{ item }}"
       force: yes
       mode: 0755
     with_items:
     - "defaults.yml"
-    - "create_job.yml"
+    - "create_jobs.yml"
 
   - name: Get Jenkins crumb
     become: true
