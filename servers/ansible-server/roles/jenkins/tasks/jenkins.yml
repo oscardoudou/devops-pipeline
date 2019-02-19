@@ -13,6 +13,7 @@
 
   - name: Accept Java 8 License
     become: true
+    become_user: root
     debconf: 
       name: 'oracle-java8-installer' 
       question: 'shared/accepted-oracle-license-v1-1' 
@@ -30,6 +31,7 @@
      url: https://pkg.jenkins.io/debian/jenkins.io.key
      state: present
     become: true
+    
 
   - name: add jenkins repo list file into sources.list.d
     apt_repository:
@@ -50,6 +52,7 @@
      state: present
      update_cache: yes
     become: true
+    register: jenkins_state
 
   - name: Start Jenkins service and enable on boot
     service:
@@ -70,12 +73,15 @@
      script: "{{ lookup('file' , 'templates/groovy_add_user.groovy') }}"
      user: admin
      password: "{{ adminpwd.stdout }}"
+    when: jenkins_state.changed
+
 
   - name: sign into jenkins and complete setup
     jenkins_script:
      script: "{{ lookup('file' , 'templates/groovy_setup_user.groovy') }}"
      user: admin
      password: "{{ adminpwd.stdout }}"
+    when: jenkins_state.changed 
 
   - name: disable security for installation
     become: true
@@ -108,14 +114,15 @@
       url: http://192.168.33.200:8080
       validate_certs: no
     with_items: "{{ plugins }}"
+    when: jenkins_state.changed
 
-  # - name: Changing default port for Jenkins
-  #   become: true
-  #   replace:
-  #     dest: /etc/default/jenkins
-  #     regexp: 'HTTP_PORT=8080'
-  #     replace: 'HTTP_PORT=8090'
-  #     backup: yes
+  - name: Changing default port for Jenkins
+    become: true
+    replace:
+      dest: /etc/default/jenkins
+      regexp: 'HTTP_PORT=8080'
+      replace: 'HTTP_PORT=8090'
+      backup: yes
 
   - name: Restart jenkins
     become: true
