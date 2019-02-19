@@ -132,4 +132,87 @@
     become: true
     command: systemctl restart jenkins 
 
-  
+# Installing Python package manager
+
+  - name: Installing Python pip
+    become: true
+    apt:
+      pkg: python-pip
+      state: latest
+
+  - name: Installing Python 3 pip
+    become: true
+    apt:
+      pkg: python3-pip
+      state: latest
+
+  - name: Symlink pip and pip3
+    become: true
+    file:
+      src: /usr/bin/pip3
+      dest: /usr/bin/pip
+      state: link
+
+# Installing Jenkins Job Builder package
+
+  - name: Install jenkins-job-builder package
+    become: true
+    pip:
+      name: jenkins-job-builder
+      executable: pip2
+      state: latest
+
+  - name: Create jenkins_jobs directory
+    become: true
+    file:
+      path: /etc/jenkins_jobs
+      state: directory
+      mode: 0755
+
+  - name: Copy jenkins_jobs.ini script
+    become: true
+    template:
+      src: /ansible-server/roles/jenkins/templates/jenkins_jobs.ini
+      dest: /etc/jenkins_jobs/jenkins_jobs.ini
+      mode: 0755
+      force: yes
+
+  - name: Create jobs directory
+    file:
+      path: /home/vagrant/jobs
+      state: directory
+      mode: 0755
+
+  - name: Copy job file templates
+    become: yes
+    template:
+      src: "/ansible-server/roles/jenkins/templates/{{ item }}"
+      dest: "/home/vagrant/jobs/{{ item }}"
+      force: yes
+      mode: 0755
+    with_items:
+    - "defaults.yml"
+    - "create_job.yml"
+
+  - name: Get Jenkins crumb
+    become: true
+    uri:
+      url: 'http://127.0.0.1:8090/crumbIssuer/api/xml?xpath=concat(//crumbRequestField,":",//crumb)'
+      user: "user"
+      password: "password"
+      force_basic_auth: yes
+      return_content: yes
+    register: crumb
+
+  # - name: Trigger builds
+  #   uri:
+  #     method: POST
+  #     url: "http://127.0.0.1:8090/job/{{ item }}/build"
+  #     user: "user"
+  #     password: "password"
+  #     force_basic_auth: yes
+  #     status_code: "201"
+  #     headers:
+  #       Jenkins-Crumb: "{{ crumb.content.split(':')[1] }}"
+  #   with_items:
+  #   - checkbox.io_job
