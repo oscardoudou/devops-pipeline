@@ -12,7 +12,7 @@
   - name: Cloning iTrust repository
     become: true
     git:
-      repo: "https://{{github_username}}:{{github_password}}@github.ncsu.edu/engr-csc326-staff/iTrust2-v4.git"
+      repo: "https://{{github_username}}:{{github_password|urlencode}}@github.ncsu.edu/engr-csc326-staff/iTrust2-v4.git"
       dest: "{{itrust_folder}}"
       update: no
     when: itrust_repo.stat.isdir is not defined
@@ -22,46 +22,60 @@
       path: "{{itrust_folder}}/iTrust2/src/main/java/db.properties"
     register: db_property
 
+  # - name: Copy the contents of db.properties file
+  #   become: true
+  #   when: db_property.stat.isdir is not defined
+  #   command: mv /templates/db.properties.template {{itrust_folder}}/iTrust2/src/main/java
+
   - name: Copy the contents of db.properties file
     become: true
     when: db_property.stat.isdir is not defined
-    command: mv /templates/db.properties.template {{itrust_folder}}/iTrust2/src/main/java
+    copy: 
+      src: "/ansible-server/roles/jenkins/templates/db.properties"
+      dest: "{{itrust_folder}}/iTrust2/src/main/java"
 
   - name: Check if email.properties file exists
     stat:
       path: "{{itrust_folder}}/iTrust2/src/main/java/email.properties"
     register: email_property
 
+  # - name: Copy the contents of email.properties file
+  #   become: true
+  #   when: email_property.stat.isdir is not defined
+  #   command: mv /templates/email.properties.template {{itrust_folder}}/iTrust2/src/main/java
+
   - name: Copy the contents of email.properties file
     become: true
     when: email_property.stat.isdir is not defined
-    command: mv /templates/email.properties.template {{itrust_folder}}/iTrust2/src/main/java
-  
-  - name: Setting MySQL root password before installing
-    become: true
-    debconf:
-      name: mysql-server
-      question: mysql-server/root_password
-      value: 
-      vtype: password
+    copy: 
+      src: "/ansible-server/roles/jenkins/templates/email.properties"
+      dest: "{{itrust_folder}}/iTrust2/src/main/java"
 
-  - name: Confirm MySQL password before installing
-    become: true
-    debconf:
-      name: mysql-server
-      question: mysql-server/root_password_again
-      value: 
-      vtype: password
+  # - name: Setting MySQL root password before installing
+  #   become: true
+  #   debconf:
+  #     name: mysql-server
+  #     question: mysql-server/root_password
+  #     value: ""
+  #     vtype: password
 
-  - name: Install MySql Server
-    become: true
-    apt: 
-      name: ['python3-mysqldb', 'mysql-server', 'python-pymysql']
-      state: present
+  # - name: Confirm MySQL password before installing
+  #   become: true
+  #   debconf:
+  #     name: mysql-server
+  #     question: mysql-server/root_password_again
+  #     value: ""
+  #     vtype: password
+
+  # - name: Install MySql Server
+  #   become: true
+  #   apt: 
+  #     name: ['python3-mysqldb', 'mysql-server', 'python-pymysql']
+  #     state: present
   
   - name: Update the configuration file for mySQL
     copy: 
-      src: "/ansible-server/roles/jenkins/templates/my.cnf"
+      src: "/ansible-server/templates/my.cnf"
       dest: /etc/mysql/my.cnf force=yes
     become: true
 
@@ -79,19 +93,12 @@
       update_cache: yes 
       cache_valid_time: 3600
 
-  - name: Run process-test-classes
-    become: true
-    become_user: root
-    shell: mvn process-test-classes
-    args:
-      chdir: "{{itrust_folder}}/iTrust2/"
-     
-  - name: Check if iTrust is running in port 8080
-    become: true
-    become_user: root
-    shell: nohup bash -c "sudo mvn jetty:run" &
-    args:
-      chdir: "{{itrust_folder}}/iTrust2/"
+  # - name: Check if iTrust is running in port 8080
+  #   become: true
+  #   become_user: root
+  #   shell: nohup bash -c "sudo mvn jetty:run" &
+  #   args:
+  #     chdir: "{{itrust_folder}}/iTrust2/"
 
   - name: Run test to verify iTrust Build
     become: true
@@ -99,4 +106,12 @@
     shell: mvn clean test verify checkstyle:checkstyle
     args:
       chdir: "{{itrust_folder}}/iTrust2/"
+
+  - name: Run process-test-classes
+    become: true
+    become_user: root
+    shell: mvn process-test-classes
+    args:
+      chdir: "{{itrust_folder}}/iTrust2/"
+     
     

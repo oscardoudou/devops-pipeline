@@ -92,78 +92,78 @@
         roles: readWrite,dbAdmin
         state: present
 
-  - name: Checking for already cloned checkbox repository
-    stat:
-        path: "{{checkbox_folder}}"
-    register: checkbox_repo
+  # - name: Checking for already cloned checkbox repository
+  #   stat:
+  #       path: "{{checkbox_folder}}"
+  #   register: checkbox_repo
 
-  - name: Cloning checkbox repository
-    become: true
-    git:
-        repo: "https://github.com/chrisparnin/checkbox.io.git"
-        dest: "{{checkbox_folder}}"
-        update: no
-    when: checkbox_repo.stat.isdir is not defined
+  # - name: Cloning checkbox repository
+  #   become: true
+  #   git:
+  #       repo: "https://github.com/chrisparnin/checkbox.io.git"
+  #       dest: "{{checkbox_folder}}"
+  #       update: no
+  #   when: checkbox_repo.stat.isdir is not defined
 
-  - name: Insert test command as mocha in the package.json 
-    become: true
-    blockinfile:
-        path: "{{checkbox_folder}}/server-side/site/package.json"
-        marker: '"//":"Ansible",'
-        insertafter: '"private": true,'
-        block: |
-              "scripts": {
-                 "test": "mocha"
-              },  
+  # - name: Insert test command as mocha in the package.json 
+  #   become: true
+  #   blockinfile:
+  #       path: "{{checkbox_folder}}/server-side/site/package.json"
+  #       marker: '"//":"Ansible",'
+  #       insertafter: '"private": true,'
+  #       block: |
+  #             "scripts": {
+  #                "test": "mocha"
+  #             },  
 
-  - name: Run npm install to install dependencies 
-    become: true
-    npm:
-        path: "/home/vagrant/server-side/site"
-        state: latest
+  # - name: Run npm install to install dependencies 
+  #   become: true
+  #   npm:
+  #       path: "/home/vagrant/server-side/site"
+  #       state: latest
 
-  - name: update location of public_html into default
-    become: true
-    replace:
-        dest: "{{checkbox_folder}}/local-conf/default"
-        regexp: "/Users/gameweld/bitbucket/checkbox.io/checkbox.io/public_html"
-        replace: "{{checkbox_folder}}/public_html"
+  # - name: update location of public_html into default
+  #   become: true
+  #   replace:
+  #       dest: "{{checkbox_folder}}/local-conf/default"
+  #       regexp: "/Users/gameweld/bitbucket/checkbox.io/checkbox.io/public_html"
+  #       replace: "{{checkbox_folder}}/public_html"
 
-  - name: Copy default file to nginx folder
-    become: true
-    copy: 
-        src: "{{checkbox_folder}}/local-conf/default"
-        dest: "/etc/nginx/sites-available/default"
-        remote_src: true
-        mode: 0644
+  # - name: Copy default file to nginx folder
+  #   become: true
+  #   copy: 
+  #       src: "{{checkbox_folder}}/local-conf/default"
+  #       dest: "/etc/nginx/sites-available/default"
+  #       remote_src: true
+  #       mode: 0644
 
-  - name: Copy nginx.conf file to diferent location
-    become: true
-    copy: 
-        src: "{{checkbox_folder}}/local-conf/nginx.conf" 
-        dest: "/etc/nginx/nginx.conf"
-        remote_src: true
-        mode: 0644
+  # - name: Copy nginx.conf file to diferent location
+  #   become: true
+  #   copy: 
+  #       src: "{{checkbox_folder}}/local-conf/nginx.conf" 
+  #       dest: "/etc/nginx/nginx.conf"
+  #       remote_src: true
+  #       mode: 0644
 
-  - name: Install forever (to run Node.js app)
-    become: true
-    npm: 
-        name: forever 
-        global: yes 
-        state: present
+  # - name: Install forever (to run Node.js app)
+  #   become: true
+  #   npm: 
+  #       name: forever 
+  #       global: yes 
+  #       state: present
 
-  - name: "Check list of Node.js apps running."
-    command: forever list
-    register: forever_list
-    changed_when: false
+  # - name: "Check list of Node.js apps running."
+  #   command: forever list
+  #   register: forever_list
+  #   changed_when: false
         
-  - name: Start application
-    command: forever start {{checkbox_folder}}/server-side/site/server.js
-    when: "forever_list.stdout.find('/home/vagrant/checkbox/server-side/site/server.js') == -1"
+  # - name: Start application
+  #   command: forever start {{checkbox_folder}}/server-side/site/server.js
+  #   when: "forever_list.stdout.find('/home/vagrant/checkbox/server-side/site/server.js') == -1"
 
-  - name: Restart nginx
-    become: true
-    service: 
-        name: nginx 
-        state: restarted 
-        enabled: yes
+  # - name: Restart nginx
+  #   become: true
+  #   service: 
+  #       name: nginx 
+  #       state: restarted 
+  #       enabled: yes
