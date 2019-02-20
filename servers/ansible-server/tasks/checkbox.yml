@@ -105,6 +105,17 @@
         update: no
     when: checkbox_repo.stat.isdir is not defined
 
+  - name: Insert test command as mocha in the package.json 
+    become: true
+    blockinfile:
+        path: "{{checkbox_folder}}/server-side/site/package.json"
+        marker: '"//":"Ansible",'
+        insertafter: '"private": true,'
+        block: |
+              "scripts": {
+                 "test": "mocha"
+              },  
+
   - name: Run npm install to install dependencies 
     become: true
     npm:
