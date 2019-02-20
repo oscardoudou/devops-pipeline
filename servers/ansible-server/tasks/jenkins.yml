@@ -195,6 +195,10 @@
     - "projects.yml"
     - "test.yml"
 
+  - name: Update jobs
+    become: true
+    command: "jenkins-jobs update --delete-old jobs"
+
   - name: Get Jenkins crumb
     become: true
     uri:
@@ -205,6 +209,21 @@
       return_content: yes
     register: crumb
 
-  - name: Update jobs
-    become: true
-    command: "jenkins-jobs update --delete-old jobs"
+  - name: Queue builds
+    uri:
+      method: POST
+      url: "http://127.0.0.1:8090/job/{{ item }}/build"
+      user: "user"
+      password: "password"
+      force_basic_auth: yes
+      status_code: 201
+      headers:
+        Jenkins-Crumb: "{{ crumb.content.split(':')[1] }}"
+    with_items:
+    - checkbox_job
+    - iTrust_job
+
+  # - name: Set Up Build Job for checkbox
+  #   jenkins_job:
+  #     url: http://127.0.0.1:8090
+  #     name: checkbox_job 
