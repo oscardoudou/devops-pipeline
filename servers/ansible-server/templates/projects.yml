@@ -1,0 +1,20 @@
+- project:
+    name: project-example
+    jobs:
+        - '{name}_job':
+            name: checkbox
+            command: |
+                rm -rf *
+                git clone https://github.com/chrisparnin/checkbox.io.git
+                cd checkbox.io/server-side/site/
+                npm install
+        
+        - '{name}_job':
+            name: iTrust
+            command: |
+                rm -rf * 
+                git clone https://'{{github_username}}':'{{github_password}}'@github.ncsu.edu/engr-csc326-staff/iTrust2-v4.git
+                cd iTrust2-v4/iTrust2/
+                cp src/main/java/db.properties.template src/main/java/db.properties
+                cp src/main/java/email.properties.template src/main/java/email.properties
+                mvn clean test verify checkstyle:checkstyle

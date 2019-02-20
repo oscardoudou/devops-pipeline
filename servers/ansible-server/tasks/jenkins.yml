@@ -159,7 +159,7 @@
     become: true
     pip:
       name: jenkins-job-builder
-      executable: pip2
+      executable: pip3
       state: latest
 
   - name: Create jenkins_jobs directory
@@ -192,7 +192,8 @@
       mode: 0755
     with_items:
     - "defaults.yml"
-    - "create_jobs.yml"
+    - "projects.yml"
+    - "test.yml"
 
   - name: Get Jenkins crumb
     become: true
@@ -204,15 +205,6 @@
       return_content: yes
     register: crumb
 
-  # - name: Trigger builds
-  #   uri:
-  #     method: POST
-  #     url: "http://127.0.0.1:8090/job/{{ item }}/build"
-  #     user: "user"
-  #     password: "password"
-  #     force_basic_auth: yes
-  #     status_code: "201"
-  #     headers:
-  #       Jenkins-Crumb: "{{ crumb.content.split(':')[1] }}"
-  #   with_items:
-  #   - checkbox.io_job
+  - name: Update jobs
+    become: true
+    command: "jenkins-jobs update --delete-old jobs"

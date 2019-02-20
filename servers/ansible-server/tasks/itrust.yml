@@ -12,7 +12,7 @@
   - name: Cloning iTrust repository
     become: true
     git:
-      repo: "https://{{github_username}}:{{github_password|urlencode}}@github.ncsu.edu/engr-csc326-staff/iTrust2-v4.git"
+      repo: "https://{{github_username}}:{{github_password}}@github.ncsu.edu/engr-csc326-staff/iTrust2-v4.git"
       dest: "{{itrust_folder}}"
       update: no
     when: itrust_repo.stat.isdir is not defined
@@ -25,9 +25,7 @@
   - name: Copy the contents of db.properties file
     become: true
     when: db_property.stat.isdir is not defined
-    copy: 
-      src: "/ansible-server/roles/jenkins/templates/db.properties"
-      dest: "{{itrust_folder}}/iTrust2/src/main/java"
+    command: mv /templates/db.properties.template {{itrust_folder}}/iTrust2/src/main/java
 
   - name: Check if email.properties file exists
     stat:
@@ -37,16 +35,14 @@
   - name: Copy the contents of email.properties file
     become: true
     when: email_property.stat.isdir is not defined
-    copy: 
-      src: "/ansible-server/roles/jenkins/templates/email.properties"
-      dest: "{{itrust_folder}}/iTrust2/src/main/java"
+    command: mv /templates/email.properties.template {{itrust_folder}}/iTrust2/src/main/java
   
   - name: Setting MySQL root password before installing
     become: true
     debconf:
       name: mysql-server
       question: mysql-server/root_password
-      value: test
+      value: 
       vtype: password
 
   - name: Confirm MySQL password before installing
@@ -54,7 +50,7 @@
     debconf:
       name: mysql-server
       question: mysql-server/root_password_again
-      value: test
+      value: 
       vtype: password
 
   - name: Install MySql Server

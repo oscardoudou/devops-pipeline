@@ -1,6 +1,0 @@
-- job:
-  name: test_job
-  description: 'automated build job'
-  project-type: freestyle
-  builders:
-    - shell: 'ls'
