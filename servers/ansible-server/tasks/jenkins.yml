@@ -65,7 +65,6 @@
       enabled: yes
 
 # configuring
-
   - name: reading admin password
     shell: cat /var/lib/jenkins/secrets/initialAdminPassword
     register: adminpwd
@@ -78,7 +77,6 @@
      user: admin
      password: "{{ adminpwd.stdout }}"
     when: jenkins_state.changed
-
 
   - name: sign into jenkins and complete setup
     jenkins_script:
@@ -118,6 +116,19 @@
   - name: Restart jenkins
     become: true
     command: systemctl restart jenkins 
+
+  - name: Ensure Jenkins is up and running
+    uri:
+      url: http://192.168.33.200:8090
+      status_code: 200
+      timeout: 5
+    register: jenkins_service_status
+    # Keep trying for 5 mins in 5 sec intervals
+    retries: 5
+    delay: 5
+    until: >
+      'status' in jenkins_service_status and
+      jenkins_service_status['status'] == 200
 
 # Installing Jenkins Job Builder package
 
