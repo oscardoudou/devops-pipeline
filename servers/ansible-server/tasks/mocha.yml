@@ -9,7 +9,6 @@
     args:
       chdir: ~/checkbox/server-side/site/node_modules
    
-      
   - name: Install got module for test
     command: sudo npm install got --save
     args:
@@ -31,8 +30,6 @@
     command: sudo npm install child_process
     args:
       chdir: ~/checkbox/server-side/site/node_modules
-  
-
 
   - name: Install mocha on server
     become: true

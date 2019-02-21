@@ -4,9 +4,11 @@
         - '{name}_job':
             name: checkbox
             command: |
+                ls
                 rm -rf *
-                git clone https://github.com/chrisparnin/checkbox.io.git
-                cd checkbox.io/server-side/site/
+                # git clone https://github.com/chrisparnin/checkbox.io.git
+                cp -avr /home/vagrant/checkbox /var/lib/jenkins/workspace/checkbox_job
+                cd checkbox/server-side/site/
                 npm install
         
         - '{name}_job':

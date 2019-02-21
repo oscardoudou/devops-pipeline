@@ -38,43 +38,10 @@
 
     - name: Copy test content into file
       become: true
-      blockinfile:
-         path: "{{checkbox_folder}}/server-side/site/test.js"
-         marker: '"// Ansible"'
-         block: |
-            const assert = require('assert');
-            const expect = require('chai').expect;
-            const shell = require('shelljs');
-            const request = require('request');
-
-            describe('server', function(){
-            describe('#start()', function(){
-             it('should start checkbox server on 80', function() {
-          // start server
-             this.timeout(0);
-
-             shell.exec('pm2 start server.js');
-
-
-             request('http://192.168.33.200', function (error, response, body) {
-               console.log('statusCode', response && response.statusCode);
-               assert.equal(response.statusCode, 200);
-            })
-
-
-
-
-          })
-        })
-          describe('#stop()', function(){
-           it('should stop the checkbox server', function() {
-
-            // stop server
-            shell.exec('pm2 stop server.js');
-          })
-        })
-       }
-      )
+      copy:
+        src: "/ansible-server/templates/test.js"
+        dest: "{{checkbox_folder}}/server-side/site"
+        force: yes
 
     - name: Run the test from the correct directory
       command: npm test

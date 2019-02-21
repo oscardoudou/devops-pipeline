@@ -119,20 +119,6 @@
     become: true
     command: systemctl restart jenkins 
 
-# Installing Python package manager
-
-  - name: Installing Python pip
-    become: true
-    apt:
-      pkg: python-pip
-      state: latest
-
-  - name: Installing Python 3 pip
-    become: true
-    apt:
-      pkg: python3-pip
-      state: latest
-
 # Installing Jenkins Job Builder package
 
   - name: Install jenkins-job-builder package

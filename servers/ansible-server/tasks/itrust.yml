@@ -17,37 +17,15 @@
       update: no
     when: itrust_repo.stat.isdir is not defined
 
-  # - name: Check if db.properties file already exists
-  #   stat:
-  #     path: '{{itrust_folder}}/iTrust2/src/main/java/db.properties'
-  #   register: result
-
-  # - name: Check if db.properties are set
-  #   shell: cat "{{itrust_folder}}/iTrust2/src/main/java/db.properties"
-  #   register: db_property
-  #   when: result.stat.isdir is defined
-
   - name: Copy the contents of db.properties file
     become: true
-    #when: result.stat.isdir is defined and db_property.stdout.find('root') == -1
     copy: 
       src: "/ansible-server/templates/db.properties"
       dest: "{{itrust_folder}}/iTrust2/src/main/java"
       force: yes
 
-  # - name: Check if email.properties file already exists
-  #   stat:
-  #     path: '{{itrust_folder}}/iTrust2/src/main/java/email.properties'
-  #   register: result 
-
-  # - name: Check if email.properties are set
-  #   shell: cat "{{itrust_folder}}/iTrust2/src/main/java/email.properties"
-  #   register: email_property
-  #   when: result.stat.isdir is defined
-
   - name: Copy the contents of email.properties file
     become: true
-    #when: result.stat.isdir is defined and email_property.stdout.find('donotreply') == -1
     copy: 
       src: "/ansible-server/templates/email.properties"
       dest: "{{itrust_folder}}/iTrust2/src/main/java"
@@ -96,20 +74,20 @@
       update_cache: yes 
       cache_valid_time: 3600
 
-  - name: Check if iTrust is running in port 8080
-    become: true
-    become_user: root
-    shell: nohup bash -c "sudo mvn jetty:run" &
-    args:
-      chdir: "{{itrust_folder}}/iTrust2/"
+  # - name: Check if iTrust is running in port 8080
+  #   become: true
+  #   become_user: root
+  #   shell: nohup bash -c "sudo mvn jetty:run" &
+  #   args:
+  #     chdir: "{{itrust_folder}}/iTrust2/"
 
 
-  - name: Run process-test-classes
-    become: true
-    become_user: root
-    shell: mvn process-test-classes
-    args:
-      chdir: "{{itrust_folder}}/iTrust2/"
+  # - name: Run process-test-classes
+  #   become: true
+  #   become_user: root
+  #   shell: mvn process-test-classes
+  #   args:
+  #     chdir: "{{itrust_folder}}/iTrust2/"
 
   # - name: Run test to verify iTrust Build
   #   become: true
