@@ -4,31 +4,82 @@
     - ../vars/main.yml
 
   tasks:
-    - name: Check if a test directory exists in checkbox repo
-      stat:
-        path: "{{checkbox_folder}}/server-side/test"
-      register: test_directory  
-
-    - name: Create test directory in checkbox repository
-      become: true
-      file:
-        path: "{{checkbox_folder}}/server-side/test"
-        state: directory
-        mode: 0777
-      when: test_directory.stat.exists == False
 
     - name: Create a test script 
       become: true
       file:
-        path: "{{checkbox_folder}}/server-side/test/test.js"
+        path: "{{checkbox_folder}}/server-side/site/test.js"
         state: touch
         mode: 0777
       register: test_file
-      
-    # - name: Copy test content into file
-    #   blockinfile:
-    #      path: "{{checkbox_folder}}/server-side/test/test.js"
-    #      marker: '"//: Ansible"'
-    #      block: |
+
+    - name: Create process.json  
+      become: true
+      file:
+        path: "{{checkbox_folder}}/server-side/site/process.json"
+        state: touch
+        mode: 0777  
+
+    - name: Copy contents to process.json
+      become: true
+      blockinfile:
+         path: "{{checkbox_folder}}/server-side/site/process.json"
+         marker: ''
+         block: |    
+           {
+            "apps" : [{
+              "name"    :"checkbox-server",
+              "script"  :"server.js",
+              "args"    :"start"
+
+            }
+            ]
+           }
+
+    - name: Copy test content into file
+      become: true
+      blockinfile:
+         path: "{{checkbox_folder}}/server-side/site/test.js"
+         marker: '"// Ansible"'
+         block: |
+            const assert = require('assert');
+            const expect = require('chai').expect;
+            const shell = require('shelljs');
+            const request = require('request');
+
+            describe('server', function(){
+            describe('#start()', function(){
+             it('should start checkbox server on 80', function() {
+          // start server
+             this.timeout(0);
+
+             shell.exec('pm2 start server.js');
+
+
+             request('http://192.168.33.200', function (error, response, body) {
+               console.log('statusCode', response && response.statusCode);
+               assert.equal(response.statusCode, 200);
+            })
+
+
+
+
+          })
+        })
+          describe('#stop()', function(){
+           it('should stop the checkbox server', function() {
+
+            // stop server
+            shell.exec('pm2 stop server.js');
+          })
+        })
+       }
+      )
+
+    - name: Run the test from the correct directory
+      command: npm test
+      args:
+        chdir: ~/checkbox/server-side/site  
+
            
 

@@ -113,7 +113,10 @@
         insertafter: '"private": true,'
         block: |
               "scripts": {
-                 "test": "mocha"
+                 "test": "mocha",
+                 "start": "node server.js",
+                 "deploy": "pm2 start process.json",
+                 "stop": "pm2 stop process.json"
               },  
 
   - name: Run npm install to install dependencies 
