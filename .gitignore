@@ -1,2 +1,2 @@
-servers/ansible-server/roles/jenkins/templates/db.properties.template
-servers/ansible-server/roles/jenkins/templates/email.properties.template
+servers/ansible-server/roles/jenkins/templates/db.properties
+servers/ansible-server/roles/jenkins/templates/email.properties

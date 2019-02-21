@@ -1,0 +1,70 @@
+---
+- hosts: all
+  become: true
+
+  vars:
+    get_version_url: "http://chromedriver.storage.googleapis.com/LATEST_RELEASE"
+    upstart_service_name: chromedriver
+    platform: linux64
+
+  tasks:
+    - name: Ensure apt-transport-https is installed
+      apt: name=apt-transport-https state=present
+
+    - name: Add apt key.
+      apt_key:
+        url: https://dl-ssl.google.com/linux/linux_signing_key.pub
+        state: present
+
+    - name: Add google repositories for chrome.
+      apt_repository:
+        repo: deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main
+        state: present
+        filename: 'google-chrome'
+      register: chrome_repo
+
+    - name: Update apt cache if repo was added.
+      apt: update_cache=yes
+      when: chrome_repo.changed
+      
+    - name: "Install google-chrome-stable"
+      apt: "name=google-chrome-stable state=present"
+
+
+    # Install chrome driver
+    - name: Ensure unzip is installed
+      apt: name=unzip state=present
+
+    - name: get chromedriver latest version number
+      shell: curl {{ get_version_url }}
+      register: chromedriver_version_output
+
+    - set_fact:
+        chromedriver_version: "{{ chromedriver_version_output.stdout }}"
+
+    - name: download chromedriver
+      get_url:
+        url: http://chromedriver.storage.googleapis.com/{{ chromedriver_version }}/chromedriver_{{ platform }}.zip
+        dest: /tmp/chromedriver.zip
+        mode: 0664
+
+    - name: stat chromedriver
+      stat: path=/usr/local/bin/chromedriver
+      register: chromedriver_stat
+
+    - name: unzip chromedriver and move to /usr/local/bin/
+      shell: "unzip /tmp/chromedriver.zip && mv /tmp/chromedriver /usr/local/bin/"
+      args:
+        chdir: /tmp
+      when: chromedriver_stat.stat.exists == False
+
+    # Establish chromedriver up-start service
+    - name: Copy upstart service config file
+      template:
+        src: "/ansible-server/templates/chromedriver.conf.j2"
+        dest: "/etc/init/chromedriver.conf"
+        mode: 0644
+
+    - name: Set timezone
+      become: true
+      command: timedatectl set-timezone America/New_York
