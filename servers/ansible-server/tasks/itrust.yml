@@ -103,6 +103,7 @@
     args:
       chdir: "{{itrust_folder}}/iTrust2/"
 
+
   - name: Run process-test-classes
     become: true
     become_user: root
