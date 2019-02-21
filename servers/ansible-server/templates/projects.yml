@@ -10,11 +10,11 @@
                 cp -avr /home/vagrant/checkbox /var/lib/jenkins/workspace/checkbox_job
                 cd checkbox/server-side/site/
                 npm install
-        
+                npm test 
         - '{name}_job':
             name: iTrust
             command: |
-                rm -rf * 
+                sudo rm -rf * 
                 git clone https://'{{github_username}}':'{{github_password}}'@github.ncsu.edu/engr-csc326-staff/iTrust2-v4.git
                 cd iTrust2-v4/iTrust2/
                 cp src/main/java/db.properties.template src/main/java/db.properties

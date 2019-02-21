@@ -99,18 +99,18 @@
         update: no
     when: checkbox_repo.stat.isdir is not defined
 
+  - name: Run npm install to install dependencies 
+    become: true
+    command: npm install
+    args:
+      chdir: "/home/vagrant/checkbox/server-side/site"
+
   - name: Replace package.json 
     become: true
     copy:
       src: "/ansible-server/templates/package.json"
       dest: "{{checkbox_folder}}/server-side/site"
       force: yes  
-
-  - name: Run npm install to install dependencies 
-    become: true
-    command: npm install
-    args:
-      chdir: "/home/vagrant/checkbox/server-side/site"
 
   - name: update location of public_html into default
     become: true
