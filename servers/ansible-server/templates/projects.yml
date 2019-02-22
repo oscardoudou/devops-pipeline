@@ -4,9 +4,7 @@
         - '{name}_job':
             name: checkbox
             command: |
-                ls
                 rm -rf *
-                # git clone https://github.com/chrisparnin/checkbox.io.git
                 cp -avr /home/vagrant/checkbox /var/lib/jenkins/workspace/checkbox_job
                 cd checkbox/server-side/site/
                 npm install
@@ -14,9 +12,7 @@
         - '{name}_job':
             name: iTrust
             command: |
-                sudo rm -rf * 
-                git clone https://'{{github_username}}':'{{github_password}}'@github.ncsu.edu/engr-csc326-staff/iTrust2-v4.git
-                cd iTrust2-v4/iTrust2/
-                cp src/main/java/db.properties.template src/main/java/db.properties
-                cp src/main/java/email.properties.template src/main/java/email.properties
+                rm -rf * 
+                cp -avr /home/vagrant/iTrust /var/lib/jenkins/workspace/iTrust_job
+                cd iTrust/iTrust2
                 mvn clean test verify checkstyle:checkstyle
