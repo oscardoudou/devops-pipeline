@@ -10,6 +10,24 @@ Team 3
 
 2) Systems and tools used:
 
+```
+- VM : baker (works better with baker) initialized with Ubuntu 16.04 LTS.
+- Virtual Box : 5.2.22
+- Ansible : v2.7.7
+- Jenkins : v2.150.2
+- Node : v4.2.6
+- Npm : v3.5.2
+- pip and pip3
+- Java : v1.8
+- Nginx : v1.10.3 
+- MongoDb :  v3.6.10
+- Mocha : v5.2.0
+- Pm2 : v3.2.9
+- Mysql : v14.14 Distrib 5.7.25
+- Apache Maven : v3.3.9 
+
+```
+
 
 3) Description: <br/>
 This repository consists of the first milestone for the team project. There are 2 virtual machines called ansible-server and jenkins-server.The former is initialized with ansible and playbooks are run to configure the jenkins-server. This milestone consisted of 4 major tasks:
