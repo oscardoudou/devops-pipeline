@@ -1,16 +1,16 @@
-CSC 519 Project Milestone 1 
+CSC 519 Project Milestone 1\ 
 Team 3 
+<div style="text-align: justify"> 
+1) Team Members with unity IDs: 
+ - Arpita (ashekha)
+ - Srija  (sgangul2)
+ - Dyuti  (dde)
+ - Yichi  ()
 
-Team Members with unity IDs: 
-1) Arpita (ashekha)
-2) Srija  (sgangul2)
-3) Dyuti  (dde)
-4) Yichi  ()
-
-1) Systems and tools used:
+2) Systems and tools used:
 
 
-2) Description:
+3) Description:
 This repository consists of the first milestone for the team project. There are 2 virtual machines called ansible-server and jenkins-server.The former is initialized with ansible and playbooks are run to configure the jenkins-server. This milestone consisted of 4 major tasks:
 
 - Provisioning and configuring a Jenkins server on a remote VM using ansible
@@ -32,10 +32,11 @@ This repository consists of the first milestone for the team project. There are 
 
 
 
-3) Issues faced:
+4) Issues faced:
 
-4) How to run the code:
+5) How to run the code:
 
-5) Screencast:
+6) Screencast:
+</div>
 
 
