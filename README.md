@@ -44,3 +44,15 @@ This milestone consisted of 4 major tasks:
 
 ## How to run the code
 
+1. Clone this repository: ``` https://github.ncsu.edu/ashekha/DevOps-Project.git ```
+
+2. Run shell script inside the DevOps-Project directory:
+```
+cd DevOps-Project
+sh servers.sh
+```
+
+3. Set environment variables required for cloning the NCSU github repository.
+* GITHUB_USERNAME
+* GITHUB_PASSWORD
+
