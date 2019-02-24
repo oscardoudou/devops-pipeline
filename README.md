@@ -40,7 +40,7 @@ This milestone consisted of 4 major tasks:
 4. Creation of a test script that starts and stops the checkbox.io service on the server using a combination of mocha and pm2. The test file starts the service, checks the http status code (200) on both the server and the api endpoints (developers.html) and then stops the service.
 5. Creating a simple git hook to trigger a build for the applications when a push is made to the repository.
 
-#### Note: The Jenkins server can be accessed via this [url](http://192.168.33.200:8090) on port 8090, once the playbook runs successfully.
+#### Note: The Jenkins server can be accessed via this [url](http://192.168.33.200:8090) on port 8090, once the playbook runs successfully. 
 
 ## How to run the code
 
@@ -56,3 +56,6 @@ sh servers.sh
 * GITHUB_USERNAME
 * GITHUB_PASSWORD
 
+!4. Set .properties files 
+
+!5. Make changes to the checkbox and iTrust repositories and add it under version control, eg. `touch demo; git add demo; git commit -m "demo"`. Push the changes into production to see the Jenkins build trigger using, `git push prod master`. 
