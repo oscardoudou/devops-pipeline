@@ -46,11 +46,30 @@ This milestone consisted of 4 major tasks:
 
 1. Clone this repository: ``` https://github.ncsu.edu/ashekha/DevOps-Project.git ```
 
-2. Run shell script inside the DevOps-Project directory:
+2. Traverse into the root directory and then to the ansible-server:
 ```
-cd DevOps-Project
-sh servers.sh
+cd DevOps-Project/servers/ansible-server
 ```
+3. Run the following commands:
+```
+baker bake
+baker ssh
+```
+4. Ansible should be installed through the bake command. Next on the local machine move out of ansible-server directory and go to the jenkins-server:
+```
+cd DevOps-Project/servers/jenkins-server
+```
+5. Redo the 3rd step again for this server.
+
+6. Setup ssh keys to connect between the two servers:
+```
+ssh-keygen -t rsa -b 4096 -C "jenkins-server" -f jenkins-server
+pbcopy < jenkins-server (for MAC) or clip < jenkins-server (for Windows)
+```
+Then ``` baker ssh ``` into ansible-server and paste the private key into the ``` ~/.ssh ``` directory.
+For setting the public key, ```baker ssh``` into jenkins-server and it needs to be copied into the ```~/.ssh/authorized_keys```
+### Note : Key generation will follow the same steps as mentioned in [CM Workshop](https://github.com/CSC-DevOps/CM#creating-a-connection-between-your-servers). 
+
 
 3. Set environment variables required for cloning the NCSU github repository.
 * GITHUB_USERNAME
