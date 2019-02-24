@@ -1,0 +1,88 @@
+---
+- hosts: all
+  vars_files:
+    - ../vars/main.yml
+
+  tasks:
+  - name: Create directory structure for checkbox post-receive 
+    become: true 
+    file: 
+      path: /home/vagrant/cdeploy/production.git
+      state: directory
+      mode: 0755
+
+  - name: Change checkbox repo to personal cloned version 
+    become: true  
+    git: 
+      repo: https://github.com/reCursedd/checkbox.io.git
+      dest: /home/vagrant/checkbox
+      force: yes
+
+  - name: Initialize production.git as bare repository for checkbox
+    become: true
+    command: "git init --bare"
+    args: 
+      chdir: "/home/vagrant/cdeploy/production.git"
+
+  - name: Create directory structure for checkbox post-receive 
+    become: true 
+    file: 
+      path: /home/vagrant/cdeploy/production-jenkins
+      state: directory
+      mode: 0755
+
+  - name: Copy post-receive hook into hooks directory 
+    become: true 
+    copy: 
+      src: "/ansible-server/templates/post-receive"
+      dest: "/home/vagrant/cdeploy/production.git/hooks/"
+      mode: 0755
+
+  - name: Change the url to  build  job 
+    become: true 
+    replace: 
+      path: /home/vagrant/cdeploy/production.git/hooks/post-receive
+      regexp: job_name
+      replace: checkbox_job
+      
+
+  - name: Create directory structure for itrust post-receive 
+    become: true 
+    file:
+      path: /home/vagrant/itdeploy/production.git
+      state: directory
+      mode: 0755
+      force: yes
+
+  - name: Change iTrust repo to personal cloned version 
+    become: true 
+    git: 
+      repo: https://github.com/reCursedd/itrust.git
+      dest: /home/vagrant/iTrust
+  
+  - name: Initialize production.git as bare repository for iTrust
+    become: true
+    command: "git init --bare"
+    args: 
+      chdir: "/home/vagrant/itdeploy/production.git"
+
+  - name: Create directory structure for itrust post-receive 
+    become: true 
+    file:
+      path: /home/vagrant/itdeploy/production.jenkins
+      state: directory
+      mode: 0755
+
+  - name: Copy post-receive hook into hooks directory 
+    become: true 
+    copy: 
+      src: "/ansible-server/templates/post-receive"
+      dest: "/home/vagrant/itdeploy/production.git/hooks/"
+      mode: 0755
+
+  - name: Change the url to  build  job 
+    become: true 
+    replace: 
+      path: /home/vagrant/itdeploy/production.git/hooks/post-receive
+      regexp: job_name
+      replace: iTrust_job
