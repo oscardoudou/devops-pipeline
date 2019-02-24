@@ -1,5 +1,5 @@
 # Configuration Management and Build - Milestone 1
-
+In this milestone, we aim to learn about configuration management. Configuration management is a systems engineering process for establishing and maintaining consistency of a product's performance, functional, and physical attributes with its requirements, design, and operational information throughout its life. In this miledtone we will be focusing on a pipeline that consists of configuration automantion, build automation, test automation 
 This repository covers provisioning, configuring of Jenkins server along with setting up Jenkins build job for [checkbox.io](https://github.com/chrisparnin/checkbox.io) and [iTrust](https://github.ncsu.edu/engr-csc326-staff/iTrust2-v4) applications. A GitHub webhook is used to trigger the build when a push is made in the repository.
 
 ### Screencast
@@ -56,6 +56,18 @@ sh servers.sh
 * GITHUB_USERNAME
 * GITHUB_PASSWORD
 
-!4. Set .properties files 
+4. Set db.properties file in templates directory with the following contents (you may leave the password blank): 
+  ```
+url jdbc:mysql://localhost:3306/iTrust2?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=EST&allowPublicKeyRetrieval=true
+username <Your username>
+password
+  ```
+ 5. Set email.properties file in template directory with the following contents: 
+ ```
+from <donotreply/your name>
+username <Your username>
+password <Your password>
+host smtp.gmail.com
+ ```  
 
-!5. Make changes to the checkbox and iTrust repositories and add it under version control, eg. `touch demo; git add demo; git commit -m "demo"`. Push the changes into production to see the Jenkins build trigger using, `git push prod master`. 
+ 6. Make changes to the checkbox and iTrust repositories and add it under version control, eg. `touch demo; git add demo; git commit -m "demo"`. Push the changes into production to see the Jenkins build trigger using, `git push prod master`. 
