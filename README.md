@@ -68,7 +68,7 @@ pbcopy < jenkins-server (for MAC) or clip < jenkins-server (for Windows)
 ```
 Then ``` baker ssh ``` into ansible-server and paste the private key into the ``` ~/.ssh ``` directory.
 For setting the public key, ```baker ssh``` into jenkins-server and it needs to be copied into the ```~/.ssh/authorized_keys```
-### Note : Key generation will follow the same steps as mentioned in [CM Workshop](https://github.com/CSC-DevOps/CM#creating-a-connection-between-your-servers). 
+#### Note : Key generation will follow the same steps as mentioned in [CM Workshop](https://github.com/CSC-DevOps/CM#creating-a-connection-between-your-servers). 
 
 To check the connection between the servers run:
 ```
@@ -105,8 +105,8 @@ It should run all the playbooks together that involves all the 4 tasks in the pr
 
 12. Traverse to http://192.168.33.200 for the live checkbox.io service.
 
-13: Traverse to http://192.168.33.200:8080 for the live iTrust service.
+ 13: Traverse to http://192.168.33.200:8080 for the live iTrust service.
 
 14. Make changes to the checkbox and iTrust repositories and add it under version control, eg. `touch demo; git add demo; git commit -m "demo"`. Push the changes into production to see the Jenkins build trigger using, `git push prod master`. 
 
-### Note : To see the build jobs taking place after the git hook gets invoked, traverse to the live jenkins server and find the process under the job names "checkbox_job" and "iTrust_job".
+#### Note : To see the build jobs taking place after the git hook gets invoked, traverse to the live jenkins server and find the process under the job names "checkbox_job" and "iTrust_job".
