@@ -7,9 +7,9 @@ A detailed video with the steps can be found [here]().
 
 ### Team Members:
 
-* Arpita (ashekha)
-* Srija  (sgangul2)
-* Dyuti  (dde)
+* Arpita (ashekha) - Build jobs for the two applications and screencast
+* Srija  (sgangul2) - Jenkins setup and test script for checkbox.io
+* Dyuti  (dde) - Jenkins setup and Git hook
 * Yichi  (yzhan222)
 
 ## Prerequisites
@@ -46,54 +46,70 @@ This milestone consisted of 4 major tasks:
 
 1. Clone this repository: ``` https://github.ncsu.edu/ashekha/DevOps-Project.git ```
 
-2. Traverse into the root directory and then to the ansible-server:
+2. Run shell script inside the DevOps-Project directory to setup the ansible and jenkins server:
 ```
-cd DevOps-Project/servers/ansible-server
+cd DevOps-Project
+sh servers.sh
 ```
-3. Run the following commands:
-```
-baker bake
-baker ssh
-```
-4. Ansible should be installed through the bake command. Next on the local machine move out of ansible-server directory and go to the jenkins-server:
-```
-cd DevOps-Project/servers/jenkins-server
-```
-5. Redo the 3rd step again for this server.
 
-6. Setup ssh keys to connect between the two servers:
+3. Setup ssh keys to connect between the two servers:
+From your host machine, create a new public/private key pair, running the following command, and hitting enter for the default prompts
 ```
 ssh-keygen -t rsa -b 4096 -C "jenkins-server" -f jenkins-server
-pbcopy < jenkins-server (for MAC) or clip < jenkins-server (for Windows)
 ```
-Then ``` baker ssh ``` into ansible-server and paste the private key into the ``` ~/.ssh ``` directory.
-For setting the public key, ```baker ssh``` into jenkins-server and it needs to be copied into the ```~/.ssh/authorized_keys```
-#### Note : Key generation will follow the same steps as mentioned in [CM Workshop](https://github.com/CSC-DevOps/CM#creating-a-connection-between-your-servers). 
 
+#### Setting up the private key
+
+One nice trick is to use a copy utility to copy a file into your copy/paste buffer:
+
+* Mac: `pbcopy < jenkins-server`
+* Windows: `clip < jenkins-server`
+
+Inside the ansible-server using a file editor, paste and store your private key in a file:
+
+```bash
+ansible-server $ vim ~/.ssh/jenkins-server
+# Make sure key is not readable by others.
+ansible-server $ chmod 600 ~/.ssh/jenkins-server
+# We're done here, go back to host
+ansible-server $ exit
+```
+
+#### Setting up the public key
+
+Copy the jenkins-server.pub file from your host.
+
+Go inside the jenkins-server.
+
+Using a file editor, add the public key to the list of authorized keys:
+
+```bash
+jenkins-server $ vim ~/.ssh/authorized_keys
+jenkins-server $ exit
+```
 To check the connection between the servers run:
 ```
 ansible all -m ping -i inventory
-
 ```
 
-7. Set environment variables required for cloning the NCSU github repository inside the jenkins-server VM after ```baker ssh```.
+4. Set environment variables required for cloning the NCSU github repository inside the jenkins-server VM.
 * GITHUB_USERNAME 
 * GITHUB_PASSWORD
 
-8. Create a db.properties file in templates directory with the following contents (you may leave the password blank): 
+5. Create a db.properties file in templates directory with the following contents (you may leave the password blank): 
   ```
 url jdbc:mysql://localhost:3306/iTrust2?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=EST&allowPublicKeyRetrieval=true
 username <Your username>
 password
   ```
-9. Create a email.properties file in template directory with the following contents: 
+6. Create a email.properties file in template directory with the following contents: 
  ```
 from <donotreply/your name>
 username <Your username>
 password <Your password>
 host smtp.gmail.com
  ```  
-10. In the ansible-server VM , after ``` baker ssh ``` run the following commands:
+7. In the ansible-server VM , after ``` baker ssh ``` run the following commands:
 ```
 cd /ansible-server
 ansible-playbook run.yml -i inventory
@@ -101,12 +117,13 @@ ansible-playbook run.yml -i inventory
 ```
 It should run all the playbooks together that involves all the 4 tasks in the project.
 
-11. Traverse to http://192.168.33.200:8090 for the live Jenkins server. 
+8. Links to: 
+* [Jenkins server](http://192.168.33.200:8090)
+* [checkbox.io](http://192.168.33.200)
 
-12. Traverse to http://192.168.33.200 for the live checkbox.io service.
+##### Note: Since, we are running the ``` mvn clean test verify checkstyle:checkstyle ``` command through build job, the application has not been setup on a local port.
 
- 13: Traverse to http://192.168.33.200:8080 for the live iTrust service.
-
-14. Make changes to the checkbox and iTrust repositories and add it under version control, eg. `touch demo; git add demo; git commit -m "demo"`. Push the changes into production to see the Jenkins build trigger using, `git push prod master`. 
+9. Make changes to the checkbox and iTrust repositories and add it under version control, eg. `touch demo; git add demo; git commit -m "demo"`. Push the changes into production to see the Jenkins build trigger using, `git push prod master`. 
 
 #### Note : To see the build jobs taking place after the git hook gets invoked, traverse to the live jenkins server and find the process under the job names "checkbox_job" and "iTrust_job".
+
