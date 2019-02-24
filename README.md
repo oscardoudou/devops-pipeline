@@ -70,23 +70,43 @@ Then ``` baker ssh ``` into ansible-server and paste the private key into the ``
 For setting the public key, ```baker ssh``` into jenkins-server and it needs to be copied into the ```~/.ssh/authorized_keys```
 ### Note : Key generation will follow the same steps as mentioned in [CM Workshop](https://github.com/CSC-DevOps/CM#creating-a-connection-between-your-servers). 
 
+To check the connection between the servers run:
+```
+ansible all -m ping -i inventory
 
-3. Set environment variables required for cloning the NCSU github repository.
-* GITHUB_USERNAME
+```
+
+7. Set environment variables required for cloning the NCSU github repository inside the jenkins-server VM after ```baker ssh```.
+* GITHUB_USERNAME 
 * GITHUB_PASSWORD
 
-4. Set db.properties file in templates directory with the following contents (you may leave the password blank): 
+8. Create a db.properties file in templates directory with the following contents (you may leave the password blank): 
   ```
 url jdbc:mysql://localhost:3306/iTrust2?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=EST&allowPublicKeyRetrieval=true
 username <Your username>
 password
   ```
- 5. Set email.properties file in template directory with the following contents: 
+9. Create a email.properties file in template directory with the following contents: 
  ```
 from <donotreply/your name>
 username <Your username>
 password <Your password>
 host smtp.gmail.com
  ```  
+10. In the ansible-server VM , after ``` baker ssh ``` run the following commands:
+```
+cd /ansible-server
+ansible-playbook run.yml -i inventory
 
- 6. Make changes to the checkbox and iTrust repositories and add it under version control, eg. `touch demo; git add demo; git commit -m "demo"`. Push the changes into production to see the Jenkins build trigger using, `git push prod master`. 
+```
+It should run all the playbooks together that involves all the 4 tasks in the project.
+
+11. Traverse to http://192.168.33.200:8090 for the live Jenkins server. 
+
+12. Traverse to http://192.168.33.200 for the live checkbox.io service.
+
+13: Traverse to http://192.168.33.200:8080 for the live iTrust service.
+
+14. Make changes to the checkbox and iTrust repositories and add it under version control, eg. `touch demo; git add demo; git commit -m "demo"`. Push the changes into production to see the Jenkins build trigger using, `git push prod master`. 
+
+### Note : To see the build jobs taking place after the git hook gets invoked, traverse to the live jenkins server and find the process under the job names "checkbox_job" and "iTrust_job".
