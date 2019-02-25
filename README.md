@@ -16,11 +16,8 @@ checkbox.io is a site for hosting simple surveys created in markdown. It has dep
 #### 2.2 Building jobs for iTrust
 iTrust2 is a Java application which has a set of unit tests. It needed for us to clone another repository and install it in our system.
 
-This step of the project is deemed to be the most challenging because of the fact that it needed us to setup a number of environment variables. The steps were followed in the documentation line by line to setup iTrust, yet the build kept failing somewhere or the other.
+This step of the project is deemed to be the most challenging because of the lack of experience with maven projects. The developer guide had sufficient information, however, we faced build issues while setting up the database and getting the integration tests to run. The integration tests required a headless chrome to be installed along with setting up of time-zone which took us quite some time to figure out. 
 
-Mysql was needed for this part of the project, which required us to go through the setting up of 
-
-Since it was the first time we were working with Maven, it took us a lot of time to setup the tool, especially getting used to its command lines. 
 ### 3. Test scripts for checkbox.io
 The application didn't have any specific start and stop methods like we had in the Pipelines workshop, so figuring out how to start the checkbox service via pm2 required us to read the documentation and implementation guidelines of pm2. Mocha is a new testing framework for all of us, so learning how to write test scripts via Mocha also required a bit of research work. Once, when we were running the playbook on a fresh VM, the latest version of Mocha got installed -because the maintenance team had upgraded that 50 minutes before we played the tasks- which couldn't run with the current version of node. This taught us to always make sure that we put version numbers while installing modules from now onwards.
 
@@ -32,10 +29,11 @@ Apart from the previous issues, test scripts were smoothly figured out. Later th
 ### 4. Git hook
 Git hooks are scripts that run automatically every time a particular event occurs in a Git repository. In this module, we recreated our [Pipeline workshop](https://github.com/CSC-DevOps/Pipelines) for a more practical requirement. We used a post-receive hook to trigger Jenkins to build jobs on changes being pushed to the production server. It helped us to actually understand the requirement of a bare repository for post-receive hook and how it  can be modified to achieve various automation funtionality. 
 
-First, we were using the given repositories to clone checkbox and iTrust repositories. But while pushing to prod we were facing access denied error, may be because we don't have the push access to the given repositories. To solve that we tried to change the remote url using `git remote set-url <our git forked repo>` command. But we soon realized that though it is working fine for the iTrust reposiory, the checkbox test scripts are failing. Though we were getting a build success on hook triggers we detected that the test scripts required certain hidden installations which were preceding the `git remote set-url` command. We finally cloned the checkbox repository from the <our git forked repo>  and the issue was resolved. 
+First, we were using the given repositories to clone checkbox and iTrust repositories. But while pushing to prod we were facing access denied error, may be because we don't have the push access to the given repositories. To solve that we tried to change the remote url using `git remote set-url <our git forked repo>` command. But we soon realized that though it is working fine for the iTrust reposiory, the checkbox test scripts are failing. Though we were getting a build success on hook triggers we detected that the test scripts required certain hidden installations which were preceding the `git remote set-url` command. We finally cloned the checkbox repository from the 'our git forked repo'  and the issue was resolved. 
 
 ### Screencast
-A detailed video with the steps can be found [here]().
+A detailed video with the steps can be found [here](https://drive.google.com/file/d/1_18zYu8CgCmEZUqpmiv5Pd8ABgwFZ1ei/view?usp=sharing
+).
 
 ### Team Members:
 
