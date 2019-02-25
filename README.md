@@ -1,6 +1,16 @@
 # Configuration Management and Build - Milestone 1
-In this milestone, we aim to learn about configuration management. Configuration management is a systems engineering process for establishing and maintaining consistency of a product's performance, functional, and physical attributes with its requirements, design, and operational information throughout its life. In this miledtone we will be focusing on a pipeline that consists of configuration automantion, build automation, test automation 
-This repository covers provisioning, configuring of Jenkins server along with setting up Jenkins build job for [checkbox.io](https://github.com/chrisparnin/checkbox.io) and [iTrust](https://github.ncsu.edu/engr-csc326-staff/iTrust2-v4) applications. A GitHub webhook is used to trigger the build when a push is made in the repository.
+In this milestone, we aim to learn about configuration management. Configuration management is a systems engineering process for establishing and maintaining consistency of a product's performance, functional, and physical attributes with its requirements, design, and operational information throughout its life. In this milestone we will be focusing on a pipeline that consists of configuration automation, build automation, test automation and deploy automation. 
+This repository covers provisioning, configuring of Jenkins server along with setting up Jenkins build job for [checkbox.io](https://github.com/chrisparnin/checkbox.io) and [iTrust](https://github.ncsu.edu/engr-csc326-staff/iTrust2-v4) applications. A GitHub web-hook is used to trigger the build when a push is made in the repository.
+
+## Learning Outcomes: 
+### 1. Provisioning and configuring a Jenkins server:
+We learnt to automate several installation and configuration tasks using Ansible. It was tricky because, to automate things, we often need to understand the behind-scenes of a command. We were facing issue, where certain tasks would fail for the first time and run smoothly on the second run on-wards. So we figured that the files that were called were taking some time to create and were not created by the time we called them. We resolved the issue by putting delay till the files could be created properly, all through Ansible script. 
+### 2. Automatically build jobs for 2 applications:
+#### 2.1 Building jobs for checkbox.io:
+
+#### 2.2 Building jobs for iTrust
+### 3. Test scripts for checkbox.io
+### 4. Git hook
 
 ### Screencast
 A detailed video with the steps can be found [here]().
@@ -44,7 +54,7 @@ This milestone consisted of 4 major tasks:
 
 ## How to run the code
 
-1. Clone this repository: ``` https://github.ncsu.edu/ashekha/DevOps-Project.git ```
+1. Clone this repository: ```git clone https://github.ncsu.edu/ashekha/DevOps-Project.git ```
 
 2. Run shell script inside the DevOps-Project directory to setup the ansible and jenkins server:
 ```
