@@ -39,7 +39,7 @@ A detailed video with the steps can be found [here](https://drive.google.com/fil
 
 * Arpita (ashekha) - Build jobs for the two applications and screencast , readme writeup
 * Srija  (sgangul2) - Jenkins setup and test script for checkbox.io  , readme writeup
-* Dyuti  (dde) - Jenkins setup and Git hook implementation , readme writeup
+* Dyuti  (dde) - Jenkins setup and Git hook (entire 4th task) , readme writeup
 * Yichi  (yzhan222) - Git hook preparation.
 
 ## Prerequisites
