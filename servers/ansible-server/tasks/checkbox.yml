@@ -86,18 +86,19 @@
         roles: readWrite,dbAdmin
         state: present
 
-  - name: Checking for already cloned checkbox repository
-    stat:
-        path: "{{checkbox_folder}}"
-    register: checkbox_repo
+  # - name: Checking for already cloned checkbox repository
+  #   stat:
+  #       path: "{{checkbox_folder}}"
+  #   register: checkbox_repo
 
   - name: Cloning checkbox repository
     become: true
     git:
-        repo: "https://github.com/chrisparnin/checkbox.io.git"
+        repo: "https://github.com/reCursedd/checkbox.io.git"
         dest: "{{checkbox_folder}}"
         update: no
-    when: checkbox_repo.stat.isdir is not defined
+        force: yes
+    #when: checkbox_repo.stat.isdir is not defined
 
   - name: Run npm install to install dependencies 
     become: true

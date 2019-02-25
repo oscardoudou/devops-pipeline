@@ -11,12 +11,12 @@
       state: directory
       mode: 0755
 
-  - name: Change checkbox repo to personal cloned version 
-    become: true  
-    git: 
-      repo: https://github.com/reCursedd/checkbox.io.git
-      dest: /home/vagrant/checkbox
-      force: yes
+  # - name: Change checkbox repo to personal cloned version 
+  #   become: true  
+  #   git: 
+  #     repo: https://github.com/reCursedd/checkbox.io.git
+  #     dest: /home/vagrant/checkbox
+  #     force: yes
 
   - name: Initialize production.git as bare repository for checkbox
     become: true
@@ -45,13 +45,12 @@
       regexp: job_name
       replace: checkbox_job
     
-  # - name: Set production repo for checkbox
-  #   become: true
-  #   command: "git remote add prod ../cdeploy/production.git"
-  #   args: 
-  #     chdir: "/home/vagrant/checkbox"
+  - name: Set production repo for checkbox
+    become: true
+    command: "git remote add prod ../cdeploy/production.git"
+    args: 
+      chdir: "/home/vagrant/checkbox"
     
-
   - name: Create directory structure for itrust post-receive 
     become: true 
     file:
@@ -93,9 +92,9 @@
       regexp: job_name
       replace: iTrust_job
   
-  # - name: Set production repo for iTrust
-  #   become: true
-  #   command: "git remote add prod ../itdeploy/production.git"
-  #   args: 
-  #     chdir: "/home/vagrant/iTrust"
+  - name: Set production repo for iTrust
+    become: true
+    command: "git remote add prod ../itdeploy/production.git"
+    args: 
+      chdir: "/home/vagrant/iTrust"
       
