@@ -152,7 +152,8 @@ It should run all the playbooks together that involves all the 4 tasks in the pr
 
 ##### Note: Since, we are running the ``` mvn clean test verify checkstyle:checkstyle ``` command through build job, the application has not been setup on a local port.
 
-9. Run as root user: make changes to the checkbox and iTrust repositories and add it under version control, eg. `touch demo; git add demo; git commit -m "demo"`. Push the changes into production to see the Jenkins build trigger using, `git push prod master`. 
+9. Run as root user: make changes to the checkbox (/home/vagrant/checkbox) and iTrust(/home/vagrant/iTrust) repositories and add it under version control.
+  eg. `touch demo; git add demo; git commit -m "demo"`. Push the changes into production to see the Jenkins build trigger using, `git push prod master`. 
 
 ##### Note : To see the build jobs taking place after the git hook gets invoked, traverse to the live jenkins server and find the process under the job names "checkbox_job" and "iTrust_job".
 
