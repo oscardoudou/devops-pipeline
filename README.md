@@ -14,7 +14,11 @@ We used Jenkins job builder for this task, as it seemed to be well documented an
 #### 2.1 Building jobs for checkbox.io:
 checkbox.io is a site for hosting simple surveys created in markdown. It has dependencies on nginx, node, monogodb which could be installed smoothly by following the developer guide. We did not face any issues while completing this part. 
 #### 2.2 Building jobs for iTrust
-iTrust2 is a Java application which has a set of unit tests.
+iTrust2 is a Java application which has a set of unit tests. It needed for us to clone another repository and install it in our system.
+
+This step of the project is deemed to be the most challenging because of the fact that it needed us to setup a number of environment variables. The steps were followed in the documentation line by line to setup iTrust, yet the build kept failing somewhere or the other.
+
+Mysql was needed for this part of the project, which required us to go through the setting up of 
 
 Since it was the first time we were working with Maven, it took us a lot of time to setup the tool, especially getting used to its command lines. 
 ### 3. Test scripts for checkbox.io
