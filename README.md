@@ -6,7 +6,9 @@ This repository covers provisioning, configuring of Jenkins server along with se
 ### 1. Provisioning and configuring a Jenkins server:
 Jenkins is a continuous integration tool used to automate the software pipeline from building, testing and deployment. We learnt to automate several installation and configuration tasks using Ansible required to set-up Jenkins. It was tricky because, to automate things, we often need to understand the behind-scenes of a command.
 
-We were facing issue, where certain tasks would fail for the first time and run smoothly on the second run on-wards. So we figured that the files that were called were taking some time to create and were not created by the time we called them. We resolved the issue by putting delay till the files could be created properly, all through Ansible script. 
+We were facing issue, where certain tasks would fail for the first time and run smoothly on the second run on-wards. So we figured that the files that were called were taking some time to create and were not created by the time we called them. We resolved the issue by putting delay till the files could be created properly, all through Ansible script. Bypassing Jenkins setup wizard was also tricky as we had less ideas about the platform that it takes more time to reload the server, so a time lapse had to be put in between, that would hold off the next tasks until the server was up.
+
+Jenkins installation and configuration took 2 people of our team to work on. There were certain dependencies that needed to be fulfilled. For downloading plugins as well, we had to bypass security so that the jenkins user would have enough rights to install the plugins. Every installation required jenkins server to be reloaded. 
 ### 2. Automatically build jobs for 2 applications:
 We used Jenkins job builder for this task, as it seemed to be well documented and had a better developer community support. Jenkins Job Builder takes simple descriptions of Jenkins jobs in YAML or JSON format and uses them to configure Jenkins. You can keep your job descriptions in human readable text format in a version control system to make changes and auditing easier. It also has a flexible template system, so creating many similarly configured jobs is easy.
 #### 2.1 Building jobs for checkbox.io:
@@ -14,8 +16,15 @@ checkbox.io is a site for hosting simple surveys created in markdown. It has dep
 #### 2.2 Building jobs for iTrust
 iTrust2 is a Java application which has a set of unit tests.
 
-Since it was the first time we were working with Maven, it took us a lot of time to 
+Since it was the first time we were working with Maven, it took us a lot of time to setup the tool, especially getting used to its command lines. 
 ### 3. Test scripts for checkbox.io
+The application didn't have any specific start and stop methods like we had in the Pipelines workshop, so figuring out how to start the checkbox service via pm2 required us to read the documentation and implementation guidelines of pm2. Mocha is a new testing framework for all of us, so learning how to write test scripts via Mocha also required a bit of research work. Once, when we were running the playbook on a fresh VM, the latest version of Mocha got installed -because the maintenance team had upgraded that 50 minutes before we played the tasks- which couldn't run with the current version of node. This taught us to always make sure that we put version numbers while installing modules from now onwards.
+
+In addition, while implemeting "got" module, the tests continuously failed because our implemented node version didn't support it, because of which we had to fall back to the "request" module. It worked brilliantly when combined with the pm2 shell commands using the "shelljs" module.  
+
+After the server started, it was mostly important for us to place a REST call to an api endpoint to check if the server is actually responding. A status code of 200 would mean its a success. The server would be stopped after that using pm2 as well.
+Apart from the previous issues, test scripts were smoothly figured out. Later this test was invoked via the build jobs of checkbox.io.
+
 ### 4. Git hook
 Git hooks are scripts that run automatically every time a particular event occurs in a Git repository. In this module, we recreated our [Pipeline workshop](https://github.com/CSC-DevOps/Pipelines) for a more practical requirement. We used a post-receive hook to trigger Jenkins to build jobs on changes being pushed to the production server. It helped us to actually understand the requirement of a bare repository for post-receive hook and how it  can be modified to achieve various automation funtionality. 
 
@@ -26,9 +35,9 @@ A detailed video with the steps can be found [here]().
 
 ### Team Members:
 
-* Arpita (ashekha) - Build jobs for the two applications and screencast
-* Srija  (sgangul2) - Jenkins setup and test script for checkbox.io
-* Dyuti  (dde) - Jenkins setup and Git hook
+* Arpita (ashekha) - Build jobs for the two applications and screencast , readme writeup
+* Srija  (sgangul2) - Jenkins setup and test script for checkbox.io  , readme writeup
+* Dyuti  (dde) - Jenkins setup and Git hook implementation , readme writeup
 * Yichi  (yzhan222) - Git hook preparation.
 
 ## Prerequisites
