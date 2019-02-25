@@ -10,7 +10,7 @@ A detailed video with the steps can be found [here]().
 * Arpita (ashekha) - Build jobs for the two applications and screencast
 * Srija  (sgangul2) - Jenkins setup and test script for checkbox.io
 * Dyuti  (dde) - Jenkins setup and Git hook
-* Yichi  (yzhan222) - Git hook
+* Yichi  (yzhan222) - Git hook preparation.
 
 ## Prerequisites
 You need to have [VirtualBox 5.2](https://www.virtualbox.org/wiki/Download_Old_Builds_5_2) installed on your machine along with [Baker](https://docs.getbaker.io/installation/) which will be used to create the virtual machines (Ubuntu 16.04 LTS).
