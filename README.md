@@ -4,13 +4,18 @@ This repository covers provisioning, configuring of Jenkins server along with se
 
 ## Learning Outcomes: 
 ### 1. Provisioning and configuring a Jenkins server:
-We learnt to automate several installation and configuration tasks using Ansible. It was tricky because, to automate things, we often need to understand the behind-scenes of a command. We were facing issue, where certain tasks would fail for the first time and run smoothly on the second run on-wards. So we figured that the files that were called were taking some time to create and were not created by the time we called them. We resolved the issue by putting delay till the files could be created properly, all through Ansible script. 
+We learnt to automate several installation and configuration tasks using Ansible. It was tricky because, to automate things, we often need to understand the behind-scenes of a command.
+
+We were facing issue, where certain tasks would fail for the first time and run smoothly on the second run on-wards. So we figured that the files that were called were taking some time to create and were not created by the time we called them. We resolved the issue by putting delay till the files could be created properly, all through Ansible script. 
 ### 2. Automatically build jobs for 2 applications:
 #### 2.1 Building jobs for checkbox.io:
 
 #### 2.2 Building jobs for iTrust
 ### 3. Test scripts for checkbox.io
 ### 4. Git hook
+In this module, we recreated our [Pipeline workshop](https://github.com/CSC-DevOps/Pipelines) for a more practical requirement. We used a post-receive hook to trigger Jenkins to build jobs on changes being pushed to the production server. It helped us to actually understand the requirement of a bare repository for post-receive hook and how it  can be modified to achieve various automation funtionality. 
+
+First, we were using the given repositories to clone checkbox and iTrust repositories. But while pushing to prod we were facing access denied error, may be because we don't have the push access to the given repositories. To solve that we tried to change the remote url using `git remote set-url <our git forked repo>` command. But we soon realized that though it is working fine for the iTrust reposiory, the checkbox test scripts are failing. Though we were getting a build success on hook triggers we detected that the test scripts required certain hidden installations which were preceding the `git remote set-url` command. We finally cloned the checkbox repository from the <our git forked repo>  and the issue was resolved. 
 
 ### Screencast
 A detailed video with the steps can be found [here]().
