@@ -1,19 +1,21 @@
 # Configuration Management and Build - Milestone 1
-In this milestone, we aim to learn about configuration management. Configuration management is a systems engineering process for establishing and maintaining consistency of a product's performance, functional, and physical attributes with its requirements, design, and operational information throughout its life. In this milestone we will be focusing on a pipeline that consists of configuration automation, build automation, test automation and deploy automation. 
+In this milestone, we aim to learn about the automation of configuration management and build. Configuration management is a systems engineering process for establishing and maintaining consistency of a product's performance, functional, and physical attributes with its requirements, design, and operational information throughout its life. In this milestone we will be focusing on a pipeline that consists of configuration automation, build automation, test automation and deploy automation. 
 This repository covers provisioning, configuring of Jenkins server along with setting up Jenkins build job for [checkbox.io](https://github.com/chrisparnin/checkbox.io) and [iTrust](https://github.ncsu.edu/engr-csc326-staff/iTrust2-v4) applications. A GitHub web-hook is used to trigger the build when a push is made in the repository.
 
 ## Learning Outcomes: 
 ### 1. Provisioning and configuring a Jenkins server:
-We learnt to automate several installation and configuration tasks using Ansible. It was tricky because, to automate things, we often need to understand the behind-scenes of a command.
+Jenkins is a continuous integration tool used to automate the software pipeline from building, testing and deployment. We learnt to automate several installation and configuration tasks using Ansible required to set-up Jenkins. It was tricky because, to automate things, we often need to understand the behind-scenes of a command.
 
 We were facing issue, where certain tasks would fail for the first time and run smoothly on the second run on-wards. So we figured that the files that were called were taking some time to create and were not created by the time we called them. We resolved the issue by putting delay till the files could be created properly, all through Ansible script. 
 ### 2. Automatically build jobs for 2 applications:
+We used Jenkins job builder for this task, as it seemed to be well documented and had a better developer community support. Jenkins Job Builder takes simple descriptions of Jenkins jobs in YAML or JSON format and uses them to configure Jenkins. You can keep your job descriptions in human readable text format in a version control system to make changes and auditing easier. It also has a flexible template system, so creating many similarly configured jobs is easy.
 #### 2.1 Building jobs for checkbox.io:
-
+checkbox.io is a site for hosting simple surveys created in markdown. It has dependencies on nginx, node, monogodb which could be installed smoothly by following the developer guide. We did not face any issues while completing this part. 
 #### 2.2 Building jobs for iTrust
+iTrust2 is a Java application which has a set of unit tests.
 ### 3. Test scripts for checkbox.io
 ### 4. Git hook
-In this module, we recreated our [Pipeline workshop](https://github.com/CSC-DevOps/Pipelines) for a more practical requirement. We used a post-receive hook to trigger Jenkins to build jobs on changes being pushed to the production server. It helped us to actually understand the requirement of a bare repository for post-receive hook and how it  can be modified to achieve various automation funtionality. 
+Git hooks are scripts that run automatically every time a particular event occurs in a Git repository. In this module, we recreated our [Pipeline workshop](https://github.com/CSC-DevOps/Pipelines) for a more practical requirement. We used a post-receive hook to trigger Jenkins to build jobs on changes being pushed to the production server. It helped us to actually understand the requirement of a bare repository for post-receive hook and how it  can be modified to achieve various automation funtionality. 
 
 First, we were using the given repositories to clone checkbox and iTrust repositories. But while pushing to prod we were facing access denied error, may be because we don't have the push access to the given repositories. To solve that we tried to change the remote url using `git remote set-url <our git forked repo>` command. But we soon realized that though it is working fine for the iTrust reposiory, the checkbox test scripts are failing. Though we were getting a build success on hook triggers we detected that the test scripts required certain hidden installations which were preceding the `git remote set-url` command. We finally cloned the checkbox repository from the <our git forked repo>  and the issue was resolved. 
 
