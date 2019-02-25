@@ -13,6 +13,8 @@ We used Jenkins job builder for this task, as it seemed to be well documented an
 checkbox.io is a site for hosting simple surveys created in markdown. It has dependencies on nginx, node, monogodb which could be installed smoothly by following the developer guide. We did not face any issues while completing this part. 
 #### 2.2 Building jobs for iTrust
 iTrust2 is a Java application which has a set of unit tests.
+
+Since it was the first time we were working with Maven, it took us a lot of time to 
 ### 3. Test scripts for checkbox.io
 ### 4. Git hook
 Git hooks are scripts that run automatically every time a particular event occurs in a Git repository. In this module, we recreated our [Pipeline workshop](https://github.com/CSC-DevOps/Pipelines) for a more practical requirement. We used a post-receive hook to trigger Jenkins to build jobs on changes being pushed to the production server. It helped us to actually understand the requirement of a bare repository for post-receive hook and how it  can be modified to achieve various automation funtionality. 
