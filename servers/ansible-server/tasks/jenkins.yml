@@ -77,18 +77,7 @@
     become: true
 
   - name: Ensure Jenkins is up and running
-    when: jenkins_state.changed
-    uri:
-      url: http://192.168.33.200:8080
-      status_code: 200
-      timeout: 5
-    register: jenkins_service_status
-    # Keep trying for 5 mins in 5 sec intervals
-    retries: 5
-    delay: 5
-    until: >
-      'status' in jenkins_service_status and
-      jenkins_service_status['status'] == 200
+    wait_for: timeout=30
    
   - name: Add admin and unlock Jenkins automatically
     jenkins_script: 
@@ -119,7 +108,7 @@
       state: latest
       url_username: admin
       url_password: "{{ adminpwd.stdout }}"
-      url: http://192.168.33.200:8090
+      url: http://192.168.33.200:8080
       validate_certs: no
     with_items: "{{ plugins }}"
     when: jenkins_state.changed
