@@ -74,3 +74,15 @@ plugins:
    - pipeline-npm
    - postbuild-task
    #- github-pullrequest-plugin
+
+jenkins_user: <value>
+jenkins_password: <value>
+mysql_user: <value>
+mysql_password: <value>
+mongo_admin_password: <value>
+mongo_checkbox_user: <value>
+mongo_checkbox_password: <value>
+email_username: <value>
+email_password: <value>
+checkbox_repo: <url for the checkbox.io repo to use for this assignment -- we should have access to it>
+itrust_repo: <url for the itrust repo to use for this assignment -- we should have access to it>
