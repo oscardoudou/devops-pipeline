@@ -112,6 +112,7 @@
       validate_certs: no
     with_items: "{{ plugins }}"
     when: jenkins_state.changed
+      
 
   - name: Changing default port for Jenkins
     become: true
@@ -132,7 +133,7 @@
       timeout: 5
     register: jenkins_service_status
     # Keep trying for 5 mins in 5 sec intervals
-    retries: 5
+    retries: 10
     delay: 5
     until: >
       'status' in jenkins_service_status and
@@ -154,32 +155,32 @@
       state: directory
       mode: 0755
 
-  - name: Copy jenkins_jobs.ini script
-    become: true
-    template:
-      src: /ansible-server/templates/jenkins_jobs.ini
-      dest: /etc/jenkins_jobs/jenkins_jobs.ini
-      mode: 0755
-      force: yes
+  # - name: Copy jenkins_jobs.ini script
+  #   become: true
+  #   template:
+  #     src: /ansible-server/templates/jenkins_jobs.ini
+  #     dest: /etc/jenkins_jobs/jenkins_jobs.ini
+  #     mode: 0755
+  #     force: yes
 
-  - name: Create jobs directory
-    file:
-      path: /home/vagrant/jobs
-      state: directory
-      mode: 0755
+  # - name: Create jobs directory
+  #   file:
+  #     path: /home/vagrant/jobs
+  #     state: directory
+  #     mode: 0755
 
-  - name: Copy job file templates
-    become: yes
-    template:
-      src: "/ansible-server/templates/{{ item }}"
-      dest: "/home/vagrant/jobs/{{ item }}"
-      force: yes
-      mode: 0755
-    with_items:
-    - "defaults.yml"
-    - "projects.yml"
-    - "test.yml"
+  # - name: Copy job file templates
+  #   become: yes
+  #   template:
+  #     src: "/ansible-server/templates/{{ item }}"
+  #     dest: "/home/vagrant/jobs/{{ item }}"
+  #     force: yes
+  #     mode: 0755
+  #   with_items:
+  #   - "defaults.yml"
+  #   - "projects.yml"
+  #   - "test.yml"
 
-  - name: Update jobs
-    become: true
-    command: "jenkins-jobs update jobs"
+  # - name: Update jobs
+  #   become: true
+  #   command: "jenkins-jobs update jobs"

@@ -1,0 +1,47 @@
+---
+- hosts: all
+  vars_files:
+    - ../variables.yml
+
+  tasks:
+
+    - name: Jenkins => Making sure that the admin password file exists
+      become: true
+      wait_for:
+       path: /var/lib/jenkins/secrets/initialAdminPassword
+
+    - name: Jenkins => reading admin password
+      shell: cat /var/lib/jenkins/secrets/initialAdminPassword
+      register: adminpwd
+      become_user: root
+      become: true
+
+    - name: Jenkins => Installing jacoco 
+      become: true
+      jenkins_plugin:
+        name: jacoco
+        state: present
+        with_dependencies: yes
+        url_username: admin
+        url_password: "{{ adminpwd.stdout }}"
+        url: http://192.168.33.200:8090
+      run_once: true  
+
+    - name: Jenkins => restart service
+      become: true
+      service:
+        name: jenkins
+        state: restarted
+
+    - name: Jenkins => Wait until server is up and running
+      uri:
+       url: http://192.168.33.200:8090
+       status_code: 200
+       timeout: 5
+      register: jenkins_service_status
+      # Keep trying for 5 mins in 5 sec intervals
+      retries: 10
+      delay: 5
+      until: >
+       'status' in jenkins_service_status and
+        jenkins_service_status['status'] == 200   
