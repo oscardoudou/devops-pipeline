@@ -1,5 +1,25 @@
+# setting the view to contain jacoco coverage
+- view-template:
+    name: Coverage view
+    view-type: list
+    description: 'To present coverage report for iTrust job'
+    filter-executors: false
+    filter-queue: false
+    job-name:
+        - iTrust_job
+    columns:
+        - status
+        - weather
+        - job
+        - build-button
+        - jacoco
+    recurse: true        
+
+
 - project:
     name: project-example
+    views:
+        - Coverage view
     jobs:
         - '{name}_job':
             name: checkbox
