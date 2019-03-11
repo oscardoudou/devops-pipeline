@@ -110,7 +110,6 @@ listOfFiles.forEach(function(file) {
     }
 })
 
-
 // check if fuzzing is successful by compiling iTrust
 command.exec('cd /home/vagrant/iTrust/iTrust2');
 command.exec('sudo mvn compile');
