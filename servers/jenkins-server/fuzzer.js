@@ -34,7 +34,9 @@ function zeroWithOne(data) {
 // change content of "strings" in code
 
 function changeStringContent(data) {
-    // var randomString 
+    var randomString = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+    var regex = /("([^"]|"")*")/ig;
+    return data.replace(regex, randomString);
 }
 
 // swap "<" with ">"
