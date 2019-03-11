@@ -183,4 +183,4 @@
 
   - name: Update jobs
     become: true
-    command: "jenkins-jobs update iTrust"
+    command: "jenkins-jobs update jobs"
