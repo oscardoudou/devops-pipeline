@@ -155,32 +155,32 @@
       state: directory
       mode: 0755
 
-  # - name: Copy jenkins_jobs.ini script
-  #   become: true
-  #   template:
-  #     src: /ansible-server/templates/jenkins_jobs.ini
-  #     dest: /etc/jenkins_jobs/jenkins_jobs.ini
-  #     mode: 0755
-  #     force: yes
+  - name: Copy jenkins_jobs.ini script
+    become: true
+    template:
+      src: /ansible-server/templates/jenkins_jobs.ini
+      dest: /etc/jenkins_jobs/jenkins_jobs.ini
+      mode: 0755
+      force: yes
 
-  # - name: Create jobs directory
-  #   file:
-  #     path: /home/vagrant/jobs
-  #     state: directory
-  #     mode: 0755
+  - name: Create jobs directory
+    file:
+      path: /home/vagrant/jobs
+      state: directory
+      mode: 0755
 
-  # - name: Copy job file templates
-  #   become: yes
-  #   template:
-  #     src: "/ansible-server/templates/{{ item }}"
-  #     dest: "/home/vagrant/jobs/{{ item }}"
-  #     force: yes
-  #     mode: 0755
-  #   with_items:
-  #   - "defaults.yml"
-  #   - "projects.yml"
-  #   - "test.yml"
+  - name: Copy job file templates
+    become: yes
+    template:
+      src: "/ansible-server/templates/{{ item }}"
+      dest: "/home/vagrant/jobs/{{ item }}"
+      force: yes
+      mode: 0755
+    with_items:
+    - "defaults.yml"
+    - "projects.yml"
+    - "test.yml"
 
-  # - name: Update jobs
-  #   become: true
-  #   command: "jenkins-jobs update jobs"
+  - name: Update jobs
+    become: true
+    command: "jenkins-jobs update iTrust"

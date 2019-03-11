@@ -1,0 +1,26 @@
+---
+- hosts: all
+  vars_files:
+    - ../variables.ym
+
+  tasks:
+  - name: Create fuzzer directory
+    file:
+      path: "{{fuzzer_folder}}"
+      state: directory 
+  
+  - name: Copy files into FuzzerTool directory
+    template:
+      src: "{{ item }}"
+      dest: "/home/{{ ansible_user }}/FuzzerTool/"
+      force: yes
+    with_items:
+      - /home/vagrant/share/JenkinsTestAnalysis/templates/fuzzer.js
+      - /home/vagrant/share/JenkinsTestAnalysis/templates/initiateFuzzer.js
+
+  - name: Start the Commit Fuzzer
+    become: yes
+    shell: 'node initiateFuzzer.js; sleep 15'
+    args:
+      chdir: "/home/{{ ansible_user }}/FuzzerTool/"
+    with_sequence: "count={{ num_runs }}"

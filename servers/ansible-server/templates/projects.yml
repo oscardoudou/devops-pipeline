@@ -22,14 +22,6 @@
         - Coverage view
     jobs:
         - '{name}_job':
-            name: checkbox
-            command: |
-                rm -rf *
-                cp -avr /home/vagrant/checkbox /var/lib/jenkins/workspace/checkbox_job
-                cd checkbox/server-side/site/
-                npm install
-                npm test 
-        - '{name}_job':
             name: iTrust
             command: |
                 rm -rf * 

@@ -12,6 +12,8 @@ itrust_folder: "/home/vagrant/iTrust"
 
 checkbox_folder: "/home/vagrant/checkbox"
 
+fuzzer_folder: "/home/vagrant/fuzzer"
+
 github_username: "{{ lookup('env', 'GITHUB_USERNAME') }}"
 github_password: "{{ lookup('env', 'GITHUB_PASSWORD') }}"
 
