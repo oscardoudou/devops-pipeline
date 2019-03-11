@@ -101,3 +101,17 @@
       chdir: "/home/vagrant/iTrust"
     when: itremote.stdout.find('prod') < 0
       
+  - name: Create fuzzer branch 
+    become: true 
+    shell: 'git checkout fuzzer'
+    args: 
+      chdir: /home/vagrant/iTrust/
+
+  - name: Copy post-commit hook 
+    become: true 
+    copy: 
+      src: "/ansible-server/templates/post-commit"
+      dest: "/home/vagrant/iTrust/.git/hooks/"
+      mode: 0755
+ # run add and commit with sudo 
+ # set git config 

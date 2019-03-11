@@ -1,0 +1,6 @@
+#!/bin/sh
+if  git log -1 | grep -q 'revert' > /dev/null; then
+        echo "Found revert"
+else
+curl http://localhost:8090/job/iTrust_job/build?delay=0sec
+fi
