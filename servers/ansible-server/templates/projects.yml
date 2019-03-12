@@ -11,33 +11,6 @@
                 cp -avr /home/vagrant/iTrust /var/lib/jenkins/workspace/iTrust_job
                 cd iTrust/iTrust2
                 mvn clean test verify checkstyle:checkstyle
-    publishers:
-        - jacoco:
-            exec-pattern: '**/**.exec'
-            class-pattern: '**/classes'
-            source-pattern: '**/src/main/java'
-            update-build-status: true
-            inclusion-pattern: '**/*.class'
-            exclusion-pattern: '**/*Test*.class'
-            targets:
-              - instruction:
-                  healthy: 10
-                  unhealthy: 1
-              - branch:
-                  healthy: 10
-                  unhealthy: 1
-              - complexity:
-                  healthy: 10
-                  unhealthy: 1
-              - line:
-                  healthy: 20
-                  unhealthy: 5
-              - method:
-                  healthy: 10
-                  unhealthy: 1
-              - class:
-                  healthy: 10
-                  unhealthy: 1                    
 
 
 # setting the view to contain jacoco coverage
