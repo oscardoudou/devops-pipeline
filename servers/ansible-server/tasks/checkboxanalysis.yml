@@ -1,0 +1,17 @@
+---
+- hosts: all
+  vars_files:
+    - ../variables.yml
+
+  tasks:
+  
+  - name: Create analysis file for checkbox
+    file:
+     path: "{{checkbox_folder}}/analysis.js"
+     state: file
+     mode: 0755  
+
+  - name: Install esprima 
+    npm:
+     name: esprima
+     global: yes   
