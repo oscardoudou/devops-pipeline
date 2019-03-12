@@ -75,6 +75,7 @@ plugins:
    - nodejs
    - pipeline-npm
    - postbuild-task
+   - jacoco
    #- github-pullrequest-plugin
 
 jenkins_user: <value>

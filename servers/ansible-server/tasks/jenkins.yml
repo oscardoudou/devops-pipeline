@@ -106,6 +106,7 @@
     jenkins_plugin:
       name: "{{ item }}"
       state: latest
+      with_dependencies: yes
       url_username: admin
       url_password: "{{ adminpwd.stdout }}"
       url: http://192.168.33.200:8080
