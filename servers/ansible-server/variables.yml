@@ -8,7 +8,7 @@ maven_download_url: 'http://www.apache.org/dist/maven/maven-{{ maven_major }}/{{
 maven_download_username: ''
 maven_download_password: '' 
 
-itrust_folder: "/home/vagrant/iTrust/iTrust2-v4"
+itrust_folder: "/home/vagrant/iTrust"
 
 checkbox_folder: "/home/vagrant/checkbox"
 

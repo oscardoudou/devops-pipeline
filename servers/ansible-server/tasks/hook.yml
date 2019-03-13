@@ -105,7 +105,7 @@
     become: true 
     shell: 'git checkout fuzzer'
     args: 
-      chdir: /home/vagrant/iTrust/
+      chdir: /home/vagrant/iTrust
 
   - name: Copy post-commit hook 
     become: true 

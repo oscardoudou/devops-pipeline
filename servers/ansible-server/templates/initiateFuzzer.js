@@ -3,7 +3,7 @@ var shell = require('shelljs');
 shell.cd('/home/vagrant/fuzzer/');
 shell.exec('sudo node fuzzer.js');
 
-shell.cd('{{ itrust_folder }}');
+shell.cd('{{itrust_folder}}');
 
 shell.exec("sudo git add .");
 

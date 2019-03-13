@@ -30,7 +30,7 @@
   - name: Install shelljs npm package
     npm:
       name: "{{item}}"
-      path: "{{ fuzzer_folder}}"
+      path: "{{fuzzer_folder}}"
       state: present
     become: true
     with_items: 
