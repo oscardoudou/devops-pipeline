@@ -55,7 +55,7 @@ function changeGreaterAndLesserThan(data) {
 
 // select files for fuzzing
 function selectFiles() {
-    var filepath = '/home/vagrant/iTrust/iTrust2/src/main/java/edu/ncsu/csc/itrust2/';
+    var filepath = '/home/vagrant/iTrust/iTrust2-v4/iTrust2/src/main/java/edu/ncsu/csc/itrust2/';
     var selectedFiles = []
     var directories = ['utils', 'config', 'mvc/config', 'models/persistent', 'models/enums', 'controllers/api']
 
@@ -121,5 +121,5 @@ listOfFiles.forEach(function(file) {
 })
 
 // check if fuzzing is successful by compiling iTrust
-command.exec('cd /home/vagrant/iTrust/iTrust2');
-command.exec('sudo mvn compile');
+command.exec('cd /home/vagrant/iTrust/iTrust2-v4/iTrust2 && sudo mvn compile');
+// command.exec('sudo mvn compile');
