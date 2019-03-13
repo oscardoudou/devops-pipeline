@@ -12,7 +12,7 @@
   - name: Cloning iTrust repository
     become: true
     git:
-      repo: "https://{{github_username}}:{{github_password|urlencode}}@github.ncsu.edu/engr-csc326-staff/iTrust2-v4.git"
+      repo: "https://github.com/reCursedd/itrust.git"
       dest: "{{itrust_folder}}"
       update: no
     when: itrust_repo.stat.isdir is not defined
