@@ -4,6 +4,11 @@
     - ../variables.yml
 
   tasks:
+  - name: Remove Fuzzer directory if it exists
+    file:
+      state: absent
+      path: "{{ fuzzer_folder}}"
+
   - name: Create fuzzer directory
     file:
       path: "{{fuzzer_folder}}"
@@ -15,12 +20,25 @@
       dest: "{{fuzzer_folder}}"
       force: yes
     with_items:
-      - /home/vagrant/share/JenkinsTestAnalysis/templates/fuzzer.js
-      - /home/vagrant/share/JenkinsTestAnalysis/templates/initiateFuzzer.js
+      - /ansible-server/templates/package.json
+      - /ansible-server/templates/fuzzer.js
+      - /ansible-server/templates/initiateFuzzer.js
+
+  # - name: Install node packages in fuzzer folder
+  #   npm:
+  #       path: "{{ fuzzer_folder }}"
+  #       state: latest
+  
+  - name: Install global npm packages
+    npm:
+      name: shelljs
+      global: yes
+      state: present
+    become: yes
 
   - name: Start the Commit Fuzzer
     become: yes
     shell: 'node initiateFuzzer.js; sleep 15'
     args:
       chdir: "{{fuzzer_folder}}"
-    with_sequence: "count=100"
+    with_sequence: "count=10"

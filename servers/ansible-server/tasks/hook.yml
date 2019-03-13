@@ -4,102 +4,102 @@
     - ../variables.yml
 
   tasks:
-  - name: Create directory structure for checkbox post-receive 
-    become: true 
-    file: 
-      path: /home/vagrant/cdeploy/production.git
-      state: directory
-      mode: 0755
+  # - name: Create directory structure for checkbox post-receive 
+  #   become: true 
+  #   file: 
+  #     path: /home/vagrant/cdeploy/production.git
+  #     state: directory
+  #     mode: 0755
       
-  - name: Initialize production.git as bare repository for checkbox
-    become: true
-    command: "git init --bare"
-    args: 
-      chdir: "/home/vagrant/cdeploy/production.git"
+  # - name: Initialize production.git as bare repository for checkbox
+  #   become: true
+  #   command: "git init --bare"
+  #   args: 
+  #     chdir: "/home/vagrant/cdeploy/production.git"
 
-  - name: Create directory structure for checkbox post-receive 
-    become: true 
-    file: 
-      path: /home/vagrant/cdeploy/production-jenkins
-      state: directory
-      mode: 0755
+  # - name: Create directory structure for checkbox post-receive 
+  #   become: true 
+  #   file: 
+  #     path: /home/vagrant/cdeploy/production-jenkins
+  #     state: directory
+  #     mode: 0755
 
-  - name: Copy post-receive hook into hooks directory 
-    become: true 
-    copy: 
-      src: "/ansible-server/templates/post-receive"
-      dest: "/home/vagrant/cdeploy/production.git/hooks/"
-      mode: 0755
+  # - name: Copy post-receive hook into hooks directory 
+  #   become: true 
+  #   copy: 
+  #     src: "/ansible-server/templates/post-receive"
+  #     dest: "/home/vagrant/cdeploy/production.git/hooks/"
+  #     mode: 0755
 
-  - name: Change the url to  build  job 
-    become: true 
-    replace: 
-      path: /home/vagrant/cdeploy/production.git/hooks/post-receive
-      regexp: job_name
-      replace: checkbox_job
+  # - name: Change the url to  build  job 
+  #   become: true 
+  #   replace: 
+  #     path: /home/vagrant/cdeploy/production.git/hooks/post-receive
+  #     regexp: job_name
+  #     replace: checkbox_job
     
-  - name: check for remote existence 
-    shell: cat /home/vagrant/checkbox/.git/config
-    register: remote
+  # - name: check for remote existence 
+  #   shell: cat /home/vagrant/checkbox/.git/config
+  #   register: remote
 
-  - name: Set production repo for checkbox
-    become: true
-    command: "git remote add prod ../cdeploy/production.git"
-    args: 
-      chdir: "/home/vagrant/checkbox"
-    when: remote.stdout.find('prod') < 0
+  # - name: Set production repo for checkbox
+  #   become: true
+  #   command: "git remote add prod ../cdeploy/production.git"
+  #   args: 
+  #     chdir: "/home/vagrant/checkbox"
+  #   when: remote.stdout.find('prod') < 0
     
-  - name: Create directory structure for itrust post-receive 
-    become: true 
-    file: 
-      path: /home/vagrant/itdeploy/production.git
-      state: directory
-      mode: 0755
-      force: yes
+  # - name: Create directory structure for itrust post-receive 
+  #   become: true 
+  #   file: 
+  #     path: /home/vagrant/itdeploy/production.git
+  #     state: directory
+  #     mode: 0755
+  #     force: yes
 
-  - name: Change iTrust repo to personal cloned version 
-    become: true 
-    git: 
-      repo: https://github.com/reCursedd/itrust.git
-      dest: /home/vagrant/iTrust
+  # - name: Change iTrust repo to personal cloned version 
+  #   become: true 
+  #   git: 
+  #     repo: https://github.com/reCursedd/itrust.git
+  #     dest: /home/vagrant/iTrust
   
-  - name: Initialize production.git as bare repository for iTrust
-    become: true
-    command: "git init --bare"
-    args: 
-      chdir: "/home/vagrant/itdeploy/production.git"
+  # - name: Initialize production.git as bare repository for iTrust
+  #   become: true
+  #   command: "git init --bare"
+  #   args: 
+  #     chdir: "/home/vagrant/itdeploy/production.git"
 
-  - name: Create directory structure for itrust post-receive 
-    become: true 
-    file:
-      path: /home/vagrant/itdeploy/production.jenkins
-      state: directory
-      mode: 0755
+  # - name: Create directory structure for itrust post-receive 
+  #   become: true 
+  #   file:
+  #     path: /home/vagrant/itdeploy/production.jenkins
+  #     state: directory
+  #     mode: 0755
 
-  - name: Copy post-receive hook into hooks directory 
-    become: true 
-    copy: 
-      src: "/ansible-server/templates/post-receive"
-      dest: "/home/vagrant/itdeploy/production.git/hooks/"
-      mode: 0755
+  # - name: Copy post-receive hook into hooks directory 
+  #   become: true 
+  #   copy: 
+  #     src: "/ansible-server/templates/post-receive"
+  #     dest: "/home/vagrant/itdeploy/production.git/hooks/"
+  #     mode: 0755
 
-  - name: Change the url to  build  job 
-    become: true 
-    replace: 
-      path: /home/vagrant/itdeploy/production.git/hooks/post-receive
-      regexp: job_name
-      replace: iTrust_job
+  # - name: Change the url to  build  job 
+  #   become: true 
+  #   replace: 
+  #     path: /home/vagrant/itdeploy/production.git/hooks/post-receive
+  #     regexp: job_name
+  #     replace: iTrust_job
 
-  - name: check for remote existence 
-    shell: cat /home/vagrant/iTrust/.git/config
-    register: itremote
+  # - name: check for remote existence 
+  #   shell: cat /home/vagrant/iTrust/.git/config
+  #   register: itremote
 
-  - name: Set production repo for iTrust
-    become: true
-    command: "git remote add prod ../itdeploy/production.git"
-    args: 
-      chdir: "/home/vagrant/iTrust"
-    when: itremote.stdout.find('prod') < 0
+  # - name: Set production repo for iTrust
+  #   become: true
+  #   command: "git remote add prod ../itdeploy/production.git"
+  #   args: 
+  #     chdir: "/home/vagrant/iTrust"
+  #   when: itremote.stdout.find('prod') < 0
       
   - name: Create fuzzer branch 
     become: true 
@@ -111,7 +111,7 @@
     become: true 
     copy: 
       src: "/ansible-server/templates/post-commit"
-      dest: "/home/vagrant/iTrust/.git/hooks/"
+      dest: "{{itrust_folder}}/.git/hooks/"
       mode: 0755
  # run add and commit with sudo 
  # set git config 
