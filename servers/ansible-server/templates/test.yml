@@ -2,12 +2,15 @@
     name: '{name}_job'
     description: 'Automatically generated test'
     project-type: freestyle
-    # scm:
-    # - git:
-    #     url: file:///home/vagrant/iTrust/iTrust2
-    #     branches:
-    #       - fuzzer
-    #     wipe-workspace: true
+    scm:
+    - git:
+        url: file:///home/vagrant/iTrust
+        branches:
+          - fuzzer
+        wipe-workspace: true
+    triggers:
+      - pollscm:
+          cron: ""
     builders:
       - shell: '{command}'
     publishers:
