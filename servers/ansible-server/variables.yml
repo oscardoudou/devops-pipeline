@@ -76,7 +76,13 @@ plugins:
    - pipeline-npm
    - postbuild-task
    - jacoco
-   #- github-pullrequest-plugin
+   - analysis-model-api
+   - antisamy-markup-formatter
+   # - warnings-ng
+   - maven-plugin
+   - dashboard-view
+   - analysis-core
+   - checkstyle
 
 jenkins_user: <value>
 jenkins_password: <value>

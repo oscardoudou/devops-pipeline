@@ -36,4 +36,46 @@
                 unhealthy: 1
             - class:
                 healthy: 10
-                unhealthy: 1                    
+                unhealthy: 1    
+
+      - checkstyle:
+          pattern: '**/checkstyle.xml'
+          should-detect-modules: true
+          healthy: 0
+          unhealthy: 100
+          health-threshold: 'high'
+          thresholds:
+            unstable:
+                total-all: 90
+                total-high: 80
+                total-normal: 70
+                total-low: 60
+                new-all: 50
+                new-high: 40
+                new-normal: 30
+                new-low: 20
+            failed:
+                total-all: 91
+                total-high: 81
+                total-normal: 71
+                total-low: 61
+                new-all: 51
+                new-high: 41
+                new-normal: 31
+                new-low: 21
+    # recordIssues:
+    #   enabledForFailure: true 
+    #   aggregatingResults: true
+    #   healthy: 10 
+    #   unhealthy: 100
+    #   minimumSeverity: 'LOW'
+    #   filters: [includeFile('**/*.java'), excludeCategory('WHITESPACE')]
+    #   tools: 
+    #     ignoreQualityGate: false
+    #     ignoreFailedBuilds: true
+    #     checkStyle:
+    #       pattern: '**/checkstyle-result.xml'
+
+    # publishIssues:
+    #   issues: [checkstyle]
+        

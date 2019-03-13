@@ -5,18 +5,21 @@
 
   tasks:
   - name: Remove Fuzzer directory if it exists
+    become: true
     file:
       state: absent
-      path: "{{ fuzzer_folder}}"
+      path: "{{fuzzer_folder}}"
 
   - name: Create fuzzer directory
+    become: true
     file:
       path: "{{fuzzer_folder}}"
       state: directory 
   
   - name: Copy files into fuzzer directory
+    become: true
     template:
-      src: "{{ item }}"
+      src: "{{item}}"
       dest: "{{fuzzer_folder}}"
       force: yes
     with_items:
@@ -24,21 +27,19 @@
       - /ansible-server/templates/fuzzer.js
       - /ansible-server/templates/initiateFuzzer.js
 
-  # - name: Install node packages in fuzzer folder
-  #   npm:
-  #       path: "{{ fuzzer_folder }}"
-  #       state: latest
-  
-  - name: Install global npm packages
+  - name: Install shelljs npm package
     npm:
-      name: shelljs
-      global: yes
+      name: "{{item}}"
+      path: "{{ fuzzer_folder}}"
       state: present
-    become: yes
+    become: true
+    with_items: 
+      - shelljs
+      - path
 
   - name: Start the Commit Fuzzer
-    become: yes
+    become: true
     shell: 'node initiateFuzzer.js; sleep 15'
     args:
       chdir: "{{fuzzer_folder}}"
-    with_sequence: "count=10"
+    with_sequence: "count=3"
