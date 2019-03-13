@@ -35,13 +35,13 @@ function zeroWithOne(data) {
 // change content of "strings" in code
 function changeStringContent(data) {
     var randomString = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
-    var regex = /("([^"]|"")*")/ig;
-    return data.replace(regex, randomString);
+    var regex = /\"[\w|\d]*\"/ig;
+    return data.replace(regex, "\""+ randomString +"\"");
 }
 
 // swap "<" with ">"
 function changeGreaterAndLesserThan(data) {
-    var swap = { ">": "<" , "<": ">" }
+    var swap = { " > ": " < " , " < ": " > " }
 
     var reg = new RegExp(Object.keys(swap).join("|"),"gi");
  
@@ -57,7 +57,7 @@ function changeGreaterAndLesserThan(data) {
 function selectFiles() {
     var filepath = '/home/vagrant/iTrust/iTrust2/src/main/java/edu/ncsu/csc/itrust2/';
     var selectedFiles = []
-    var directories = ['utils', 'config', 'mvc/config', 'models/persistent', 'models/enums', 'controllers/api']
+    var directories = ['config', 'mvc/config', 'models/persistent', 'models/enums', 'controllers/api']
 
     directories.forEach(function(directory) {
         var fullPath = `${filepath}${directory}`
@@ -76,50 +76,54 @@ function selectFiles() {
 }
 
 var listOfFiles = selectFiles()
+var compileFailure = true
+while(compileFailure) {
+    // Reads the file and applies the operations
+    listOfFiles.forEach(function(file) {
+        // selecting a random operation from 1-4 
+        var fuzzingOperation = Math.floor(Math.random()* 4 + 1);
+        console.log(fuzzingOperation);
 
-// Reads the file and applies the operations
-listOfFiles.forEach(function(file) {
-    // selecting a random operation from 1-4 
-    var fuzzingOperation = Math.floor(Math.random()* 4 + 1);
-    console.log(fuzzingOperation);
+        if(fuzzingOperation == 1) {                 // random string manipulation
+            var filedata = filesystem.readFileSync(file);
+            filedata = filedata.toString();
 
-    if(fuzzingOperation == 1) {                 // random string manipulation
-        var filedata = filesystem.readFileSync(file);
-        filedata = filedata.toString();
+            var fuzz = changeStringContent(filedata);
+            filesystem.writeFileSync(file, fuzz);
 
-        var fuzz = changeStringContent(filedata);
-        filesystem.writeFileSync(file, fuzz);
+            console.log("Change string content in " + file);
 
-        console.log("Change string content in " + file);
+        } else if(fuzzingOperation == 2) {             // swapping > with <
+            var filedata = filesystem.readFileSync(file);
+            filedata = filedata.toString();
 
-    } else if(fuzzingOperation == 2) {             // swapping > with <
-        var filedata = filesystem.readFileSync(file);
-        filedata = filedata.toString();
+            var fuzz = changeGreaterAndLesserThan(filedata);
+            filesystem.writeFileSync(file, fuzz);
 
-        var fuzz = changeGreaterAndLesserThan(filedata);
-        filesystem.writeFileSync(file, fuzz);
+            console.log("Swapped > with < in file and otherwise in " + file);
 
-        console.log("Swapped > with < in file and otherwise in " + file);
+        } else if (fuzzingOperation == 3) {           // swapping == with !=
+            var filedata = filesystem.readFileSync(file);
+            filedata = filedata.toString();
 
-    } else if (fuzzingOperation == 3) {           // swapping == with !=
-        var filedata = filesystem.readFileSync(file);
-        filedata = filedata.toString();
+            var fuzz = equalWithNotEqualTo(filedata);
+            filesystem.writeFileSync(file, fuzz);
 
-        var fuzz = equalWithNotEqualTo(filedata);
-        filesystem.writeFileSync(file, fuzz);
+            console.log("Swapped == with != in file and otherwise in " + file);
+        } else if (fuzzingOperation == 4) {          // swapping 0 with 1
+            var filedata = filesystem.readFileSync(file);
+            filedata = filedata.toString();
 
-        console.log("Swapped == with != in file and otherwise in " + file);
-    } else if (fuzzingOperation == 4) {          // swapping 0 with 1
-        var filedata = filesystem.readFileSync(file);
-        filedata = filedata.toString();
+            var fuzz = zeroWithOne(filedata);
+            filesystem.writeFileSync(file, fuzz);
 
-        var fuzz = zeroWithOne(filedata);
-        filesystem.writeFileSync(file, fuzz);
+            console.log("Swapped 0 with 1 in file and otherwise in " + file);
+        }
+    })
 
-        console.log("Swapped 0 with 1 in file and otherwise in " + file);
-    }
-})
-
-// check if fuzzing is successful by compiling iTrust
-command.exec('cd /home/vagrant/iTrust/iTrust2 && sudo mvn compile');
-// command.exec('sudo mvn compile');
+    // check if fuzzing is successful by compiling iTrust
+    if(command.exec('cd /home/vagrant/iTrust/iTrust2 && sudo mvn compile').code === 0)
+        compileFailure = false
+    else 
+        command.exec('cd /home/vagrant/iTrust/iTrust2 && git checkout -- .');
+} 

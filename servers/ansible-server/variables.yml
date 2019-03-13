@@ -94,4 +94,4 @@ mongo_checkbox_password: <value>
 email_username: <value>
 email_password: <value>
 checkbox_repo: <url for the checkbox.io repo to use for this assignment -- we should have access to it>
-itrust_repo: <url for the itrust repo to use for this assignment -- we should have access to it>
+itrust_repo: "https://github.com/reCursedd/itrust.git"

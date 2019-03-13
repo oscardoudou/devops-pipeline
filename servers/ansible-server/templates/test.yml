@@ -40,7 +40,9 @@
             - class:
                 healthy: 10
                 unhealthy: 1    
-
+      - archive:
+          artifacts: 'iTrust2/target/surefire-reports/*.xml'
+          
       - checkstyle:
           pattern: '**/checkstyle.xml'
           should-detect-modules: true

@@ -12,10 +12,10 @@ if (shell.exec('sudo git commit -am "test commit"').code !== 0) {
 	shell.exit(1)
 }
 else{
-	shell.echo("hi")
+	shell.echo("Git commit successful")
 }
 
-// setTimeout(function(){
-// 	shell.cd('{{ itrust_folder }}');
-// 	shell.exec("git revert HEAD");
-// }, 10000);
+setTimeout(function(){
+	shell.cd('{{ itrust_folder }}');
+	shell.exec("git revert HEAD");
+}, 10000);
