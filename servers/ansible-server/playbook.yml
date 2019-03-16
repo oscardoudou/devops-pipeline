@@ -1,10 +1,11 @@
 ---
   
-  - import_playbook: tasks/checkbox.yml hostlist = all 
-  # - import_playbook: tasks/mocha.yml hostlist = all
-  # - import_playbook: tasks/checkboxtest.yml hostlist = all
-  - import_playbook: tasks/itrust.yml hostlist = all
-  - import_playbook: tasks/chrome.yml hostlist = all
-  - import_playbook: tasks/jenkins.yml  
-  - import_playbook: tasks/hook.yml hostlist = all
-  - import_playbook: tasks/commitfuzzer.yml hostlist = all  
+  # - import_playbook: tasks/checkbox.yml hostlist = all 
+  # # - import_playbook: tasks/mocha.yml hostlist = all
+  # # - import_playbook: tasks/checkboxtest.yml hostlist = all
+  # - import_playbook: tasks/itrust.yml hostlist = all
+  # - import_playbook: tasks/chrome.yml hostlist = all
+  # - import_playbook: tasks/jenkins.yml  
+  # - import_playbook: tasks/hook.yml hostlist = all
+  # - import_playbook: tasks/commitfuzzer.yml hostlist = all  
+  - import_playbook: tasks/checkboxanalysis.yml hostlist = all

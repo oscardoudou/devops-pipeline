@@ -7,11 +7,37 @@ var fs = require("fs");
 // alloting threshold above which build should fail
 var maxnumberofconditions = 3;
 var longestmethodlength = 15;
-var securitytokens = false;
+var securitytoken = false;
 
 
-//var filepath = "server-side/site/server.js";
-var filepath = "analysistest.js";
+var filepath = ["public_html/codegrams/task/scripts/TaskViewModel.js", 
+"public_html/codegrams/task/scripts/view.js",
+"public_html/js/html5.js",
+"public_html/js/ie-fix.js",
+"public_html/js/researchers.js",
+"public_html/models/StudyListing.js",
+"public_html/models/studies.js",
+"public_html/scripts/Markdown.Converter.js",
+"public_html/scripts/async.js",
+"public_html/scripts/fingerprint.js",
+"public_html/scripts/knockout.v2.2.1.js",
+"public_html/scripts/markdown.js",
+"public_html/scripts/prettify.js",
+"public_html/scripts/purl.js",
+"public_html/scripts/run_prettify.js",
+"public_html/studies/snippets/scripts/view.js",
+"public_html/studies/study.js",
+"public_html/surveys/surveys.js",
+"server-side/site/server.js",
+"server-side/site/marqdown.js",
+"server-side/site/routes/admin.js",
+"server-side/site/routes/create.js",
+"server-side/site/routes/csv.js",
+"server-side/site/routes/designer.js",
+"server-side/site/routes/live.js",
+"server-side/site/routes/study.js",
+"server-side/site/routes/studyModel.js",
+"server-side/site/routes/upload.js"];
 
 // Annotates nodes with parent objects.
 function traverseWithParents(object, visitor)
@@ -45,6 +71,7 @@ function maxconditions(filepath)
   var ast = esprima.parse(file, options);
   var line = 0 ;
   var maxline = 0;
+  var tokens = esprima.tokenize(file, options);
 
   // traverse program
 
@@ -59,8 +86,7 @@ function maxconditions(filepath)
       
       
       // traverse its children 
-     
-     console.log("am in an if statement");
+    
      	traverseWithParents(node, function(child){
 
 
@@ -242,10 +268,6 @@ function securitytokens(filepath)
   
 }
 
-function redundantcode(filepath)
-{
-
-}
 
 
 // display the result
@@ -253,4 +275,37 @@ function redundantcode(filepath)
 //console.log("In file " + filepath + " max conditions in an if statement is: " + maxconditions(filepath));
 //console.log("In file " + filepath + " longest method length is: " + depth(filepath));
 //securitytokens(filepath);
+
+console.log("Listing all the JavaScript files: ");
+filepath.forEach(function(element){
+  console.log(element);
+
+});
+
+console.log("Maximum conditions within if statments analysis: ");
+
+filepath.forEach(function(element){
+  console.log(maxconditions(element));
+
+});
+
+console.log("Long methods analysis: ");
+
+filepath.forEach(function(element){
+  console.log(depth(element));
+
+});
+
+console.log("security tokens analysis: ");
+
+filepath.forEach(function(element){
+  console.log(securitytokens(element));
+
+});
+
+
+
+
+
+
 
