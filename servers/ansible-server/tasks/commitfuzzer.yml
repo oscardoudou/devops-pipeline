@@ -37,6 +37,11 @@
       - shelljs
       - path
 
+  - name: Git Config
+    become: true
+    shell: "git config --global user.email \"devops@ncsu.com\" && git config --global user.name \"milestone2\""
+         
+
   - name: Start the Commit Fuzzer
     become: true
     shell: 'node initiateFuzzer.js; sleep 15'
