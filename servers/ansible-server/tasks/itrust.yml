@@ -12,7 +12,7 @@
   - name: Cloning iTrust repository
     become: true
     git:
-      repo: "{{itrust_repo}}"
+      repo: "https://github.com/reCursedd/itrust.git"
       dest: "{{itrust_folder}}"
       update: no
     when: itrust_repo.stat.isdir is not defined

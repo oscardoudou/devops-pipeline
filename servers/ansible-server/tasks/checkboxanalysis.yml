@@ -4,8 +4,6 @@
     - ../variables.yml
 
   tasks:
-  
-  
   - name: Install esprima 
     become: true
     command: npm install esprima@4.0
@@ -25,7 +23,6 @@
       dest: "{{checkbox_folder}}"
       force: yes  
     
- 
   - name: Run checkbox analysis for the first three tasks
     become: true
     command: node checkboxanalysis.js

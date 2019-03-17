@@ -47,4 +47,4 @@
     shell: 'node initiateFuzzer.js; sleep 15'
     args:
       chdir: "{{fuzzer_folder}}"
-    with_sequence: "count=3"
+    with_sequence: "count=1"
