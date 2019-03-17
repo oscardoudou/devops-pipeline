@@ -59,6 +59,20 @@ The coverage report for each function inside the java files as well.
 ![Function Coverage](/resources/function_coverage.png?raw=true "Function Coverage")
 
 ### 2. Commit Fuzzer
+##### Relevant Files: 
+* ansible-server/tasks/commitfuzzer.yml
+* ansible-server/templates/fuzzer.js
+* ansible-server/templates/initiateFuzzer.js
+* ansible-server/templates/post-commit
+
+The commit fuzzer task is invoked from commitfuzzer.yml. We are using initiateFuzzer.js to make commits, run fuzzer.js and revert the changes. 
+The commit invokes the iTrust build in Jenkins using a post-commit hook which specifies the jenkins url.
+
+Inside fuzzer.js we have 4 functions that carry out the fuzzing operation:
+* change content of "strings" in code.
+* swap "<" with ">"
+* swap "==" with "!="
+* swap 0 with 1
 
 ### 3. Test Prioritization Analysis
 
