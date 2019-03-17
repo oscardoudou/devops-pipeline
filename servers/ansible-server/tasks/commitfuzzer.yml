@@ -27,6 +27,34 @@
       - /ansible-server/templates/fuzzer.js
       - /ansible-server/templates/initiateFuzzer.js
 
+  - name: Remove prior directory if it exists
+    become: true
+    file:
+      state: absent
+      path: "{{prior_folder}}"
+
+  - name: Create prior directory
+    become: true
+    file:
+      path: "{{prior_folder}}"
+      state: directory 
+  
+  - name: Copy files into prior directory
+    become: true
+    template:
+      src: "{{item}}"
+      dest: "{{prior_folder}}"
+      force: yes
+    with_items:
+      - /ansible-server/templates/test-suites/testPrior.js
+      - /ansible-server/templates/test-suites/package.json
+
+  - name: Create testReport dir inside prior
+    become: true
+    file:
+      path: "{{testReport_folder}}"
+      state: directory 
+
   - name: Install shelljs npm package
     npm:
       name: "{{item}}"

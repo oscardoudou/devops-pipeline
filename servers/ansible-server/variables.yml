@@ -14,6 +14,10 @@ checkbox_folder: "/home/vagrant/checkbox"
 
 fuzzer_folder: "/home/vagrant/fuzzer"
 
+prior_folder: "/home/vagrant/prior"
+
+testReport_folder: "home/vagrant/prior/testReport"
+
 gumtree_folder: "/home/vagrant/gumtree"
 
 github_username: "{{ lookup('env', 'GITHUB_USERNAME') }}"
