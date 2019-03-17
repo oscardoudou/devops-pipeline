@@ -14,6 +14,8 @@ checkbox_folder: "/home/vagrant/checkbox"
 
 fuzzer_folder: "/home/vagrant/fuzzer"
 
+gumtree_folder: "/home/vagrant/gumtree"
+
 github_username: "{{ lookup('env', 'GITHUB_USERNAME') }}"
 github_password: "{{ lookup('env', 'GITHUB_PASSWORD') }}"
 
@@ -83,6 +85,8 @@ plugins:
    - dashboard-view
    - analysis-core
    - checkstyle
+   - ansible
+   - conditional-buildstep 
 
 jenkins_user: <value>
 jenkins_password: <value>

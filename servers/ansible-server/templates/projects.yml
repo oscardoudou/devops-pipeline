@@ -20,6 +20,17 @@
         #         cd iTrust/iTrust2
         #         mvn clean test verify checkstyle:checkstyle
         
+        - '{name}_job_added':
+            name: checkbox
+            command: |
+                rm -rf *
+                cp -avr /home/vagrant/checkbox /var/lib/jenkins/workspace/checkbox_job
+                cd checkbox/server-side/site/
+                npm install
+                npm test
+
+                
+
 
 # setting the view to contain jacoco coverage
 - view-template:

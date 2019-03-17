@@ -121,3 +121,14 @@
     # publishIssues:
     #   issues: [checkstyle]
         
+- job-template:
+    name: '{name}_job_added'
+    description: 'Build only when metrics pass'
+    triggers:
+      - monitor-files:
+           files:
+              - path: '/var/lib/jenkins/workspace/build.txt'
+                check-content:
+                     - text:
+                         - 'true'
+        

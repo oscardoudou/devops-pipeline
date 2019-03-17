@@ -5,13 +5,80 @@
 
   tasks:
   
-  - name: Create analysis file for checkbox
-    file:
-     path: "{{checkbox_folder}}/analysis.js"
-     state: file
-     mode: 0755  
-
+  
   - name: Install esprima 
-    npm:
-     name: esprima
-     global: yes   
+    become: true
+    command: npm install esprima@4.0
+    args: 
+     chdir: "{{checkbox_folder}}"  
+  
+
+  - name: Copy analysis file to checkbox folder
+    become: true
+    command: "cp /ansible-server/templates/checkboxanalysis.js {{checkbox_folder}}"
+        
+       
+
+  - name: Run checkbox analysis for the first three tasks
+    become: true
+    command: node checkboxanalysis.js
+    args:
+     chdir: "{{checkbox_folder}}" 
+    register: shell_result
+    
+  - debug:
+     var: shell_result.stdout_lines  
+
+  - name: Copy build.txt to checkbox job folder
+    become: true
+    command: "cp {{checkbox_folder}}/build.txt /var/lib/jenkins/workspace"   
+
+# AST tree diff 
+  # - name: Install Gradle
+  #   become: true
+  #   npm:
+  #    name: gradle
+  #    version: 1.0.9
+  #    global: yes
+
+  # - name: Check for cloned Gumtree repo
+  #   stat:
+  #     path: "{{gumtree_folder}}"
+  #   register: gumtree_repo   
+
+  # - name: Clone GumTree as AST difference tool
+  #   become: true
+  #   git:
+  #     repo: https://github.com/GumTreeDiff/gumtree.git
+  #     dest: "{{gumtree_folder}}"
+  #   when: gumtree_repo.stat.isdir is not defined
+     
+
+  # - name: Build GumTree
+  #   become: true
+  #   command: ./gradlew build -x test
+  #   args:
+  #     chdir: "{{gumtree_folder}}" 
+   
+
+  # - name: Check for zip folder of GumTree
+  #   become: true
+  #   stat: path="{{gumtree_folder}}/dist/build/distributions/gumtree-2.1.3-SNAPSHOT.zip"  
+  #   register: build_gumtree
+
+  # - name: Unzip GumTree
+  #   become: true
+  #   command: "unzip {{gumtree_folder}}/dist/build/distributions/gumtree-2.1.3-SNAPSHOT.zip"
+  #   args:
+  #     chdir: "{{gumtree_folder}}/dist/build/distributions"
+  #   when: build_gumtree.stat.exists == True  
+
+  # - name: Check for gumtree folder in checkbox
+  #   become: true
+  #   stat: path="{{checkbox_folder}}/gumtree-2.1.3-SNAPSHOT"
+  #   register: gumtree_file
+
+  # - name: Move Gumtree zip folder to checkbox
+  #   become: true
+  #   command: "mv {{gumtree_folder}}/dist/build/distributions/gumtree-2.1.3-SNAPSHOT {{checkbox_folder}}"   
+  #   when: gumtree_file.stat.exists == False    
