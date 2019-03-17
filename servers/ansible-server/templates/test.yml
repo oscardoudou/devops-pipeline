@@ -1,16 +1,53 @@
 - job-template:
     name: '{name}_job'
+    id: 'iTrust_Coverage_job'
+    description: 'Coverage job - Jacoco plugin'
+    project-type: freestyle
+    builders:
+        - shell: '{command}'
+    publishers:
+        - jacoco:
+            exec-pattern: '**/**.exec'
+            class-pattern: '**/classes'
+            source-pattern: '**/src/main/java'
+            update-build-status: true
+            inclusion-pattern: '**/*.class'
+            exclusion-pattern: '**/*Test*.class'
+            targets:
+                - instruction:
+                    healthy: 10
+                    unhealthy: 1
+                - branch:
+                    healthy: 10
+                    unhealthy: 1
+                - complexity:
+                    healthy: 10
+                    unhealthy: 1
+                - line:
+                    healthy: 20
+                    unhealthy: 5
+                - method:
+                    healthy: 10
+                    unhealthy: 1
+                - class:
+                    healthy: 10
+                    unhealthy: 1    
+
+
+- job-template:
+    name: '{name}_job'
+    id: 'iTrust_Analysis_job'
     description: 'Test Analysis'
     project-type: freestyle
     builders:
         - shell: '{command}'
     publishers:    
       - checkstyle:
-          pattern: '**/*checkstyle.xml'
+          pattern: '**/reporting/csc_checkstyle.xml'
           should-detect-modules: true
           healthy: 0
           unhealthy: 100
-          health-threshold: 'high'
+          health-threshold: 'low'
           thresholds:
             unstable:
                 total-all: 90
@@ -31,104 +68,61 @@
                 new-normal: 31
                 new-low: 21
 
-
-    # name: '{name}_job'
-    # description: 'Automatically generated test'
-    # project-type: freestyle
-    # scm:
-    # - git:
-    #     url: file:///home/vagrant/iTrust
-    #     branches:
-    #       - fuzzer
-    #     wipe-workspace: true
-    # triggers:
-    #   - pollscm:
-    #       cron: ""
-    # builders:
-    #   - shell: '{command}'
-    # publishers:
-    #   - jacoco:
-    #       exec-pattern: '**/**.exec'
-    #       class-pattern: '**/classes'
-    #       source-pattern: '**/src/main/java'
-    #       update-build-status: true
-    #       inclusion-pattern: '**/*.class'
-    #       exclusion-pattern: '**/*Test*.class'
-    #       targets:
-    #         - instruction:
-    #             healthy: 10
-    #             unhealthy: 1
-    #         - branch:
-    #             healthy: 10
-    #             unhealthy: 1
-    #         - complexity:
-    #             healthy: 10
-    #             unhealthy: 1
-    #         - line:
-    #             healthy: 20
-    #             unhealthy: 5
-    #         - method:
-    #             healthy: 10
-    #             unhealthy: 1
-    #         - class:
-    #             healthy: 10
-    #             unhealthy: 1    
-    #   - archive:
-    #       artifacts: 'iTrust2/target/surefire-reports/*.xml'
-          
-    #   - checkstyle:
-    #       pattern: '**/checkstyle.xml'
-    #       should-detect-modules: true
-    #       healthy: 0
-    #       unhealthy: 100
-    #       health-threshold: 'high'
-    #       thresholds:
-    #         unstable:
-    #             total-all: 90
-    #             total-high: 80
-    #             total-normal: 70
-    #             total-low: 60
-    #             new-all: 50
-    #             new-high: 40
-    #             new-normal: 30
-    #             new-low: 20
-    #         failed:
-    #             total-all: 91
-    #             total-high: 81
-    #             total-normal: 71
-    #             total-low: 61
-    #             new-all: 51
-    #             new-high: 41
-    #             new-normal: 31
-    #             new-low: 21
-
- 
-
-
-    # recordIssues:
-    #   enabledForFailure: true 
-    #   aggregatingResults: true
-    #   healthy: 10 
-    #   unhealthy: 100
-    #   minimumSeverity: 'LOW'
-    #   filters: [includeFile('**/*.java'), excludeCategory('WHITESPACE')]
-    #   tools: 
-    #     ignoreQualityGate: false
-    #     ignoreFailedBuilds: true
-    #     checkStyle:
-    #       pattern: '**/checkstyle-result.xml'
-
-    # publishIssues:
-    #   issues: [checkstyle]
+- job-template:
+    name: '{name}_job'
+    id: 'iTrust_Fuzzer_job'
+    description: 'Fuzzing Job'
+    project-type: freestyle
+    scm:
+    - git:
+        url: file:///home/vagrant/iTrust
+        branches:
+          - fuzzer
+        wipe-workspace: true
+    triggers:
+      - pollscm:
+          cron: ""
+    builders:
+      - shell: '{command}'
+    publishers:
+      - jacoco:
+          exec-pattern: '**/**.exec'
+          class-pattern: '**/classes'
+          source-pattern: '**/src/main/java'
+          update-build-status: true
+          inclusion-pattern: '**/*.class'
+          exclusion-pattern: '**/*Test*.class'
+          targets:
+            - instruction:
+                healthy: 10
+                unhealthy: 1
+            - branch:
+                healthy: 10
+                unhealthy: 1
+            - complexity:
+                healthy: 10
+                unhealthy: 1
+            - line:
+                healthy: 20
+                unhealthy: 5
+            - method:
+                healthy: 10
+                unhealthy: 1
+            - class:
+                healthy: 10
+                unhealthy: 1    
+      - archive:
+          artifacts: 'iTrust2/target/surefire-reports/*.xml'
         
 - job-template:
     name: '{name}_job_added'
+    id: 'checkbox_job_added'
     description: 'Build only when metrics pass'
-    triggers:
-      - monitor-files:
-           files:
-              - path: '/var/lib/jenkins/workspace/build.txt'
-                check-content:
-                     - text:
-                         - 'true'
+    builders:
+        - conditional-step:
+            condition-kind: file-exists
+            condition-filename: /var/lib/jenkins/workspace/build.txt
+            steps:
+                - shell: "exit 1"
+
         

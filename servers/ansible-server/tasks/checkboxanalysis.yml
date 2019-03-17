@@ -4,34 +4,59 @@
     - ../variables.yml
 
   tasks:
-  
-  
-  - name: Install esprima 
+  - name: Install esprime npm package
+    npm:
+      name: "esprima@4.0"
+      path: "{{checkbox_folder}}"
+      state: present
     become: true
-    command: npm install esprima@4.0
-    args: 
-     chdir: "{{checkbox_folder}}"  
+
+  # - name: Install esprima 
+  #   become: true
+  #   command: npm install esprima@4.0
+  #   args: 
+  #    chdir: "{{checkbox_folder}}"  
   
+  - name: Remove build.txt file if it exists in checkbox folder
+    become: true
+    file:
+      state: absent
+      path: "{{checkbox_folder}}/build.txt"
 
   - name: Copy analysis file to checkbox folder
     become: true
-    command: "cp /ansible-server/templates/checkboxanalysis.js {{checkbox_folder}}"
-        
-       
-
+    copy:
+      src: "/ansible-server/templates/checkboxanalysis.js"
+      dest: "{{checkbox_folder}}"
+      force: yes  
+    
   - name: Run checkbox analysis for the first three tasks
     become: true
-    command: node checkboxanalysis.js
+    shell: node checkboxanalysis.js
     args:
      chdir: "{{checkbox_folder}}" 
     register: shell_result
-    
-  - debug:
-     var: shell_result.stdout_lines  
 
-  - name: Copy build.txt to checkbox job folder
+  - name: Check if build.txt exists in checkbox folder
     become: true
-    command: "cp {{checkbox_folder}}/build.txt /var/lib/jenkins/workspace"   
+    stat:
+      path: "{{checkbox_folder}}/build.txt"
+    register: checkbox_build   
+
+  - name: Copy build.txt to checkbox job folder if it exists
+    become: true
+    copy:
+      src: "{{checkbox_folder}}/build.txt"
+      dest: "/var/lib/jenkins/workspace"
+      force: yes  
+      remote_src: yes
+    when: checkbox_build.stat.exists == true   
+
+  - name: Update jenkins job
+    become: true
+    command: "jenkins-jobs update jobs"  
+    args:
+      chdir: /home/vagrant
 
 # AST tree diff 
   # - name: Install Gradle

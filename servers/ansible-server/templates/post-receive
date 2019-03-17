@@ -1,6 +1,0 @@
-#!/bin/sh
-echo "Current location: $GIT_DIR"
-GIT_WORK_TREE=../production-jenkins/ git checkout -f
-echo "Pushed to production!"
-cd ../production-jenkins
-curl http://localhost:8090/job/job_name/build?delay=0sec
