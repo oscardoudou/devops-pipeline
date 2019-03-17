@@ -39,6 +39,15 @@ There are 2 virtual machines called ansible-server and jenkins-server. The forme
 This milestone consisted of 4 major tasks:
 
 ### 1. Coverage / Jenkins Support
+##### Relevant Files: 
+* ansible-server/tasks/jenkins.yml
+* ansible-server/templates/test.yml
+* ansible-server/templates/project.yml
+
+For displaying the code coverage of iTrust repository, we are using the jacoco plugin. We have used Jenkins Job Builder's publisher to include jacoco as a post-build task. The parameters for branch, instruction, complexity etc. have been set as well. 
+
+After the build succeeds, we can see the threshold values and coverage. 
+![Job Build](/resources/jacoco_build.png?raw=true "Build Screen")
 
 ### 2. Commit Fuzzer
 
