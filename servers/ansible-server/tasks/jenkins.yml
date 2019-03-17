@@ -8,7 +8,6 @@
     apt:
      name: openjdk-8-jre
      state: present
-     update_cache: yes
     become: true
   
   - name: Adding Oracle Java Repository
@@ -45,16 +44,12 @@
 
   - name: Updating and upgrading apt-get packages
     become: true
-    apt:
-      force_apt_get: yes
-      update_cache: yes
-      cache_valid_time: 86400
+    shell: apt-get update
 
   - name: install jenkins
     apt:
      name: jenkins
      state: present
-     update_cache: yes
     become: true
     register: jenkins_state
 

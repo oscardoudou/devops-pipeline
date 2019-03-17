@@ -4,11 +4,18 @@
     - ../variables.yml
 
   tasks:
+  - name: Apt update
+    become: true
+    shell: apt-get update
+
+  - name: Install node on server
+    become: true
+    shell: curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
+
   - name: Install node on server
     become: true
     apt:
         name: nodejs
-        update_cache: yes
 
   - name: Install npm on server
     become: true
@@ -40,7 +47,6 @@
     apt:
         pkg: nginx
         state: latest
-        update_cache: yes
 
   - name: Add mongo ppa key
     apt_key:
@@ -59,8 +65,11 @@
     apt: 
         name: mongodb-org
         state: present
-        update-cache: yes
         
+  - name: Apt update
+    become: true
+    shell: apt-get update
+
     # notify:
     #     - start mongodb
 
