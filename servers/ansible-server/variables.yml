@@ -86,6 +86,7 @@ plugins:
    - analysis-core
    - checkstyle
    - ansible
+   - run-condition
    - conditional-buildstep 
 
 jenkins_user: <value>
