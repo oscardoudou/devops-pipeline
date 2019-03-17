@@ -22,7 +22,7 @@ A detailed video with the steps can be found [here]().
 ## Prerequisites
 You need to have [VirtualBox 5.2](https://www.virtualbox.org/wiki/Download_Old_Builds_5_2) installed on your machine along with [Baker](https://docs.getbaker.io/installation/) which will be used to create the virtual machines (Ubuntu 16.04 LTS).
 
-### Systems and tools used:
+## Systems and tools used:
 
 * Ansible : v2.7.7
 * Jenkins : v2.150.2
@@ -33,23 +33,23 @@ You need to have [VirtualBox 5.2](https://www.virtualbox.org/wiki/Download_Old_B
 * MySql : v14.14 Distrib 5.7.25
 * Apache Maven : v3.3.9 
 
-### Project Setup
+## Project Setup
 
 There are 2 virtual machines called ansible-server and jenkins-server. The former is initialized with ansible and playbooks are run to configure the jenkins-server. 
 This milestone consisted of 4 major tasks:
 
-#### 1. Coverage / Jenkins Support
+### 1. Coverage / Jenkins Support
 
-#### 2. Commit Fuzzer
+### 2. Commit Fuzzer
 
-#### 3. Test Prioritization Analysis
+### 3. Test Prioritization Analysis
 
-#### 4. Static Analysis
+### 4. Static Analysis
 
 * iTrust
 
 * checkbox.io
 
-### Report
+## Report
 
 ## How to run the code
