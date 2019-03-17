@@ -16,7 +16,7 @@ fuzzer_folder: "/home/vagrant/fuzzer"
 
 prior_folder: "/home/vagrant/prior"
 
-testReport_folder: "home/vagrant/prior/testReport"
+testReport_folder: "/home/vagrant/prior/testReport"
 
 gumtree_folder: "/home/vagrant/gumtree"
 

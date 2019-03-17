@@ -26,7 +26,13 @@
       - /ansible-server/templates/package.json
       - /ansible-server/templates/fuzzer.js
       - /ansible-server/templates/initiateFuzzer.js
-
+  
+  - name: Remove testReport directory if it exists
+    become: true
+    file:
+      state: absent
+      path: "{{testReport_folder}}"
+      
   - name: Remove prior directory if it exists
     become: true
     file:
@@ -54,6 +60,16 @@
     file:
       path: "{{testReport_folder}}"
       state: directory 
+
+  - name: Change owner and group to run testPrior.js with permission
+    become: true
+    file: 
+      path: "{{prior_folder}}"
+      state: directory
+      owner: vagrant 
+      group: vagrant 
+      mode: "u=rwx,g=rx,o=rx"
+      recurse: yes
 
   - name: Install shelljs npm package
     npm:

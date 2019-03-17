@@ -139,8 +139,7 @@ async function calculatePriority(file)
         //       }
         //     }
         //   });
-
-        fs.appendFileSync("jsonreport/"+filename,JSON.stringify(tests[i]),'utf8',function(err){
+        fs.appendFileSync("testReport/"+filename,JSON.stringify(tests[i]),'utf8',function(err){
             if(err) throw err;
             console.log('Append!')
         })
