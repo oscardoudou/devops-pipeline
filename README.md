@@ -46,8 +46,17 @@ This milestone consisted of 4 major tasks:
 
 For displaying the code coverage of iTrust repository, we are using the jacoco plugin. We have used Jenkins Job Builder's publisher to include jacoco as a post-build task. The parameters for branch, instruction, complexity etc. have been set as well. 
 
-After the build succeeds, we can see the threshold values and coverage. 
+After the build succeeds, we can see the threshold values and coverage results. 
+
 ![Job Build](/resources/jacoco_build.png?raw=true "Build Screen")
+
+We can also see the coverage summary report for each build jobs.
+
+![Overall Coverage](/resources/overall_coverage.png?raw=true "Overall Coverage")
+
+The coverage report for each function inside the java files as well.
+
+![Function Coverage](/resources/function_coverage.png?raw=true "Function Coverage")
 
 ### 2. Commit Fuzzer
 
