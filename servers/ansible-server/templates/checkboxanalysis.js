@@ -336,13 +336,16 @@ for (var arr =0 ; arr<filepath.length; arr++)
 if(securitytokenpresent || failbuild_maxc || failbuild_length)
   {
     failbuild = true;
+    fs.writeFile('build.txt', failbuild, function (err) {
+     if (err) throw err;
+     console.log('Generated build.txt. Fail the build');
+});
     
   }
 
-fs.writeFile('build.txt', failbuild, function (err) {
-     if (err) throw err;
-     console.log('Saved build requirement in build.txt');
-});
+else console.log('build wont fail');  
+
+
 
 
 
