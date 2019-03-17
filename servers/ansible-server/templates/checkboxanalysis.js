@@ -9,13 +9,9 @@ var shell = require("shelljs");
 var maxnumberofconditions = 3;
 var longestmethodlength = 15;
 var securitytokenpresent = false;
-
 var failbuild_maxc = false;
 var failbuild_length = false;
-
 var failbuild = false;
-
-
 
 var filepath = ["public_html/codegrams/task/scripts/TaskViewModel.js", 
 "public_html/codegrams/task/scripts/view.js",
@@ -81,9 +77,7 @@ function traverseWithParents(object, visitor)
 
 
 // Count the max number of conditions within an if statement in a function
-function maxconditions(filepath)
-{
-
+function maxconditions(filepath) {
   var max = 0;
   var maxcondition = 0;
   var file = fs.readFileSync(filepath, "utf8");
@@ -91,62 +85,33 @@ function maxconditions(filepath)
   var line = 0 ;
   var maxline = 0;
   
-
   // traverse program
-
   traverseWithParents(ast, function(node){
-
-   
-
   	if(node.type === 'IfStatement') {
-
   	  maxcondition = 1;
-
-      
-      
       // traverse its children 
-    
      	traverseWithParents(node, function(child){
-
-
-
         if(child.type === 'LogicalExpression') {
-
         	//console.log("am counting");
-
-
         	maxcondition = maxcondition + 1;
-
         	//console.log("max: " + maxcondition);
         }
-
-
-
       })
      	
-    
-
-     if (maxcondition > max) {
-     	max = maxcondition;
-      
-     }
-      
-
+      if (maxcondition > max) {
+        max = maxcondition;
+      }
   	}
-  }
-  	)
+  })
   
   if(max > maxnumberofconditions) // fail build if threshold exceeds
     failbuild_maxc = true;
 
   return max;
- 
 }
 
 // returns length of the longest method in a file
-
-function depth(filepath)
-{
+function depth(filepath) {
    var file = fs.readFileSync(filepath, "utf8");
    var ast = esprima.parse(file, options);
    var functionname = "";
@@ -155,52 +120,33 @@ function depth(filepath)
    var maxdepth = 0;
    var functionmaxdepth;
 
-  // console.log(ast.loc);
-
   // go down the tree to search for function declaration
   traverseWithParents(ast, function(node){
-
     if(node.type === 'FunctionDeclaration') {
-      
-
       functionname = node.id.name;
-
       start = node.loc.start.line;
-
       stop = node.loc.end.line;
-
       maxdepth = stop - start + 1 ;
-
-
     }
 
     if(maxdepth > max){
-     
-     max = maxdepth;
-     functionmaxdepth = functionname;
-
+      max = maxdepth;
+      functionmaxdepth = functionname;
     }
-
   })
 
   if(max > longestmethodlength) // fail the build if threshold exceeds
     failbuild_length = true;
   
-
   return (functionname + " " + max);
-
-
-
 }
 
 // considers a security token to be a word that exceeds 10 characters and that starts with letters and is a combination of letters and digits.
 // it could directly flag words such as "password","security", "key" as security tokens too.
-function securitytokens(filepath)
-{
+function securitytokens(filepath) {
 
   var file = fs.readFileSync(filepath, "utf8");
   var ast = esprima.parse(file, options);
-
   var token = "";
   var start = [];
   var startname =[];
@@ -214,17 +160,10 @@ function securitytokens(filepath)
 // go down the tree for checking a literal 
 
  traverseWithParents(ast, function(node){
-  
-   
    if(node.type == 'Literal' && typeof(node.value) == 'string') {
-    
      token = node.value;
-     
-
      // checking value length and type
-
       len = token.length;
-
       if(len > 10)
       {
          if(regex.test(token))
@@ -234,36 +173,24 @@ function securitytokens(filepath)
 
          }
       }
-
    }
 
    if(node.type == 'VariableDeclarator')
    {
       for( var i = 0; i < nameregex.length; i++)
       {
-        
-          if(nameregex[i].test(node.id.name))
+         if(nameregex[i].test(node.id.name))
          {
-
-           for(var n = 0 ; n < start.length; n++)
-           {
-            if(start[n] == node.loc.start.line)
-               flag = 0;
-           }
-           if(flag == 1)
-             startname.push(node.loc.start.line);
-
-          
-
+            for(var n = 0 ; n < start.length; n++)
+            {
+              if(start[n] == node.loc.start.line)
+                flag = 0;
+            }
+            if(flag == 1)
+              startname.push(node.loc.start.line);
          }
-        
-        
       }
    }
-
-
-
-
  })
  
  var unique;
@@ -302,11 +229,7 @@ function securitytokens(filepath)
 
   if(unique != null || unique1 != null) // fail the build if threshold exceeds
     securitytokenpresent = true;
-
-
     return (unique + unique1);
-
-  
 }
 
 
@@ -320,30 +243,40 @@ function securitytokens(filepath)
 console.log("Listing all the JavaScript files: ");
 filepath.forEach(function(element){
   console.log(element);
-
 });
 
-
-console.log("file           [maxcondition]       [longest method name and length]         [possible securitytokens lines (0=no tokens)]");
-console.log("----------------------------------------------------------------------------------------------------------------------------");
+var report = []
+//console.log("file           [maxcondition]       [longest method name and length]         [possible securitytokens lines (0=no tokens)]");
+// console.log("----------------------------------------------------------------------------------------------------------------------------");
 
 for (var arr =0 ; arr<filepath.length; arr++)
 {
-  console.log(filepath[arr] + "\t[" + maxconditions(filepath[arr]) + "]\t\t[" + depth(filepath[arr]) + "]\t\t[" + securitytokens(filepath[arr]) + "]");
+  //console.log(filepath[arr] + "\t[" + maxconditions(filepath[arr]) + "]\t\t[" + depth(filepath[arr]) + "]\t\t[" + securitytokens(filepath[arr]) + "]");
+  // var entry = filepath[arr] + "\t[" + maxconditions(filepath[arr]) + "]\t\t[" + depth(filepath[arr]) + "]\t\t[" + securitytokens(filepath[arr]) + "]"
+  report.push({
+    file: filepath[arr],
+    maxcondition: maxconditions(filepath[arr]),
+    longestmethod: depth(filepath[arr]),
+    securitytokens: securitytokens(filepath[arr])
+  })
+}
+console.log(report)
+try {
+  fs.writeFileSync("/home/vagrant/checkbox/report.json", JSON.stringify(report))
+} catch(e) {
+  console.log("cannot write to file")
 }
 
 // fail build if the threshold has exceeded
 if(securitytokenpresent || failbuild_maxc || failbuild_length)
-  {
+{
     failbuild = true;
     fs.writeFile('build.txt', failbuild, function (err) {
-     if (err) throw err;
-     console.log('Generated build.txt. Fail the build');
-});
-    
-  }
-
-else console.log('build wont fail');  
+        if (err) throw err;
+        console.log('Generated build.txt. Fail the build');
+    });
+} else 
+    console.log('build wont fail');  
 
 
 
