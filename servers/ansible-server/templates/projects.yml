@@ -5,13 +5,21 @@
         - Coverage view
     jobs:
         - '{name}_job':
-            name: iTrust
+            name: iTrust_Analysis
             command: |
                 rm -rf * 
-                cp -avr /home/vagrant/iTrust /var/lib/jenkins/workspace/iTrust_job
+                cp -avr /home/vagrant/iTrust /var/lib/jenkins/workspace/iTrust_Analysis_job
                 cd iTrust/iTrust2
                 mvn clean test verify checkstyle:checkstyle
 
+        # - '{name}_job':
+        #     name: iTrust
+        #     command: |
+        #         rm -rf * 
+        #         cp -avr /home/vagrant/iTrust /var/lib/jenkins/workspace/iTrust_job
+        #         cd iTrust/iTrust2
+        #         mvn clean test verify checkstyle:checkstyle
+        
 
 # setting the view to contain jacoco coverage
 - view-template:
@@ -28,5 +36,4 @@
         - job
         - build-button
         - jacoco
-    recurse: true   
-
+    recurse: true  

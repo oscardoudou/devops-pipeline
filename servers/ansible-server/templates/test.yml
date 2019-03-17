@@ -1,50 +1,12 @@
 - job-template:
     name: '{name}_job'
-    description: 'Automatically generated test'
+    description: 'Test Analysis'
     project-type: freestyle
-    scm:
-    - git:
-        url: file:///home/vagrant/iTrust
-        branches:
-          - fuzzer
-        wipe-workspace: true
-    triggers:
-      - pollscm:
-          cron: ""
     builders:
-      - shell: '{command}'
-    publishers:
-      - jacoco:
-          exec-pattern: '**/**.exec'
-          class-pattern: '**/classes'
-          source-pattern: '**/src/main/java'
-          update-build-status: true
-          inclusion-pattern: '**/*.class'
-          exclusion-pattern: '**/*Test*.class'
-          targets:
-            - instruction:
-                healthy: 10
-                unhealthy: 1
-            - branch:
-                healthy: 10
-                unhealthy: 1
-            - complexity:
-                healthy: 10
-                unhealthy: 1
-            - line:
-                healthy: 20
-                unhealthy: 5
-            - method:
-                healthy: 10
-                unhealthy: 1
-            - class:
-                healthy: 10
-                unhealthy: 1    
-      - archive:
-          artifacts: 'iTrust2/target/surefire-reports/*.xml'
-          
+        - shell: '{command}'
+    publishers:    
       - checkstyle:
-          pattern: '**/checkstyle.xml'
+          pattern: '**/*checkstyle.xml'
           should-detect-modules: true
           healthy: 0
           unhealthy: 100
@@ -68,6 +30,81 @@
                 new-high: 41
                 new-normal: 31
                 new-low: 21
+
+
+    # name: '{name}_job'
+    # description: 'Automatically generated test'
+    # project-type: freestyle
+    # scm:
+    # - git:
+    #     url: file:///home/vagrant/iTrust
+    #     branches:
+    #       - fuzzer
+    #     wipe-workspace: true
+    # triggers:
+    #   - pollscm:
+    #       cron: ""
+    # builders:
+    #   - shell: '{command}'
+    # publishers:
+    #   - jacoco:
+    #       exec-pattern: '**/**.exec'
+    #       class-pattern: '**/classes'
+    #       source-pattern: '**/src/main/java'
+    #       update-build-status: true
+    #       inclusion-pattern: '**/*.class'
+    #       exclusion-pattern: '**/*Test*.class'
+    #       targets:
+    #         - instruction:
+    #             healthy: 10
+    #             unhealthy: 1
+    #         - branch:
+    #             healthy: 10
+    #             unhealthy: 1
+    #         - complexity:
+    #             healthy: 10
+    #             unhealthy: 1
+    #         - line:
+    #             healthy: 20
+    #             unhealthy: 5
+    #         - method:
+    #             healthy: 10
+    #             unhealthy: 1
+    #         - class:
+    #             healthy: 10
+    #             unhealthy: 1    
+    #   - archive:
+    #       artifacts: 'iTrust2/target/surefire-reports/*.xml'
+          
+    #   - checkstyle:
+    #       pattern: '**/checkstyle.xml'
+    #       should-detect-modules: true
+    #       healthy: 0
+    #       unhealthy: 100
+    #       health-threshold: 'high'
+    #       thresholds:
+    #         unstable:
+    #             total-all: 90
+    #             total-high: 80
+    #             total-normal: 70
+    #             total-low: 60
+    #             new-all: 50
+    #             new-high: 40
+    #             new-normal: 30
+    #             new-low: 20
+    #         failed:
+    #             total-all: 91
+    #             total-high: 81
+    #             total-normal: 71
+    #             total-low: 61
+    #             new-all: 51
+    #             new-high: 41
+    #             new-normal: 31
+    #             new-low: 21
+
+ 
+
+
     # recordIssues:
     #   enabledForFailure: true 
     #   aggregatingResults: true
