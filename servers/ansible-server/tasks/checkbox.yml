@@ -20,15 +20,15 @@
   - name: Install npm on server
     become: true
     apt:
-        name: npm
+        pkg: build-essential
         state: present
 
-  - name: Symlink nodejs and node
-    become: true
-    file:
-        src: /usr/bin/nodejs
-        dest: /usr/bin/node
-        state: link
+  # - name: Symlink nodejs and node
+  #   become: true
+  #   file:
+  #       src: /usr/bin/nodejs
+  #       dest: /usr/bin/node
+  #       state: link
 
   - name: Installing Python pip
     become: true

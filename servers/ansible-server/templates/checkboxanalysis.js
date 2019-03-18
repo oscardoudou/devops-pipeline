@@ -3,7 +3,6 @@
 var esprima = require("esprima");
 var options = {tokens:true, tolerant:true, loc:true, range:true};
 var fs = require("fs");
-var shell = require("shelljs");
 
 // alloting threshold above which build should fail
 var maxnumberofconditions = 3;
