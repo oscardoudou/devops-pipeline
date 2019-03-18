@@ -93,7 +93,7 @@ The iTrust is setup via iTrust.yml and there are two jobs being generated throug
 
 The following screenshot shows the output of checkstyle plugin:
 
-![iTrust analysis output](/resources/checkstyle_analysis.png?raw=true "iTrust analysis output")
+![iTrust analysis output](/resources/checkstyle_analysis.PNG?raw=true "iTrust analysis output")
 
 Setting up conditional builds required the conditional buildstep plugin. 
 
@@ -111,23 +111,23 @@ We chose nodejs and esprima to work on calculating the maximum number of conditi
 The builds on the jenkins dashboard are managed by using conditional-buildstep plugin.
 The result on the console at the time of running the code is in the following form for each of the JavaScript file:
 
-![Checkbox analysis output](/resources/max_cond_example.png?raw=true "Checkbox analysis output")
+![Checkbox analysis output](/resources/max_cond_example.PNG?raw=true "Checkbox analysis output")
 
 Depending on what threshold has been set for each, there is a build.txt file generated if any one of the threshold is exceeded, which marks that the build will have to fail:
 
-![Checkbox analysis fail build notice](/resources/max_cond_result.png?raw=true "Checkbox analysis fail build notice")
+![Checkbox analysis fail build notice](/resources/max_cond_result.PNG?raw=true "Checkbox analysis fail build notice")
 
 The corresponding build in the jenkins console fails :
 
-![Checkbox analysis fail build](/resources/checkbox_build_failed.png?raw=true "Checkbox analysis fail build")
+![Checkbox analysis fail build](/resources/checkbox_build_failed.PNG?raw=true "Checkbox analysis fail build")
 
 If the threshold didn't exceed then the build.txt file won't be generated and the build won't fail:
 
-![Checkbox analysis success build output](/resources/max_cond_pass_example.png?raw=true "Checkbox analysis success build output")
+![Checkbox analysis success build output](/resources/max_cond_pass_example.PNG?raw=true "Checkbox analysis success build output")
 
 The corresponding build in the jenkins console succeeds:
 
-![Checkbox analysis success build](/resources/checkbox_build_success.png?raw=true "Checkbox analysis success build")
+![Checkbox analysis success build](/resources/checkbox_build_success.PNG?raw=true "Checkbox analysis success build")
 
 
 
