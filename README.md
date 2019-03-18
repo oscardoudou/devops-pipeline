@@ -14,10 +14,10 @@ A detailed video with the steps can be found [here]().
 
 ### Team Members:
 
-* Arpita (ashekha) - 
-* Srija  (sgangul2) - 
-* Dyuti  (dde) - 
-* Yichi  (yzhan222) - 
+* Arpita (ashekha) - Jenkins coverage setup , commit fuzzer , test prioritization
+* Srija  (sgangul2) - Jenkins coverage setup , commit fuzzer operations , analysis 
+* Dyuti  (dde) - Jenkins setup , commit fuzzer , analysis
+* Yichi  (yzhan222) - test prioritization
 
 ## Prerequisites
 You need to have [VirtualBox 5.2](https://www.virtualbox.org/wiki/Download_Old_Builds_5_2) installed on your machine along with [Baker](https://docs.getbaker.io/installation/) which will be used to create the virtual machines (Ubuntu 16.04 LTS).
@@ -32,6 +32,9 @@ You need to have [VirtualBox 5.2](https://www.virtualbox.org/wiki/Download_Old_B
 * Java : v1.8
 * MySql : v14.14 Distrib 5.7.25
 * Apache Maven : v3.3.9 
+* Jacoco : v3.0.4
+* Esprima : v4.0.0
+* Checkstyle : v4.0.0
 
 ## Project Setup
 
@@ -42,7 +45,7 @@ This milestone consisted of 4 major tasks:
 ##### Relevant Files: 
 * ansible-server/tasks/jenkins.yml
 * ansible-server/templates/test.yml
-* ansible-server/templates/project.yml
+* ansible-server/templates/projects.yml
 
 For displaying the code coverage of iTrust repository, we are using the jacoco plugin. We have used Jenkins Job Builder's publisher to include jacoco as a post-build task. The parameters for branch, instruction, complexity etc. have been set as well. 
 
@@ -74,13 +77,59 @@ Inside fuzzer.js we have 4 functions that carry out the fuzzing operation:
 * swap "==" with "!="
 * swap 0 with 1
 
+
 ### 3. Test Prioritization Analysis
 
 ### 4. Static Analysis
 
 * iTrust
 
+##### Relevant Files: 
+* ansible-server/tasks/iTrust.yml
+* ansible-server/templates/projects.yml
+* ansible-server/templates/test.yml
+
+The iTrust is setup via iTrust.yml and there are two jobs being generated through the projects.yml and test.yml that are moved to the job workspace within the virtual machine. One job reflects the checkstyle analysis of the checkstyle-result.xml after the build has taken place. For this we used the checkstyle plugin in the publishers.
+
+The following screenshot shows the output of checkstyle plugin:
+
+![iTrust analysis output](/resources/checkstyle_analysis.png?raw=true "iTrust analysis output")
+
+Setting up conditional builds required the conditional buildstep plugin. 
+
 * checkbox.io
+
+##### Relevant Files: 
+* ansible-server/tasks/checkbox.yml
+* ansible-server/tasks/checkboxanalysis.yml
+* ansible-server/templates/checkboxanalysis.js
+* ansible-server/templates/projects.yml
+* ansible-server/templates/test.yml
+
+
+We chose nodejs and esprima to work on calculating the maximum number of conditions, longest method length and the detection of possible security tokens in the file checkboxanalysis.js which is being invoked from the checkboxanalysis.yml.
+The builds on the jenkins dashboard are managed by using conditional-buildstep plugin.
+The result on the console at the time of running the code is in the following form for each of the JavaScript file:
+
+![Checkbox analysis output](/resources/max_cond_example.png?raw=true "Checkbox analysis output")
+
+Depending on what threshold has been set for each, there is a build.txt file generated if any one of the threshold is exceeded, which marks that the build will have to fail:
+
+![Checkbox analysis fail build notice](/resources/max_cond_result.png?raw=true "Checkbox analysis fail build notice")
+
+The corresponding build in the jenkins console fails :
+
+![Checkbox analysis fail build](/resources/checkbox_build_failed.png?raw=true "Checkbox analysis fail build")
+
+If the threshold didn't exceed then the build.txt file won't be generated and the build won't fail:
+
+![Checkbox analysis success build output](/resources/max_cond_pass_example.png?raw=true "Checkbox analysis success build output")
+
+The corresponding build in the jenkins console succeeds:
+
+![Checkbox analysis success build](/resources/checkbox_build_success.png?raw=true "Checkbox analysis success build")
+
+
 
 ## Report
 
