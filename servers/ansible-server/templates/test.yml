@@ -43,7 +43,8 @@
         - shell: '{command}'
     publishers:    
       - checkstyle:
-          pattern: '**/reporting/csc_checkstyle.xml'
+          pattern: '**/checkstyle-result.xml'
+          can-run-on-failed: true
           should-detect-modules: true
           healthy: 0
           unhealthy: 100
@@ -67,6 +68,8 @@
                 new-high: 41
                 new-normal: 31
                 new-low: 21
+
+
 
 - job-template:
     name: '{name}_job'
