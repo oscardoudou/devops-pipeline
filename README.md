@@ -79,7 +79,20 @@ Inside fuzzer.js we have 4 functions that carry out the fuzzing operation:
 
 
 ### 3. Test Prioritization Analysis
+##### Relevant Files: 
+* ansible-server/templates/testPrior.js
+* ansible-server/templates/priorSummary.js
 
+Use one json per xml under surefile-reports/ to store either API test or unit test. Update json file's value per commit(fuzzing).
+
+Calculate average executeTime and overall failure rate in n iteraton. Prioritize all the test cases across xml based on n iteration's result.  
+
+xml.json example:
+![xml.json example part1](/resources/xml_json.png?raw=true)
+test prior report:
+![prior report part1](/resources/prior_report1.png?raw=true)
+![prior report part2](/resources/prior_report2.png?raw=true)
+![prior report part3](/resources/prior_report3.png?raw=true)
 ### 4. Static Analysis
 
 * iTrust
