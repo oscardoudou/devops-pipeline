@@ -133,4 +133,18 @@ The corresponding build in the jenkins console succeeds:
 
 ## Report
 
+Every step of the milestone has been a challenge and some steps were tough to work on. 
+
+#### Jenkins Setup
+
+Jenkins was setup during the last milestone which was carried forward in this milestone. There were a few plugins added to support coverage and analysis of codes. 
+The major trouble we faced here was configuring all the plugins individually, and some of these wouldn't get installed in the first run of the jenkins.yml playbook. Maven is one such plugin that became too difficult to handle.
+The other plugins added with dependencies are jacoco , checkstyle and conditional-buildstep.
+
+#### Commit Fuzzer
+
+#### Test Prioritization
+
+#### Analysis
+
 ## How to run the code
