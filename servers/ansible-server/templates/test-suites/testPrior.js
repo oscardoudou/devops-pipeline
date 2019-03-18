@@ -6,22 +6,22 @@ var Bluebird = require('bluebird')
 
 var testReport =  '/var/lib/jenkins/workspace/iTrust_job/iTrust/iTrust2/target/surefire-reports/TEST-edu.ncsu.csc.itrust2.apitest.APIAppointmentRequestTest.xml';
 
-// if( process.env.NODE_ENV != "test")
-// {
-//     fs.readdir("/var/lib/jenkins/workspace/iTrust_job/iTrust/iTrust2/target/surefire-reports", (err, files) => { 
-//         files.forEach(file => { 
-//             if (file.substr(file.length - 4) === '.xml') { 
-//                     calculatePriority(file);
-//                      // findFlaky();
-//             } 
-//         }); 
-//     });
-// }
-
 if( process.env.NODE_ENV != "test")
 {
-    calculatePriority("TEST-edu.ncsu.csc.itrust2.apitest.APIAppointmentRequestTest.xml");
+    fs.readdir("/var/lib/jenkins/workspace/iTrust_job/iTrust/iTrust2/target/surefire-reports", (err, files) => { 
+        files.forEach(file => { 
+            if (file.substr(file.length - 4) === '.xml') { 
+                    calculatePriority(file);
+                     // findFlaky();
+            } 
+        }); 
+    });
 }
+
+// if( process.env.NODE_ENV != "test")
+// {
+//     calculatePriority("TEST-edu.ncsu.csc.itrust2.apitest.APIAppointmentRequestTest.xml");
+// }
 async function findFlaky()
 {
     var map = new Map();
@@ -73,7 +73,7 @@ function readResults(result)
         
         tests.push({
         "name":   testcase['$'].name, 
-        "time":   testcase['$'].time, 
+        "time":   parseFloat(testcase['$'].time), 
         "status": testcase.hasOwnProperty('failure') ? 0: 1
         });
     }    
@@ -105,53 +105,45 @@ async function calculatePriority(file)
     var filename = file.substr()+".json";
     for(var i = 0 ; i < tests.length; i++){
         console.log(tests[i]); 
-        // fs.open(file.substr()+".json",'r',fucntion(err, fd));
-        // var functionTestConclusion = {
-        //     name: e.name,
-        //     time: 
-        // }
-        // fs.writeFileSync(file.substr()+".json",e,'utf8')
-        // var filename = file.substr()+".json";
+ 
+        try{
+            var fileContent = fs.readFileSync("testReport/"+filename)
+        }catch(err){
+            if(err.code === 'ENOENT'){
+                console.log('File not found!');
+                firstTime = 1;
+            }else{
+                throw err;
+            }
+        }
+        if(firstTime != 1){
+            // console.log(fileContent);
+            var content = JSON.parse(fileContent);
+            // console.log(JSON.stringify(content));
+            var functionName = content.testcase[i].name; 
+            // console.log(content.testcase[i].name);
+            var timeExecute = parseFloat(content.testcase[i].time) + parseFloat(tests[i].time);
+            var statusCount = content.testcase[i].status + tests[i].status;
+            eUpdate = {
+            "name": functionName,
+            "time": timeExecute,
+            "status": statusCount 
+            }
+        }
 
-        // fs.open("/jenkins-server/"+filename,'r',function(err, fd){
-        //     if (err||firstTime===1) {
-        //         if(firstTime != 1){
-        //             console.log(err);
-        //             // fs.writeFileSync(filename,"",'utf8');
-        //         }
-        //         firstTime = 0;
-        //     } else {
-        //       var fileContent = fs.readFileSync("/jenkins-server/"+filename, function(err){
-        //         if(err){
-        //             console.log(err);
-        //         }
-        //         console.log("READ!");
-        //       });
-        //       var content = JSON.parse(fileContent);
-        //       var functionName = content.testcase[i].name; 
-        //       console.log(content.testcase[i].name);
-        //       var timeExecute = content.testcase[i].time + tests[i].time;
-        //       var statusCount = content.testcase[i].status + tests[i].status;
-        //       eUpdate = {
-        //         "name": functionName,
-        //         "time": timeExecute,
-        //         "status": statusCount 
-        //       }
-        //     }
-        //   });
-        fs.appendFileSync("testReport/"+filename,JSON.stringify(tests[i]),'utf8',function(err){
-            if(err) throw err;
-            console.log('Append!')
-        })
-
-        // if(firstTime === 1)
-        //     xmlReport.testcase.push(tests[i]);
-        // else
-        //     xmlReport.testcase.push(eUpdate);
-
+        // console.log("this is firstTime judge after fs.open():" + firstTime);
+        if(firstTime == 1){
+            // console.log("firstTime," + filename + " doesn't exist at first");
+            xmlReport.testcase.push(tests[i]);
+        }
+        else{
+            // console.log(filename + " exist");
+            xmlReport.testcase.push(eUpdate);
+        }
+        
     };
-
-    // fs.writeFileSync(filename, JSON.stringify(xmlReport),'utf8');
+    console.log(JSON.stringify(xmlReport));
+    fs.writeFileSync("testReport/"+filename, JSON.stringify(xmlReport),'utf8');
     return tests;
 }
 
