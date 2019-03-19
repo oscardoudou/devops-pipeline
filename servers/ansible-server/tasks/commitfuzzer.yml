@@ -54,6 +54,7 @@
     with_items:
       - /ansible-server/templates/test-suites/testPrior.js
       - /ansible-server/templates/test-suites/package.json
+      - /ansible-server/templates/test-suites/priorSummary.js
 
   - name: Create testReport dir inside prior
     become: true
