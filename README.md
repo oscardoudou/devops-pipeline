@@ -77,7 +77,9 @@ Inside fuzzer.js we have 4 functions that carry out the fuzzing operation:
 * swap "==" with "!="
 * swap 0 with 1
  
-On successful complation we add the fuzzed files to git commit which starts the build automatically otherwise, we reset the changes and fuzz again. 0
+On successful complation we add the fuzzed files to git commit which starts the build automatically otherwise, we reset the changes and fuzz again. 
+
+![iTrust Fuzzer job](/resources/fuzzer.png?raw=true "Fuzzer Job")
 
 ### 3. Test Prioritization Analysis
 ##### Relevant Files:
