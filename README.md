@@ -13,7 +13,7 @@ In addition to tasks accomplished in last milestone:
 A detailed video with the steps can be found in following videos.
 * test prioritizaton [3 parts please watch in sequence](https://www.dropbox.com/sh/ije37pvnt02v0xr/AADJ33WfFRBagrJgHsRMF4xza?dl=0)
 * [Fuzzer](https://drive.google.com/file/d/1hi2VlnlFV6Bm9bClj1nP0tDE_h_sBdEG/view?usp=sharing)
-* [iTrust and Checkbox Analysis](https://drive.google.com/open?id=1G6ctW-8n1yG79o0xe4qH82SMWeWrXycS)
+* [iTrust and Checkbox Analysis](https://drive.google.com/file/d/1G6ctW-8n1yG79o0xe4qH82SMWeWrXycS/view?usp=sharing)
 
 ### Team Members:
 
