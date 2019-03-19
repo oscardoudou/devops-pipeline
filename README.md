@@ -157,6 +157,7 @@ The other plugins added with dependencies are jacoco , checkstyle and conditiona
 #### Commit Fuzzer
 
 #### Test Prioritization
+Fuzzer generate input data in a more incorrect way, different type of test suffer differently against fuzzing. Test case against single or less functionality  behavior are more likely to success, unit test almost always pass even with unrealistic input. However, test case against intergrated function or more complex function are more likely to failed, since it is strict to the input data, in which case, failure rate of API test some time could reach 80%.  
 
 #### Analysis
 
