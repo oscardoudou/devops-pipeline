@@ -11,6 +11,7 @@ In addition to tasks accomplished in last milestone:
 
 ### Screencast
 A detailed video with the steps can be found [here]().
+* test prioritizaton [3 parts please watch in sequence](https://www.dropbox.com/sh/ije37pvnt02v0xr/AADJ33WfFRBagrJgHsRMF4xza?dl=0)
 
 ### Team Members:
 
