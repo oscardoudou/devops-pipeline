@@ -1,4 +1,4 @@
-# Test and Analysis - Milestone 2
+# Deployment, Infrastucture and Special - Milestone 3
 In this milestone, we aim to learn about the test and build analysis.
 In addition to tasks accomplished in last milestone:
 * We are using the [Jacoco](https://plugins.jenkins.io/jacoco) plugin for code coverage of iTrust application.
