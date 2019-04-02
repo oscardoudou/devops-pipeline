@@ -1,6 +1,0 @@
-#!/bin/sh
-if  git log -1 | grep -q 'revert' > /dev/null; then
-        echo "Reverted commit; No build job"
-else
-    curl http://192.168.33.200:8090/git/notifyCommit?url=file:///home/vagrant/iTrust
-fi
