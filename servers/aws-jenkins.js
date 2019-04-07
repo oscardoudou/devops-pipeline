@@ -111,24 +111,14 @@ EC2.createSecurityGroup(securityGroup, function(err, data) {
                                                 // write private key to file
                                                 let filePath = process.env.HOME + '/jenkins/Jenkins.pem'
                                                 
-                                                let buffer = new Buffer(privateKey);
-        
-                                                fs.open(filePath, 'w', function(err, file) {
-                                                    if (err) console.log('\n Unable to open private key file', err);
+                                                fs.writeFile(filePath, privateKey, function(err, file) {
+                                                    if (err) console.log('\n Unable to write private key file', err);
                                                     else {
                                                         console.log('\n Successfully wrote private key file');
-                                                        fs.write(file, buffer, 0, buffer.length, null, function(err) {
-                                                            if (err) throw 'Error while writing private key file: ' + err;
-                                            
-                                                            fs.chmod(filePath, 0400, (error) => {
-                                                                console.log('\n Successfully changed file permissions for private key');
-                                                            });
-                                            
-                                                            fs.close(file, function() {
-                                                                console.log('\n Wrote the private key successfully');
-                                                            });
-                                                        });
                                                         
+                                                        fs.chmod(filePath, 0600, (error) => {
+                                                            console.log('\n Successfully changed file permissions for private key');
+                                                        });
                                                     }
                                                 });
                                                 

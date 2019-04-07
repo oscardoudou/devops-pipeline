@@ -36,11 +36,12 @@ This milestone consisted of 4 major tasks:
 ### 1. Deployment Component
 ##### Relevant Files:
 
-Sign up with [AWS](https://aws.amazon.com/premiumsupport/plans/) to create an account and create an [access key](https://docs.aws.amazon.com/general/latest/gr/managing-aws-access-keys.html)
+* Sign up with [AWS](https://aws.amazon.com/premiumsupport/plans/) to create an account and create an [access key](https://docs.aws.amazon.com/general/latest/gr/managing-aws-access-keys.html)
 
-run install.sh file to install node dependencies
-Set Environment variables: AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY with the respective values
-cd DevOps-Project/servers and run node aws-jenkins.js to provision Jenkins server
+* Run baker bake && baker ssh
+* cd /DevOps-Project and run install.sh file to install node dependencies
+* Set Environment variables: AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY with the respective values
+* cd servers and run node aws-jenkins.js to provision Jenkins server
 
 ### 2. Infrastructure Component
 ##### Relevant Files:
