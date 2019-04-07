@@ -135,6 +135,11 @@
     force: yes
   become: true
 
+- name: Restart MySQL
+  service: 
+    name: mysql 
+    state: restarted
+  become: true
 
 - name: Restart Jenkins
   become: yes
