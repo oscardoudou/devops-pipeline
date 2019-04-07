@@ -4,11 +4,3 @@
     project-type: freestyle
     builders:
       - shell: '{command}'
-    publishers:
-      - post-tasks:
-        - matches:
-          - log-text: git clone
-            operator: AND
-          escalate-status: true
-          run-if-job-successful: true
-          script: '{post_build_script}'
