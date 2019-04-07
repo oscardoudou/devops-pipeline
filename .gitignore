@@ -1,3 +1,6 @@
 servers/ansible-server/run.retry
 node_modules
 package-lock.json
+Vagrantfile
+windows.sh
+*.retry

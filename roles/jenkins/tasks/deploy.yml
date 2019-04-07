@@ -1,0 +1,57 @@
+---
+# task file to deploy checkbox and iTrust
+
+- name: Create deploy directory
+  become: true
+  file:
+    path: "/home/{{ ansible_user }}/deploy"
+    state: directory
+    mode: 0755
+
+- name: Clone checkbox.io, iTrust2-v1, iTrust2-v2, and JenkinsDeploy projects
+  become: true
+  git:
+    repo: "https://github.com/arpitashekhar/{{ item }}.git"
+    dest: "/home/{{ ansible_user }}/{{ item }}"
+    force: yes
+  with_items:
+  - checkbox.io
+  - iTrust2-v4
+
+- name: Create deploy subdirectories
+  become: true
+  file:
+    path: "/home/{{ ansible_user }}/deploy/{{ item }}"
+    state: directory
+    mode: 0755
+  with_items:
+  - checkbox.git
+  - checkbox-www
+  - itrust.git
+  - itrust-www
+
+- name: Create bare git repositories
+  become: true
+  shell: "git init --bare"
+  args:
+    chdir: "/home/{{ ansible_user }}/deploy/{{ item }}/"
+  with_items:
+  - checkbox.git
+  - itrust.git
+
+- name: Copy post-receive templates
+  become: true
+  template:
+    src: "../templates/post-receive-{{ item }}"
+    dest: "/home/{{ ansible_user }}/deploy/{{ item }}.git/hooks/post-receive"
+    mode: 0755
+  with_items:
+  - checkbox
+
+- name: Add checkbox remote to checkbox.io
+  become: true
+  shell: "git remote add checkbox file:///home/{{ ansible_user }}/deploy/checkbox.git"
+  args:
+    chdir: "/home/{{ ansible_user }}/checkbox.io"
+
+

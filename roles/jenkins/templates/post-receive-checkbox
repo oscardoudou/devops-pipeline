@@ -1,0 +1,6 @@
+#!/bin/sh
+echo "Current location: $GIT_DIR"
+GIT_WORK_TREE=/home/{{ ansible_user }}/deploy/checkbox-www git checkout -f
+echo "Pushed to production!"
+#cd ../production-jenkins
+#curl http://localhost:8090/job/job_name/build?delay=0sec
