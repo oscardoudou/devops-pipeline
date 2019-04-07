@@ -1,0 +1,12 @@
+name: ansible-server
+vm:
+  ip: 192.168.33.20
+tools:
+  - ansible
+lang:
+  - nodejs9
+packages:
+  - apt:
+    - git
+commands:
+  serve: sh install.sh
