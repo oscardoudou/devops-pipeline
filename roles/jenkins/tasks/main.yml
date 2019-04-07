@@ -1,8 +1,5 @@
 ---
 # tasks file for jenkins
-- name: Add Ansible apt repository
-  apt_repository:
-    repo: ppa:ansible/ansible
 
 - name: Install jre8
   apt:
@@ -50,19 +47,28 @@
     update_cache: yes
     cache_valid_time: 86400
 
-- name: Install Jenkins, Ansible, Git, Maven, pip
+- name: Setting MySQL root password before installing
+  become: true
+  debconf:
+    name: mysql-server
+    question: mysql-server/root_password
+    value: ""
+    vtype: password
+
+- name: Confirm MySQL password before installing
+  become: true
+  debconf:
+    name: mysql-server
+    question: mysql-server/root_password_again
+    value: ""
+    vtype: password
+
+- name: Install Jenkins, Ansible, Git, Maven, pip, npm, Node.js
   apt:
-    name: "{{ item }}"
+    name: ['ansible', 'git', 'jenkins', 'maven', 'mysql-server', 'python-pip', 'python3-pip', 'npm', 'nodejs']
     state: present
     update_cache: yes
   become: true
-  with_items:
-  - ansible
-  - git
-  - jenkins
-  - maven
-  - mysql-server
-  - python-pip
 
 - name: Start Jenkins service and enable on boot
   service:
@@ -76,7 +82,7 @@
     path: /var/lib/jenkins/secrets/initialAdminPassword
 
 # configuring
-- name: reading admin password
+- name: Reading admin password
   shell: cat /var/lib/jenkins/secrets/initialAdminPassword
   register: adminpwd
   become_user: root
@@ -92,46 +98,54 @@
     user: admin
     password: "{{ adminpwd.stdout }}"
 
-- name: sign into jenkins and complete setup
+- name: Sign into jenkins and complete setup
   jenkins_script:
     script: "{{ lookup('file' , '../templates/groovy_setup_user.groovy') }}"
     user: admin
     password: "{{ adminpwd.stdout }}"
 
-- name: disable security for installation
+- name: Disable security for installation
   become: true
   lineinfile: 
     dest: /var/lib/jenkins/config.xml
     regexp: '<useSecurity>true</useSecurity>'
     line: '  <useSecurity>false</useSecurity>'
 
-- name: plugins installation
+- name: Plugins installation
   become: true
   jenkins_plugin:
     name: "{{ item }}"
     state: latest
     url_username: "{{jenkins_username}}"
     url_password: "{{jenkins_password}}"
-    url: "{{jenkins_ip}}:8080"
     validate_certs: no
     with_dependencies: yes
   with_items: "{{ plugins }}"
 
-# - name: Changing default port for Jenkins
-#   become: true
-#   replace:
-#     dest: /etc/default/jenkins
-#     regexp: 'HTTP_PORT=8080'
-#     replace: 'HTTP_PORT=8090'
-#     backup: yes
+- name: Add sudo permissions for jenkins user
+  become: true
+  lineinfile:
+    path: /etc/sudoers
+    line: "jenkins ALL=(ALL) NOPASSWD: ALL"
 
-# - name: Restart jenkins
-#   become: true
-#   command: systemctl restart jenkins 
+- name: Update the configuration file for mySQL
+  copy: 
+    src: "../templates/my.cnf"
+    dest: /etc/mysql/my.cnf 
+    force: yes
+  become: true
+
+
+- name: Restart Jenkins
+  become: yes
+  service:
+    name: jenkins
+    state: restarted
 
 - name: Ensure Jenkins is up and running
+  become: true
   uri:
-    url: "{{jenkins_ip}}:8080"
+    url: "http://{{ jenkins_ip }}:8080/cli/"
     status_code: "200"
     timeout: 5
   register: jenkins_service_status
@@ -165,16 +179,17 @@
     force: yes
 
 - name: Create jobs directory
+  become: true
   file:
-    path: /home/vagrant/jobs
+    path: /home/{{ ansible_user }}/jobs
     state: directory
     mode: 0755
 
 - name: Copy job file templates
-  become: yes
+  become: true
   template:
-    src: "../templates/{{ item }}"
-    dest: "/home/vagrant/jobs/{{ item }}"
+    src: ../templates/{{ item }}
+    dest: /home/{{ ansible_user }}/jobs/{{ item }}
     force: yes
     mode: 0755
   with_items:
@@ -185,3 +200,41 @@
 - name: Update jobs
   become: true
   command: "jenkins-jobs update jobs"
+
+- name: Create deploy directory
+  become: true
+  file:
+    path: "/home/{{ ansible_user }}/deploy"
+    state: directory
+    mode: 0755
+
+- name: Clone checkbox.io, iTrust2-v1, iTrust2-v2, and JenkinsDeploy projects
+  become: true
+  git:
+    repo: "https://github.com/arpitashekhar/{{ item }}.git"
+    dest: "/home/{{ ansible_user }}/{{ item }}"
+    force: yes
+  with_items:
+  - checkbox.io
+  - iTrust2-v4
+
+- name: Create deploy subdirectories
+  become: true
+  file:
+    path: "/home/{{ ansible_user }}/deploy/{{ item }}"
+    state: directory
+    mode: 0755
+  with_items:
+  - checkbox.git
+  - checkbox-www
+  - itrust.git
+  - itrust-www
+
+- name: Create bare git repositories
+  become: true
+  shell: "git init --bare"
+  args:
+    chdir: "/home/{{ ansible_user }}/deploy/{{ item }}/"
+  with_items:
+  - checkbox.git
+  - itrust.git

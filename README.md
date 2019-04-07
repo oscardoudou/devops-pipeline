@@ -42,6 +42,7 @@ This milestone consisted of 4 major tasks:
 * cd /DevOps-Project and run install.sh file to install node dependencies
 * Set Environment variables: AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY with the respective values
 * cd servers and run node aws-jenkins.js to provision Jenkins server
+* ansible-playbook -i /home/vagrant/inventory playbook.yml
 
 ### 2. Infrastructure Component
 ##### Relevant Files:

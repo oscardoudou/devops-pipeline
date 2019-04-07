@@ -6,7 +6,6 @@ AWS.config.update({region: 'us-east-2'});
 // creating service object 
 var EC2 = new AWS.EC2();
 var privateKey;
-var securityGroupId;
 var publicIpAddress;
 var instanceId;
 var allocationId;
@@ -123,7 +122,7 @@ EC2.createSecurityGroup(securityGroup, function(err, data) {
                                                 });
                                                 
                                                 // create inventory file for ansible
-                                                var inventoryData = '[jenkins]\n' + publicIpAddress + ' ansible_user=ubuntu' + ' ansible_ssh_private_key_file=/home/vagrant/jenkins/Jenkins.pem' + ' ansible_python_interpreter=/usr/bin/python3'
+                                                var inventoryData = '[jenkins]\n' + publicIpAddress + ' ansible_ssh_user=ubuntu' + ' ansible_ssh_private_key_file=/home/vagrant/jenkins/Jenkins.pem' + ' ansible_python_interpreter=/usr/bin/python3'
                                                 fs.writeFile('/home/vagrant/inventory', inventoryData, function(err) {
                                                     if (err) console.log('\n Failed to write inventory file', err);
                                                     else {
