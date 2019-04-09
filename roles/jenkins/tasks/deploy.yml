@@ -59,7 +59,7 @@
 - name: Copy instance provisioning template
   become: true
   template:
-    src: "../templates/aws-{{ item }}.js"
+    src: "../../../servers/aws-{{ item }}.js"
     dest: "/home/{{ ansible_user }}/deploy/checkbox.git/aws-{{ item }}.js"
     mode: 0755
   with_items:
