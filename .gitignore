@@ -3,4 +3,10 @@ node_modules
 package-lock.json
 Vagrantfile
 windows.sh
+playbook.retry
 *.retry
+*.pem
+*.csv
+.vagrant
+.DS_Store
+windows.sh

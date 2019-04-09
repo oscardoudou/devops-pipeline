@@ -17,6 +17,7 @@
   with_items:
   - checkbox.io
   - iTrust2-v4
+  - deploy-instances
 
 - name: Create deploy subdirectories
   become: true
@@ -53,5 +54,45 @@
   shell: "git remote add checkbox file:///home/{{ ansible_user }}/deploy/checkbox.git"
   args:
     chdir: "/home/{{ ansible_user }}/checkbox.io"
+
+
+- name: Copy instance provisioning template
+  become: true
+  template:
+    src: "../templates/aws-{{ item }}.js"
+    dest: "/home/{{ ansible_user }}/deploy/checkbox.git/aws-{{ item }}.js"
+    mode: 0755
+  with_items:
+  - checkbox       
+
+- name: Symlink nodejs and node
+  become: true
+  file:
+    src: /usr/bin/nodejs
+    dest: /usr/bin/node
+    state: link  
+
+ #create package.json for this checkbox.git   
+- name: Copy package.json to repo
+  become: true
+  copy:
+    src: "../templates/checkbox_package.json"
+    dest: "/home/{{ ansible_user }}/deploy/checkbox.git/package.json" 
+    force: yes
+ 
+  
+- name: Install packages
+  become: true
+  command: npm install
+  args:
+    chdir: "/home/{{ ansible_user }}/deploy/checkbox.git" 
+
+- name: Create checkbox directory for the pem key later
+  become: true
+  file:
+    path: "/home/{{ ansible_user }}/checkbox/" 
+    state: directory
+    mode: 0777  
+ 
 
 
