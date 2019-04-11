@@ -48,9 +48,7 @@ This milestone consisted of 4 major tasks:
 ###### Within Jenkins server (Checkbox)--
 * ssh into Jenkins server just configured from the current VM using the command ``` ssh -i /home/vagrant/jenkins/Jenkins.pem ubuntu@<jenkins_ip> ``` [NOTE: You will find the ```<jenkins_ip>``` in the var file or from the AWS running instance named Jenkins]
 * Within the Jenkins server , cd /home/ubuntu/checkbox.io and make a small change (like touch test)
-* run the commands: ``` git add 
-git commit -m <message>
-git push checkbox master ```
+* run the commands: ``` git add ,  git commit -m <message> ,  git push checkbox master ```
 [NOTE: checkbox is the remote set towards /home/ubuntu/deploy/checkbox-www for the green-blue deployment] 
 * You should be finding the git hook going live by first creating the Checkbox instance and then running configuration through a playbook.
 * Go to AWS dashboard to see the Checkbox running green and copy the public IP to a browser to see the Checkbox application work well.
