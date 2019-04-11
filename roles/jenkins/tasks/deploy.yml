@@ -49,11 +49,11 @@
   with_items:
   - checkbox
 
-# - name: Add checkbox remote to checkbox.io
-#   become: true
-#   shell: "git remote add checkbox file:///home/{{ ansible_user }}/deploy/checkbox.git"
-#   args:
-#     chdir: "/home/{{ ansible_user }}/checkbox.io"
+- name: Add checkbox remote to checkbox.io
+  become: true
+  shell: "git remote add checkbox file:///home/{{ ansible_user }}/deploy/checkbox.git"
+  args:
+    chdir: "/home/{{ ansible_user }}/checkbox.io"
 
 
 - name: Copy instance provisioning template
@@ -98,5 +98,24 @@
 - name: Change owner of directory
   become: true
   command: chown -R ubuntu /home
+
+- name: Update ansible version of jenkins - apt-get update
+  become: true
+  apt:
+    force_apt_get: yes
+    update_cache: yes
+
+- name: Update ansible version of jenkins - apt-get install software-properties-common
+  become: true
+  command: apt-get install -y software-properties-common
+
+- name: add repositories for ansible
+  become: true
+  command: apt-add-repository --yes --update ppa:ansible/ansible
+
+- name: Install latest ansible version
+  become: true
+  command: apt-get install -y ansible         
+
 
 

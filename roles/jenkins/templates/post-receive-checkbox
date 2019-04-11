@@ -8,6 +8,6 @@ sudo chown ubuntu /home/{{ ansible_user }}/checkbox/Checkbox.pem
 # run the checkbox task
 echo "Sleeping for sometime"
 sleep 60
-sudo ansible-playbook -i /home/{{ ansible_user }}/inventory_checkbox /home/{{ ansible_user }}/deploy-instances/playbooks/checkbox.yml
+ansible-playbook -i /home/{{ ansible_user }}/inventory_checkbox /home/{{ ansible_user }}/deploy-instances/playbooks/checkbox.yml
 # cd ../production-jenkins
 # curl http://localhost:8090/job/job_name/build?delay=0sec

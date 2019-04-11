@@ -50,4 +50,4 @@ plugins:
 jenkins_username: user
 jenkins_password: password
 
-jenkins_ip: 3.18.130.236
+jenkins_ip: 3.19.119.179
