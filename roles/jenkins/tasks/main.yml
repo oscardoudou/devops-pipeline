@@ -122,6 +122,14 @@
     with_dependencies: yes
   with_items: "{{ plugins }}"
 
+- name: Changing default port for Jenkins
+  become: true
+  replace:
+    dest: /etc/default/jenkins
+    regexp: 'HTTP_PORT=8080'
+    replace: 'HTTP_PORT=8090'
+    backup: yes
+
 - name: Add sudo permissions for jenkins user
   become: true
   lineinfile:
@@ -150,7 +158,7 @@
 - name: Ensure Jenkins is up and running
   become: true
   uri:
-    url: "http://{{ jenkins_ip }}:8080/cli/"
+    url: "http://{{ jenkins_ip }}:8090/cli/"
     status_code: "200"
     timeout: 5
   register: jenkins_service_status

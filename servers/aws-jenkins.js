@@ -19,7 +19,7 @@ var keyPairName = {
 }
 var instanceParameters = {
 	ImageId: 'ami-0653e888ec96eab9b',
-	InstanceType: 't2.micro',
+	InstanceType: 't2.large',
 	KeyName: 'Jenkins',
 	MinCount: 1,
     MaxCount: 1,
