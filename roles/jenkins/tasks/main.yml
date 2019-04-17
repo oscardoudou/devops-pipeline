@@ -1,32 +1,40 @@
 ---
 # tasks file for jenkins
 
-- name: Install jre8
-  apt:
-    name: openjdk-8-jre
-    state: present
-    update_cache: yes
-  become: true
+# - name: Install jre8
+#   apt:
+#     name: openjdk-8-jre
+#     state: present
+#     update_cache: yes
+#   become: true
 
-- name: Adding Oracle Java Repository
-  become: true
-  apt_repository: 
-    repo: 'ppa:webupd8team/java'
+# - name: Adding Oracle Java Repository
+#   become: true
+#   apt_repository: 
+#     repo: 'ppa:webupd8team/java'
 
-- name: Accept Java 8 License
-  become: true
-  become_user: root
-  debconf: 
-    name: 'oracle-java8-installer' 
-    question: 'shared/accepted-oracle-license-v1-1' 
-    value: 'true' 
-    vtype: 'select'
+# - name: Accept Java 8 License
+#   become: true
+#   become_user: root
+#   debconf: 
+#     name: 'oracle-java8-installer' 
+#     question: 'shared/accepted-oracle-license-v1-1' 
+#     value: 'true' 
+#     vtype: 'select'
 
-- name: Install Oracle Java 8
+# - name: Install Oracle Java 8
+#   become: true
+#   apt: 
+#     name: ['oracle-java8-installer', 'ca-certificates', 'oracle-java8-set-default'] 
+#     state: latest
+
+- name: Update system
   become: true
-  apt: 
-    name: ['oracle-java8-installer', 'ca-certificates', 'oracle-java8-set-default'] 
-    state: latest
+  command: apt-get update
+
+- name: Install java 8
+  become: true
+  command: apt-get install -y default-jdk  
 
 - name: Add jenkins repo key
   apt_key:
