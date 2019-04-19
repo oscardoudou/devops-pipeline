@@ -1,0 +1,14 @@
+#!/bin/sh
+echo "Current location: $GIT_DIR"
+GIT_WORK_TREE=/home/{{ ansible_user }}/deploy/iTrust-www git checkout -f
+echo "Pushed to production!"
+# EC2 instance js file
+node /home/{{ ansible_user }}/deploy/itrust.git/aws-itrust.js
+sudo chown ubuntu /home/{{ ansible_user }}/iTrust2-v4/iTrust.pem 
+# run the checkbox task
+echo "Sleeping for sometime"
+sleep 60
+ansible-playbook -i /home/{{ ansible_user }}/inventory_iTrust /home/{{ ansible_user }}/deploy-instances/playbooks/chrome.yml
+ansible-playbook -i /home/{{ ansible_user }}/inventory_iTrust /home/{{ ansible_user }}/deploy-instances/playbooks/itrust.yml
+# cd ../production-jenkins
+# curl http://localhost:8090/job/job_name/build?delay=0sec

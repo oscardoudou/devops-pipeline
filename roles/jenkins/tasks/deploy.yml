@@ -8,7 +8,7 @@
     state: directory
     mode: 0755
 
-- name: Clone checkbox.io, iTrust2-v1, iTrust2-v2, and JenkinsDeploy projects
+- name: Clone checkbox.io, iTrust2-v2, and JenkinsDeploy projects
   become: true
   git:
     repo: "https://github.com/arpitashekhar/{{ item }}.git"
@@ -48,6 +48,7 @@
     mode: 0755
   with_items:
   - checkbox
+  - itrust
 
 - name: Add checkbox remote to checkbox.io
   become: true
@@ -55,6 +56,11 @@
   args:
     chdir: "/home/{{ ansible_user }}/checkbox.io"
 
+- name: Add iTrust remote to iTrust
+  become: true
+  shell: "git remote add itrust file:///home/{{ ansible_user }}/deploy/itrust.git"
+  args:
+    chdir: "/home/{{ ansible_user }}/iTrust2-v4"
 
 - name: Copy instance provisioning template
   become: true
@@ -63,7 +69,16 @@
     dest: "/home/{{ ansible_user }}/deploy/checkbox.git/aws-{{ item }}.js"
     mode: 0755
   with_items:
-  - checkbox       
+  - checkbox 
+  
+- name: Copy instance provisioning template
+  become: true
+  template:
+    src: "../../../servers/aws-{{ item }}.js"
+    dest: "/home/{{ ansible_user }}/deploy/itrust.git/aws-{{ item }}.js"
+    mode: 0755
+  with_items:
+  - itrust   
 
 - name: Symlink nodejs and node
   become: true
@@ -77,7 +92,7 @@
   become: true
   copy:
     src: "../templates/checkbox_package.json"
-    dest: "/home/{{ ansible_user }}/deploy/checkbox.git/package.json" 
+    dest: "/home/{{ ansible_user }}/deploy/package.json" 
     force: yes
  
   
@@ -85,7 +100,7 @@
   become: true
   command: npm install
   args:
-    chdir: "/home/{{ ansible_user }}/deploy/checkbox.git" 
+    chdir: "/home/{{ ansible_user }}/deploy" 
 
 - name: Create checkbox directory for the pem key later
   become: true
@@ -115,7 +130,9 @@
 
 - name: Install latest ansible version
   become: true
-  command: apt-get install -y ansible         
+  command: apt-get install -y ansible     
+
+  
 
 
 
