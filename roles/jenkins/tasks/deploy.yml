@@ -19,6 +19,13 @@
   - iTrust2-v4
   - deploy-instances
 
+- name: Copy New Relic key 
+  become: true
+  template:
+    src: "../templates/newrelic.js"
+    dest: "/home/{{ ansible_user }}/deploy-instances/templates/newrelic.js"
+
+
 - name: Create deploy subdirectories
   become: true
   file:
