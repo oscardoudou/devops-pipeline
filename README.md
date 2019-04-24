@@ -65,6 +65,10 @@ This milestone consisted of 4 major tasks:
 ### 3. Special Component
 ##### Relevant Files:
 
+* Make an account on [New Relic](https://newrelic.com/), set an environment variable NEW_RELIC_LICENSE_KEY in the local VM using the license key available on your account. 
+* Follow the steps to deploy Checkbox.io on AWS
+* After completion, you should be able to see the data reported from the application on New Relic dashbobard.
+
 
 
 ## How to run the code
