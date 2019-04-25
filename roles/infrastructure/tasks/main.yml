@@ -1,0 +1,64 @@
+---
+# tasks file for infrastruture
+- name: Add docker GPG key to apt source
+  shell: curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+  args:
+    warn: no
+
+- name: Get ubuntu distribution name
+  command: lsb_release -cs
+  register: release
+
+- debug:
+    var: release.stdout
+
+- name: Add docker repo list to source
+  command: add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu {{release.stdout}} stable"
+  become: true
+
+# - name: Update package list
+#   apt:
+#     update_cache: yes
+#   become: true
+
+- name: Update package list
+  command: apt-get update
+  become: true
+
+- name: Install docker ce
+  become: true
+  command: apt-get install -y docker-ce
+  
+- name: Ensure group docker exists
+  become: true
+  group:
+    name: docker
+    state: present
+
+- name: Get group output
+  command: groups
+  register: groups_before
+
+- debug:
+    var: groups_before.stdout
+
+- name: Add user ubuntu to the docker group
+  become: true
+  user: 
+    name: ubuntu
+    groups: docker
+    append: yes
+
+- name: Reset ssh connection to allow user changes to affect
+  meta: reset_connection
+
+- name: Get which group ubuntu belongs to output
+  command: groups ubuntu
+  register: groups_after
+  
+- debug:
+    var: groups_after.stdout
+
+- name: Restart docker daemon in case still got permision deny when trying to connect socket
+  become: true
+  command: service docker restart
