@@ -146,6 +146,36 @@
   become: true
   command: mv ./kubectl /usr/local/bin/
 
+- name: Retrieve S3 bucket name
+  shell: /home/ubuntu/.local/bin/aws s3 ls | awk '{print $3}'
+  register: KOPS_STATE_STORE
+
+- debug:
+    var: KOPS_STATE_STORE.stdout
+
+- name: Describe aws availability zones so status become available
+  command: /home/ubuntu/.local/bin/aws ec2 describe-availability-zones --region us-east-2
+
+- name: Generate ~/.ssh RSA key if not exist 
+  command: ssh-keygen -q -t rsa -f /home/ubuntu/.ssh/id_rsa -C "" -N ""
+  args:
+    creates: /home/ubuntu/.ssh/id_rsa
+
+- name: Check whether cluster exist in kops state store(S3) 
+  shell: kops get cluster --state=s3://{{KOPS_STATE_STORE.stdout}} | awk ' $1 == "{{lookup('env','CLUSTER_NAME')}}" {print $1}' 
+  register: result
+
+- debug:
+    var: result.stdout
+#skip create and update if cluster exist
+- name: Create cluster config file if no such cluster
+  command: kops create cluster --name={{lookup('env','CLUSTER_NAME')}} \ --zones=us-east-2a \ --state=s3://{{KOPS_STATE_STORE.stdout}}
+  when: result.stdout == ""
+
+- name: Actually build the clutser
+  command: kops update cluster --name={{lookup('env','CLUSTER_NAME')}} \ --state=s3://{{KOPS_STATE_STORE.stdout}} --yes
+  when: reuslt.stdout == ""
+   
 # - name: Make sure image is built
 #     docker_image:
 #       path: /home/ubuntu/markdown-microservice
