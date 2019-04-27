@@ -62,3 +62,55 @@
 - name: Restart docker daemon in case still got permision deny when trying to connect socket
   become: true
   command: service docker restart
+
+# - name: Create markdown-microservice directory
+#   file:
+#     path: "/home/ubuntu/markdown-microservice"
+#     state: directory
+#     mode: 0644
+
+- name: Git clone markdown-microservice repo
+  git:
+    repo: "https://github.com/oscardoudou/markdown-microservice"
+    dest: "/home/ubuntu/markdown-microservice"
+
+- name: Install pip 
+  become: true
+  apt:
+    name: python3-pip
+
+- name: Install and make sure aws-cli update to date
+  pip:
+    name: awscli
+    extra_args: --upgrade --user
+
+- name: Aws-cli configure AWS_ACCESS_KEY_ID
+  shell: /home/ubuntu/.local/bin/aws configure set aws_access_key_id {{lookup('env', 'AWS_ACCESS_KEY_ID')}}
+
+- name: Aws-cli configure AWS_SECRET_ACCESS_KEY
+  command: /home/ubuntu/.local/bin/aws configure set aws_secret_access_key {{lookup('env','AWS_SECRET_ACCESS_KEY')}}
+
+- name: Aws-cli configure region
+  command: /home/ubuntu/.local/bin/aws configure set default.region us-east-2
+
+- name: Get docker login authenticate command for your registry
+  command: /home/ubuntu/.local/bin/aws ecr get-login --no-include-email
+  register: auth_command
+  
+# this is actually not a big deal, since if he doesn't have you aws credential there's no way he print off this docker auth command
+# - debug:
+#     var: auth_command.stdout
+
+- name: Run docker login auth command
+  command: "{{auth_command.stdout}}"
+
+- name: Pull image from ecr
+  command: docker pull 187167544325.dkr.ecr.us-east-2.amazonaws.com/test-repository
+
+
+# - name: Make sure image is built
+#     docker_image:
+#       path: /home/ubuntu/markdown-microservice
+#       name: {}
+#       tag: v1
+#       push:
