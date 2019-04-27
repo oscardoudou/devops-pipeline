@@ -64,6 +64,7 @@ This milestone consisted of 4 major tasks:
 * extract microservice code, containerlize that part of code and modify origin server.js 
 * cd servers and run node aws-dev.js to provision Dev server, where we set up all requirement for deploy k8s
 * require access to S3 bucket service and ECR(Elastic Container Registry) 
+* set CLUSTER_NAME env
 * ansible-playbook -i /home/vagrant/inventory infrastructure.yml, deploy requirement like docker, aws-cli, kops, kubectl
 
 ### 3. Special Component
