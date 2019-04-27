@@ -96,7 +96,7 @@
 - name: Get docker login authenticate command for your registry
   command: /home/ubuntu/.local/bin/aws ecr get-login --no-include-email
   register: auth_command
-  
+
 # this is actually not a big deal, since if he doesn't have you aws credential there's no way he print off this docker auth command
 # - debug:
 #     var: auth_command.stdout
@@ -107,6 +107,44 @@
 - name: Pull image from ecr
   command: docker pull 187167544325.dkr.ecr.us-east-2.amazonaws.com/test-repository
 
+- name: Retrieve kops_version
+  shell: curl -s https://api.github.com/repos/kubernetes/kops/releases/latest | grep tag_name | cut -d '"' -f 4
+  register: kops_version
+
+- debug:
+    var: kops_version.stdout
+
+- name: Download kops script
+  command: curl -Lo kops https://github.com/kubernetes/kops/releases/download/{{kops_version.stdout}}/kops-linux-amd64
+
+- name: Make kops script executable
+  file: 
+    path: ./kops
+    mode: a+x
+
+- name: Move kops script to /usr/local/bin/
+  become: true
+  command: mv ./kops /usr/local/bin/
+  
+
+- name: Retrieve kubectl_version
+  shell: curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt
+  register: kubectl_version
+
+- debug:
+    var: kubectl_version.stdout
+
+- name: Download kubectl script
+  command: curl -Lo kubectl https://storage.googleapis.com/kubernetes-release/release/{{kubectl_version.stdout}}/bin/linux/amd64/kubectl
+
+- name: Make kubectl script executable
+  file: 
+    path: ./kubectl
+    mode: a+x
+
+- name: Move kubectl script to /usr/local/bin/
+  become: true
+  command: mv ./kubectl /usr/local/bin/
 
 # - name: Make sure image is built
 #     docker_image:
