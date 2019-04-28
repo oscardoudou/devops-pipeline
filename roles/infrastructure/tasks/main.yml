@@ -231,6 +231,31 @@
     repo: "https://github.com/arpitashekhar/checkbox.io"
     dest: "/home/ubuntu/checkbox.io"
 
+- name: Replace url in server.js
+  shell: sed -i "/url/c\            url{{':'}} \'http:\/\/{{external_ip.stdout}}:8080\/markdown\'," server.js
+  args:
+    chdir: /home/ubuntu/checkbox.io/server-side/site/
+
+- name: Git config  
+  shell: echo "[push]" > /home/ubuntu/.gitconfig && echo "        default = matching" >> /home/ubuntu/.gitconfig &&  echo "[user]" >> /home/ubuntu/.gitconfig && echo "        name = {{lookup('env','git_username')}}" >> /home/ubuntu/.gitconfig && echo "        email = {{lookup('env','git_email')}}" >> /home/ubuntu/.gitconfig
+
+- name: Git credentials if you have special char follow (https://www.w3schools.com/tags/ref_urlencode.asp) mapping
+  shell: echo "https://{{lookup('env','git_username')}}:{{lookup('env','git_password')}}@github.com" > /home/ubuntu/.git-credentials
+
+# - name: modify
+#   shell: touch a.txt
+#   args:
+#     chdir: /home/ubuntu/test-credential
+
+- name: Git commit
+  shell: git add server.js && git commit -m "update url"
+  args: 
+    chdir: /home/ubuntu/checkbox.io/server-side/site/
+
+- name: Git credential.helper store and push
+  shell: git config credential.helper store && git push origin master 
+  args: 
+    chdir: /home/ubuntu/checkbox.io/server-side/site/
 
 # - name: Make sure image is built
 #     docker_image:
