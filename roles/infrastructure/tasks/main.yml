@@ -104,8 +104,92 @@
 - name: Run docker login auth command
   command: "{{auth_command.stdout}}"
 
-- name: Pull image from ecr
-  command: docker pull 187167544325.dkr.ecr.us-east-2.amazonaws.com/test-repository
+- name: Install jq for json parsing
+  become: true
+  apt:
+    name: jq
+
+- name: Check test-repository exist or not(A repo wont have image until docker push)
+#   shell: /home/ubuntu/.local/bin/aws ecr describe-repositories | awk '$2 == "\"demo-repository\"," {print prev} {prev=$2} '
+  shell: /home/ubuntu/.local/bin/aws ecr describe-repositories | jq -r '.repositories[].repositoryUri' | awk ' /test-repository/ {print $1}'
+  register: uri
+
+- debug:
+    var: uri.stdout
+
+- name: Check latest images exist on ecr or not 
+#   shell: /home/ubuntu/.local/bin/aws ecr describe-images --repository-name demo-repository | awk ' $1 == "\"v1\"" {print $1}'
+  shell: /home/ubuntu/.local/bin/aws ecr describe-images --repository-name test-repository | jq '.imageDetails[].imageTags'
+  when: uri.stdout != "" 
+  register: image
+
+- debug:
+    var: image.stdout
+
+- name: Pull image from ecr only if latest images exist
+  command: docker pull 187167544325.dkr.ecr.us-east-2.amazonaws.com/test-repository:latest
+  when: 
+    - uri.stdout != "" 
+    # - image.stdout != "VARIABLE IS NOT DEFINED!"
+    - image.stdout != ""
+
+- name: Create repository
+#   shell: /home/ubuntu/.local/bin/aws ecr create-repository --repository-name test-repository | awk ' $1 =="\"repositoryUri\":" {print $2}'
+  shell: /home/ubuntu/.local/bin/aws ecr create-repository --repository-name test-repository | jq -r '.repository.repositoryUri'
+  register: uri_new
+  when: uri.stdout == ""
+
+- debug:
+    var: uri_new.stdout
+
+- name: Check if have a latest image locally if dont have latest on cloud repo(ecr)
+  shell: docker images | awk ' $2 == "latest" { print $2 }' 
+#   image var is skipped not actually "", so when access its stdout field would have error, however local_latest_tag.stdout is actually ""  
+#   when: (image.stdout == "VARIABLE IS NOT DEFINED!") or (image.stdout == "") 
+  register: local_latest_tag
+
+- debug:
+    var: local_latest_tag.stdout
+
+- name: Build image if don't even have local latest image
+  shell: docker build . -t test:latest
+  args:
+    chdir: /home/ubuntu/markdown-microservice
+#   when: 
+    # - local_latest_tag.stdout == ""
+    # - image.stdout == ""
+
+- name : Tag image just created with new repositoryUri value 
+  shell: docker tag test:latest {{uri_new.stdout}}:latest 
+  when: 
+    uri.stdout == ""
+    # - local_latest_tag.stdout == ""
+    # - image.stdout == ""
+
+- name : Tag image just created with  existed repositoryUrivalue 
+  shell: docker tag test:latest {{uri.stdout}}:latest
+  when: 
+    uri.stdout != ""
+
+- name: Docker push uri_new repo and show result
+  shell: docker push {{uri_new.stdout}}:latest
+  register: result
+  when: 
+    uri.stdout == ""
+    # - local_latest_tag.stdout == ""
+    # - image.stdout == ""
+
+- debug:
+    var: result.stdout
+
+- name: Docker push uri repo and show result
+  shell: docker push {{uri.stdout}}:latest
+  register: result
+  when: 
+    uri.stdout != ""
+
+- debug:
+    var: result.stdout
 
 - name: Retrieve kops_version
   shell: curl -s https://api.github.com/repos/kubernetes/kops/releases/latest | grep tag_name | cut -d '"' -f 4
@@ -146,9 +230,24 @@
   become: true
   command: mv ./kubectl /usr/local/bin/
 
+# - name: Check s3 bucket created or not
+#   shell: home/ubuntu/.local/bin/aws s3 ls | awk '$3 == "{{lookup('env','KOPS_STATE_STORE')}" {print $3}'
+#   register: bucket
+
+# - debug: 
+#     var: bucket.stdout
+
+# - name: Create bucket if not exist
+#   shell: home/ubuntu/.local/bin/aws s3api create-bucket \
+#     --bucket {{lookup('env','KOPS_STATE_STORE')} \
+#     --region us-east-1
+#   register: KOPS_STATE_STORE1   
+#   when: bucket.stdout == ""
+
 - name: Retrieve S3 bucket name
   shell: /home/ubuntu/.local/bin/aws s3 ls | awk '{print $3}'
   register: KOPS_STATE_STORE
+#   when: bucket.stdout != ""
 
 - debug:
     var: KOPS_STATE_STORE.stdout
