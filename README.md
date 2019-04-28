@@ -35,44 +35,23 @@ This milestone consisted of 4 major tasks:
 
 ### 1. Deployment Component
 
-###### Within Jenkins server (Checkbox)--
-
-
-
-
-### 2. Infrastructure Component
-
-
-### 3. Special Component
-We use New Relic as a software monitoring tool. It provides customized analytics and application performance management solution that gives in-depth data visibility and analytics. New Relic's Application Monitoring tool or APM, provides us with detailed performance metrics for every aspect of our environment. We can see metrics like throughput, memory usage and CPU usage to monitor the system. We also show the web transaction time chart and the database transaction performance given by the underlying MongoDB database. 
-
-To set up New Relic, we first install the NodeJS APM distribution available for New Relic. We copy the license key to newrelic.js file to connect our app with New Relic dashboard and finally include it in our startup script to send real time app data to New Relic. 
-
-
-
-## How to run the code
-
-Ansible-server is the local VM that we use to provision our Jenkins server on AWS. 
-#### Deployment Component
 
 * Sign up with [AWS](https://aws.amazon.com/premiumsupport/plans/) to create an account and create an [access key](https://docs.aws.amazon.com/general/latest/gr/managing-aws-access-keys.html)
 
-* Run baker bake && baker ssh
-* cd /DevOps-Project and run install.sh file to install node dependencies
+* Run the ansible-server and install.sh file to install node dependencies
 * Set Environment variables: AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY with the respective values
-* cd servers and run node aws-jenkins.js to provision Jenkins server
-* ansible-playbook -i /home/vagrant/inventory jenkins.yml
-
+* Run node aws-jenkins.js to provision Jenkins server
+* Finally run the ansible file : jenkins.yml
 ###### Within Jenkins server (Checkbox)--
-* ssh into Jenkins server just configured from the current VM using the command ``` ssh -i /home/vagrant/jenkins/Jenkins.pem ubuntu@<jenkins_ip> ``` [NOTE: You will find the ```<jenkins_ip>``` in the var file or from the AWS running instance named Jenkins]
+
+* ssh into Jenkins server 
 * Set Environment variables: AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY with the respective values
-* Within the Jenkins server , cd /home/ubuntu/checkbox.io and make a small change (like touch test)
-* run the commands: ``` git add ,  git commit -m <message> ,  git push checkbox master ```
-[NOTE: checkbox is the remote set towards /home/ubuntu/deploy/checkbox-www for the green-blue deployment] 
+* Within the checkbox.io repository make a small change (like touch test) and push to checkbox master to triger the hook. [NOTE: checkbox is the remote set towards /home/ubuntu/deploy/checkbox-www for the green-blue deployment] 
 * You should be finding the git hook going live by first creating the Checkbox instance and then running configuration through a playbook.
 * Go to AWS dashboard to see the Checkbox running green and copy the public IP to a browser to see the Checkbox application work well.
 
-##### 2. Infrastructure Component
+
+### 2. Infrastructure Component
 
 *extract microservice code, containerlize that part of code and modify origin server.js*
 
@@ -86,12 +65,11 @@ If first 2 step is already done during Deployment Component, then no need creata
 * cd servers and run node aws-dev.js to provision Dev server, where we run our infrastrutrue playbook.
 * Set Environment variable CLUSTER_NAME
 
-
-
-#### 3. Special Component(Monitoring)
+### 3. Special Component
 We use New Relic as a software monitoring tool. It provides customized analytics and application performance management solution that gives in-depth data visibility and analytics. New Relic's Application Monitoring tool or APM, provides us with detailed performance metrics for every aspect of our environment. We can see metrics like throughput, memory usage and CPU usage to monitor the system. We also show the web transaction time chart and the database transaction performance given by the underlying MongoDB database. 
 
 To set up New Relic, we first install the NodeJS APM distribution available for New Relic. We copy the license key to newrelic.js file to connect our app with New Relic dashboard and finally include it in our startup script to send real time app data to New Relic. 
+
 
 * Make an account on [New Relic](https://newrelic.com/), set an environment variable NEW_RELIC_LICENSE_KEY in the local VM using the license key available on your account. 
 * Follow the steps to deploy Checkbox.io on AWS
