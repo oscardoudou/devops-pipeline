@@ -34,8 +34,26 @@ There are 2 virtual machines called ansible-server and jenkins-server. The forme
 This milestone consisted of 4 major tasks:
 
 ### 1. Deployment Component
-##### Relevant Files:
 
+###### Within Jenkins server (Checkbox)--
+
+
+
+
+### 2. Infrastructure Component
+
+
+### 3. Special Component
+We use New Relic as a software monitoring tool. It provides customized analytics and application performance management solution that gives in-depth data visibility and analytics. New Relic's Application Monitoring tool or APM, provides us with detailed performance metrics for every aspect of our environment. We can see metrics like throughput, memory usage and CPU usage to monitor the system. We also show the web transaction time chart and the database transaction performance given by the underlying MongoDB database. 
+
+To set up New Relic, we first install the NodeJS APM distribution available for New Relic. We copy the license key to newrelic.js file to connect our app with New Relic dashboard and finally include it in our startup script to send real time app data to New Relic. 
+
+
+
+## How to run the code
+
+Ansible-server is the local VM that we use to provision our Jenkins server on AWS. 
+#### Deployment Component
 
 * Sign up with [AWS](https://aws.amazon.com/premiumsupport/plans/) to create an account and create an [access key](https://docs.aws.amazon.com/general/latest/gr/managing-aws-access-keys.html)
 
@@ -54,12 +72,7 @@ This milestone consisted of 4 major tasks:
 * You should be finding the git hook going live by first creating the Checkbox instance and then running configuration through a playbook.
 * Go to AWS dashboard to see the Checkbox running green and copy the public IP to a browser to see the Checkbox application work well.
 
-
-
-
-
-### 2. Infrastructure Component
-##### Relevant Files:
+##### 2. Infrastructure Component
 
 *extract microservice code, containerlize that part of code and modify origin server.js*
 
@@ -72,12 +85,10 @@ If first 2 step is already done during Deployment Component, then no need creata
 * Set Environment variables: AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY
 * cd servers and run node aws-dev.js to provision Dev server, where we run our infrastrutrue playbook.
 * Set Environment variable CLUSTER_NAME
-```
-cd /DevOps-Project
-ansible-playbook -i /home/vagrant/inventory infrastructure.yml
-```
 
-### 3. Special Component
+
+
+#### 3. Special Component(Monitoring)
 We use New Relic as a software monitoring tool. It provides customized analytics and application performance management solution that gives in-depth data visibility and analytics. New Relic's Application Monitoring tool or APM, provides us with detailed performance metrics for every aspect of our environment. We can see metrics like throughput, memory usage and CPU usage to monitor the system. We also show the web transaction time chart and the database transaction performance given by the underlying MongoDB database. 
 
 To set up New Relic, we first install the NodeJS APM distribution available for New Relic. We copy the license key to newrelic.js file to connect our app with New Relic dashboard and finally include it in our startup script to send real time app data to New Relic. 
@@ -85,54 +96,3 @@ To set up New Relic, we first install the NodeJS APM distribution available for 
 * Make an account on [New Relic](https://newrelic.com/), set an environment variable NEW_RELIC_LICENSE_KEY in the local VM using the license key available on your account. 
 * Follow the steps to deploy Checkbox.io on AWS
 * After completion, you should be able to see the data reported from the application on New Relic dashbobard.
-
-
-
-## How to run the code
-1. Clone this repository: ```git clone https://github.ncsu.edu/ashekha/DevOps-Project.git ```
-
-2. Run shell script inside the DevOps-Project directory to setup the ansible and jenkins server:
-```
-cd DevOps-Project
-sh servers.sh
-```
-
-3. Setup ssh keys to connect between the two servers:
-From your host machine, create a new public/private key pair, running the following command, and hitting enter for the default prompts
-```
-ssh-keygen -t rsa -b 4096 -C "jenkins-server" -f jenkins-server
-```
-
-#### Setting up the private key
-
-One nice trick is to use a copy utility to copy a file into your copy/paste buffer:
-
-* Mac: `pbcopy < jenkins-server`
-* Windows: `clip < jenkins-server`
-
-Inside the ansible-server using a file editor, paste and store your private key in a file:
-
-```bash
-ansible-server $ vim ~/.ssh/jenkins-server
-# Make sure key is not readable by others.
-ansible-server $ chmod 600 ~/.ssh/jenkins-server
-# We're done here, go back to host
-ansible-server $ exit
-```
-
-#### Setting up the public key
-
-Copy the jenkins-server.pub file from your host.
-
-Go inside the jenkins-server.
-
-Using a file editor, add the public key to the list of authorized keys:
-
-```bash
-jenkins-server $ vim ~/.ssh/authorized_keys
-jenkins-server $ exit
-```
-To check the connection between the servers run:
-```
-ansible all -m ping -i inventory
-```
