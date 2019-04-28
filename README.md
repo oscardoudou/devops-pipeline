@@ -1,5 +1,7 @@
 # Deployment, Infrastucture and Special - Milestone 3
 
+### Project Demo
+A detailed video for project demo including our entire pipeline can be found [here](). 
 
 ### Screencast
 A detailed video with the steps can be found [here]().
@@ -24,9 +26,10 @@ You need to have [VirtualBox 5.2](https://www.virtualbox.org/wiki/Download_Old_B
 * Java : v1.8
 * MySql : v14.14 Distrib 5.7.25
 * Apache Maven : v3.3.9
-* Jacoco : v3.0.4
-* Esprima : v4.0.0
-* Checkstyle : v4.0.0
+* New Relic
+* Java Redis client : v2.8.1
+* Docker 
+* Kubernetes 
 
 ## Project Setup
 
@@ -34,7 +37,7 @@ This milestone consisted of 4 major tasks:
 
 ### 1. Deployment Component
 
-For the deployment component we provision the Jenkins ECE2 instance from our local ansible-server VM using [aws-jenkins.js](https://github.ncsu.edu/ashekha/DevOps-Project/blob/DeploymentInfraMilestone/servers/aws-jenkins.js) file. From the Jenkins server we build the iTrust and Checkbox application and run the appications on two seperate ECE2 instances using the file [aws-checkbox.js](https://github.ncsu.edu/ashekha/DevOps-Project/blob/DeploymentInfraMilestone/servers/aws-checkbox.js) and [aws-itrust.js](https://github.ncsu.edu/ashekha/DevOps-Project/blob/DeploymentInfraMilestone/servers/aws-itrust.js). The post-receive hooks trigger the set up of applications on these ECE2 instances.
+For the deployment component we provision the Jenkins EC2 instance from our local ansible-server VM using [aws-jenkins.js](https://github.ncsu.edu/ashekha/DevOps-Project/blob/DeploymentInfraMilestone/servers/aws-jenkins.js) file. From the Jenkins server we build the iTrust and Checkbox application and run the appications on two seperate EC2 instances using the file [aws-checkbox.js](https://github.ncsu.edu/ashekha/DevOps-Project/blob/DeploymentInfraMilestone/servers/aws-checkbox.js) and [aws-itrust.js](https://github.ncsu.edu/ashekha/DevOps-Project/blob/DeploymentInfraMilestone/servers/aws-itrust.js). The post-receive hooks trigger the set up of applications on these ECE2 instances.
 
 * Sign up with [AWS](https://aws.amazon.com/premiumsupport/plans/) to create an account and create an [access key](https://docs.aws.amazon.com/general/latest/gr/managing-aws-access-keys.html)
 * Run the ansible-server and install.sh file to install node dependencies
@@ -52,13 +55,13 @@ For the deployment component we provision the Jenkins ECE2 instance from our loc
 work well.
 
 ### 2. Feature Flag
-The configuration server for feauture flag is same as iTrust ECE2 instance. We are using the Java Redis client (Jedis)[https://www.baeldung.com/jedis-java-redis-client-library] to implement feature flag in production. We have selected the reset password API as the feature to enable and disable. 
+The configuration server for feature flag is same as iTrust EC2 instance. We are using the Java Redis client (Jedis)[https://www.baeldung.com/jedis-java-redis-client-library] to implement feature flag in production. We have selected the reset password API as the feature to enable and disable. 
  
 ### 3. Infrastructure Component
 
-*extract microservice code, containerlize that part of code and modify origin server.js*
+We extract microservice code, containerlize that part of code and modify origin server.js
 
-*require access to S3 bucket service(backup k8s state) and ECR(Elastic Container Registry register docker images) assume you one bucket in S3 and one repo in ECR* 
+For this task, we require access to S3 bucket service(backup k8s state) and ECR(Elastic Container Registry register docker images) assume you one bucket in S3 and one repo in ECR
 
 If first 2 step is already done during Deployment Component, then no need creata a VM or install node again. Jump to step 3
 
