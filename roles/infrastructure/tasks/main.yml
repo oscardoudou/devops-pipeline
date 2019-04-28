@@ -174,8 +174,64 @@
 
 - name: Actually build the clutser
   command: kops update cluster --name={{lookup('env','CLUSTER_NAME')}} \ --state=s3://{{KOPS_STATE_STORE.stdout}} --yes
-  when: reuslt.stdout == ""
+  when: result.stdout == ""
    
+- name: Wait until cluster is ready
+  shell: kops validate cluster --state=s3://{{KOPS_STATE_STORE.stdout}}
+  register: result
+  until: result.stdout.find("is ready") != -1
+  retries: 25
+  delay: 10
+
+- name: Check whether deployment already exist
+  shell: kubectl get deployments | awk '$1 == "test" { print $1}'
+  register: result
+
+- debug:
+    var: result.stdout
+
+- name: Create deployment object then run application in cluster if not such deployment
+  command: kubectl run test --replicas=5 --labels="run=load-balancer-example" --image=187167544325.dkr.ecr.us-east-2.amazonaws.com/test-repository:latest --port=8080
+  when: result.stdout == ""
+
+# - name: show deployment
+#   command: kubectl describe deployment test
+#   register: result
+
+# - debug:
+#     var: result.stdout 
+
+- name: Check whether service already exist
+  shell: kubectl get services markdown | awk ' $1 == "markdown" { print $1}'
+  register: result
+
+- debug:
+    var: result.stdout
+
+- name: Create service object that expose the deployment
+  command: kubectl expose deployment test --port=8080 --target-port=3001 --type=LoadBalancer --name=markdown
+  when: result.stdout == ""
+ 
+- name: Show info about the service
+  command: kubectl get services markdown
+  register: result
+
+- debug:
+    var: result.stdout
+
+- name: Show external IP address to access the applicatin
+  shell: kubectl describe services markdown | awk ' $1 == "LoadBalancer" { print $3 }'
+  register: external_ip
+
+- debug:
+    var: external_ip.stdout
+
+- name: Git clone checkbox repo
+  git:
+    repo: "https://github.com/arpitashekhar/checkbox.io"
+    dest: "/home/ubuntu/checkbox.io"
+
+
 # - name: Make sure image is built
 #     docker_image:
 #       path: /home/ubuntu/markdown-microservice
