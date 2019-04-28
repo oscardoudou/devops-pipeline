@@ -66,7 +66,7 @@ If first 2 step is already done during Deployment Component, then no need creata
 * Set Environment variables: AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY
 * cd servers and run node aws-dev.js to provision Dev server, where we run our infrastructure playbook.
 * Set Environment variable CLUSTER_NAME
- For more detailed explaination of tasks present in ansible script (infrastructure.yml), go to (this link)[https://github.ncsu.edu/yzhan222/markdown-microservice]
+ For more detailed explaination of tasks present in ansible script (infrastructure.yml), go to [this link](https://github.ncsu.edu/yzhan222/markdown-microservice)
 ### 3. Special Component
 We use New Relic as a software monitoring tool. It provides customized analytics and application performance management solution that gives in-depth data visibility and analytics. New Relic's Application Monitoring tool or APM, provides us with detailed performance metrics for every aspect of our environment. We can see metrics like throughput, memory usage and CPU usage to monitor the system. We also show the web transaction time chart and the database transaction performance given by the underlying MongoDB database. 
 
