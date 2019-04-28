@@ -35,13 +35,15 @@ This milestone consisted of 4 major tasks:
 
 ### 1. Deployment Component
 
+For the deployment component we provision the Jenkins ECE2 instance from our local ansible-server VM using [aws-jenkins.js](https://github.ncsu.edu/ashekha/DevOps-Project/blob/DeploymentInfraMilestone/servers/aws-jenkins.js) file. From the Jenkins server we build the iTrust and Checkbox application and run the appications on two seperate ECE2 instances using the file [aws-checkbox.js](https://github.ncsu.edu/ashekha/DevOps-Project/blob/DeploymentInfraMilestone/servers/aws-checkbox.js) and [aws-itrust.js](https://github.ncsu.edu/ashekha/DevOps-Project/blob/DeploymentInfraMilestone/servers/aws-itrust.js). The post-receive hooks trigger the set up of applications on these ECE2 instances.
 
 * Sign up with [AWS](https://aws.amazon.com/premiumsupport/plans/) to create an account and create an [access key](https://docs.aws.amazon.com/general/latest/gr/managing-aws-access-keys.html)
-
 * Run the ansible-server and install.sh file to install node dependencies
 * Set Environment variables: AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY with the respective values
 * Run node aws-jenkins.js to provision Jenkins server
 * Finally run the ansible file : jenkins.yml
+
+Feature Flag: the configuration server for feauture flag is same as iTrust ECE2 instance. We are using the Java Redis client (Jedis)[https://www.baeldung.com/jedis-java-redis-client-library] to implement feature flag in production. We have selected the reset password API as the feature to enable and disable. 
 ###### Within Jenkins server (Checkbox)--
 
 * ssh into Jenkins server 
@@ -55,16 +57,16 @@ This milestone consisted of 4 major tasks:
 
 *extract microservice code, containerlize that part of code and modify origin server.js*
 
-*require access to S3 bucket service(backup k8s state) and ECR(Elastic Container Registry register docker images) assume you one bucket in S3 and one repo in ECR*
+*require access to S3 bucket service(backup k8s state) and ECR(Elastic Container Registry register docker images) assume you one bucket in S3 and one repo in ECR* 
 
 If first 2 step is already done during Deployment Component, then no need creata a VM or install node again. Jump to step 3
 
 * Run baker bake && baker ssh
 * cd /DevOps-Project and run install.sh file to install node dependencies
 * Set Environment variables: AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY
-* cd servers and run node aws-dev.js to provision Dev server, where we run our infrastrutrue playbook.
+* cd servers and run node aws-dev.js to provision Dev server, where we run our infrastructure playbook.
 * Set Environment variable CLUSTER_NAME
-
+ For more detailed explaination of tasks present in ansible script (infrastructure.yml), go to (this link)[https://github.ncsu.edu/yzhan222/markdown-microservice]
 ### 3. Special Component
 We use New Relic as a software monitoring tool. It provides customized analytics and application performance management solution that gives in-depth data visibility and analytics. New Relic's Application Monitoring tool or APM, provides us with detailed performance metrics for every aspect of our environment. We can see metrics like throughput, memory usage and CPU usage to monitor the system. We also show the web transaction time chart and the database transaction performance given by the underlying MongoDB database. 
 
