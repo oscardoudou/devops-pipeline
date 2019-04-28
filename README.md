@@ -8,10 +8,10 @@ A detailed video with the steps can be found [here]().
 
 ### Team Members:
 
-* Arpita (ashekha) - 
-* Srija  (sgangul2) - 
-* Dyuti  (dde) - 
-* Yichi  (yzhan222) - 
+* Arpita (ashekha) - Deployment, Feature flags.
+* Srija  (sgangul2) - Deployment, Feature flags.
+* Dyuti  (dde) - Special Component, Testing.
+* Yichi  (yzhan222) - Infrastructure.
 
 ## Prerequisites
 You need to have [VirtualBox 5.2](https://www.virtualbox.org/wiki/Download_Old_Builds_5_2) installed on your machine along with [Baker](https://docs.getbaker.io/installation/) which will be used to create the virtual machines (Ubuntu 16.04 LTS).
@@ -32,6 +32,8 @@ You need to have [VirtualBox 5.2](https://www.virtualbox.org/wiki/Download_Old_B
 * Kubernetes 
 
 ## Project Setup
+
+We detail our milestone in terms of separate tasks to explain the functionalities achieved in each of them.
 
 This milestone consisted of 4 major tasks:
 
@@ -56,21 +58,22 @@ work well.
 
 ### 2. Feature Flag
 The configuration server for feature flag is same as iTrust EC2 instance. We are using the Java Redis client (Jedis)[https://www.baeldung.com/jedis-java-redis-client-library] to implement feature flag in production. We have selected the reset password API as the feature to enable and disable. 
+It will display "Feature Disabled" and the submit button will be disabled on the username page when the redis key is assigned to false whereas it will display the originally intended messages and the button will work as usual when the key is turned to true.
  
 ### 3. Infrastructure Component
 
-We extract microservice code, containerlize that part of code and modify origin server.js
+We extract microservice code, containerlize that part of code and modify original server.js
 
-For this task, we require access to S3 bucket service(backup k8s state) and ECR(Elastic Container Registry register docker images) assume you one bucket in S3 and one repo in ECR
+For this task, we require access to S3 bucket service(backup k8s state) and ECR(Elastic Container Registry register docker images) and we assume you have one bucket in S3 and one repo in ECR.
 
-If first 2 step is already done during Deployment Component, then no need creata a VM or install node again. Jump to step 3
+If first 2 step is already done during Deployment Component, then no need create a VM or install node again. Jump to step 3
 
 * Run baker bake && baker ssh
 * cd /DevOps-Project and run install.sh file to install node dependencies
 * Set Environment variables: AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY
 * cd servers and run node aws-dev.js to provision Dev server, where we run our infrastructure playbook.
 * Set Environment variable CLUSTER_NAME
- For more detailed explaination of tasks present in ansible script (infrastructure.yml), go to [this link](https://github.ncsu.edu/yzhan222/markdown-microservice)
+ For more detailed explanation of tasks present in ansible script (infrastructure.yml) or the extensive steps to replicate,please go to [this link](https://github.ncsu.edu/yzhan222/markdown-microservice)
  
 ### 4. Special Component
 We use New Relic as a software monitoring tool. It provides customized analytics and application performance management solution that gives in-depth data visibility and analytics. New Relic's Application Monitoring tool or APM, provides us with detailed performance metrics for every aspect of our environment. We can see metrics like throughput, memory usage and CPU usage to monitor the system. We also show the web transaction time chart and the database transaction performance given by the underlying MongoDB database. 
