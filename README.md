@@ -61,11 +61,21 @@ This milestone consisted of 4 major tasks:
 ### 2. Infrastructure Component
 ##### Relevant Files:
 
-* extract microservice code, containerlize that part of code and modify origin server.js 
-* cd servers and run node aws-dev.js to provision Dev server, where we set up all requirement for deploy k8s
-* require access to S3 bucket service and ECR(Elastic Container Registry) 
-* set CLUSTER_NAME env
-* ansible-playbook -i /home/vagrant/inventory infrastructure.yml, deploy requirement like docker, aws-cli, kops, kubectl
+*extract microservice code, containerlize that part of code and modify origin server.js*
+
+*require access to S3 bucket service(backup k8s state) and ECR(Elastic Container Registry register docker images) assume you one bucket in S3 and one repo in ECR*
+
+If first 2 step is already done during Deployment Component, then no need creata a VM or install node again. Jump to step 3
+
+* Run baker bake && baker ssh
+* cd /DevOps-Project and run install.sh file to install node dependencies
+* Set Environment variables: AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY
+* cd servers and run node aws-dev.js to provision Dev server, where we run our infrastrutrue playbook.
+* Set Environment variable CLUSTER_NAME
+```
+cd /DevOps-Project
+ansible-playbook -i /home/vagrant/inventory infrastructure.yml
+```
 
 ### 3. Special Component
 ##### Relevant Files:
