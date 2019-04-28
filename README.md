@@ -30,7 +30,6 @@ You need to have [VirtualBox 5.2](https://www.virtualbox.org/wiki/Download_Old_B
 
 ## Project Setup
 
-There are 2 virtual machines called ansible-server and jenkins-server. The former is initialized with ansible and playbooks are run to configure the jenkins-server.
 This milestone consisted of 4 major tasks:
 
 ### 1. Deployment Component
@@ -43,17 +42,19 @@ For the deployment component we provision the Jenkins ECE2 instance from our loc
 * Run node aws-jenkins.js to provision Jenkins server
 * Finally run the ansible file : jenkins.yml
 
-Feature Flag: the configuration server for feauture flag is same as iTrust ECE2 instance. We are using the Java Redis client (Jedis)[https://www.baeldung.com/jedis-java-redis-client-library] to implement feature flag in production. We have selected the reset password API as the feature to enable and disable. 
-###### Within Jenkins server (Checkbox)--
+ To run the Checkbox and iTrust applications: 
 
 * ssh into Jenkins server 
 * Set Environment variables: AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY with the respective values
-* Within the checkbox.io repository make a small change (like touch test) and push to checkbox master to triger the hook. [NOTE: checkbox is the remote set towards /home/ubuntu/deploy/checkbox-www for the green-blue deployment] 
-* You should be finding the git hook going live by first creating the Checkbox instance and then running configuration through a playbook.
-* Go to AWS dashboard to see the Checkbox running green and copy the public IP to a browser to see the Checkbox application work well.
+* Within the checkbox.io/iTrust repository make a small change (like touch test) and push to checkbox/iTrust(set remote for deployment repositories) master to triger the hook. 
+* You should be finding the git hook going live by first creating the Checkbox/iTrust instances and then running configurations through a playbook.
+* Go to AWS dashboard to see the Checkbox and iTrust running green and copy the public IP to a browser to see the Checkbox and iTrust applications
+work well.
 
-
-### 2. Infrastructure Component
+### 2. Feature Flag
+The configuration server for feauture flag is same as iTrust ECE2 instance. We are using the Java Redis client (Jedis)[https://www.baeldung.com/jedis-java-redis-client-library] to implement feature flag in production. We have selected the reset password API as the feature to enable and disable. 
+ 
+### 3. Infrastructure Component
 
 *extract microservice code, containerlize that part of code and modify origin server.js*
 
@@ -67,7 +68,8 @@ If first 2 step is already done during Deployment Component, then no need creata
 * cd servers and run node aws-dev.js to provision Dev server, where we run our infrastructure playbook.
 * Set Environment variable CLUSTER_NAME
  For more detailed explaination of tasks present in ansible script (infrastructure.yml), go to [this link](https://github.ncsu.edu/yzhan222/markdown-microservice)
-### 3. Special Component
+ 
+### 4. Special Component
 We use New Relic as a software monitoring tool. It provides customized analytics and application performance management solution that gives in-depth data visibility and analytics. New Relic's Application Monitoring tool or APM, provides us with detailed performance metrics for every aspect of our environment. We can see metrics like throughput, memory usage and CPU usage to monitor the system. We also show the web transaction time chart and the database transaction performance given by the underlying MongoDB database. 
 
 To set up New Relic, we first install the NodeJS APM distribution available for New Relic. We copy the license key to newrelic.js file to connect our app with New Relic dashboard and finally include it in our startup script to send real time app data to New Relic. 
