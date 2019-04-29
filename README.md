@@ -112,8 +112,6 @@ We extract microservice code, containerize that part of code and modify original
 
 For this task, we require access to S3 bucket service(backup k8s state) and ECR(Elastic Container Registry register docker images) and we assume you have one bucket in S3 and one repo in ECR.
 
-Kubernetes pods being described for multiple microservices:
-![pods](/images/sc2.PNG?raw=true "pods")
 
 In order to setup the cluster:
 * Set Environment variables: AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY
@@ -126,8 +124,11 @@ Multiple instances of Checkbox via Infrastructure upgrade:
 ![instances](/images/sc1.PNG?raw=true "instances")
 
 
+Kubernetes pods being described for multiple microservices:
+![pods](/images/sc2.PNG?raw=true "pods")
 
- 
+
+
 ### 4. Special Component
 We use New Relic as a software monitoring tool. It provides customized analytics and application performance management solution that gives in-depth data visibility and analytics. New Relic's Application Monitoring tool or APM, provides us with detailed performance metrics for every aspect of our environment. We can see metrics like throughput, memory usage and CPU usage to monitor the system. We also show the web transaction time chart and the database transaction performance given by the underlying MongoDB database. 
 
