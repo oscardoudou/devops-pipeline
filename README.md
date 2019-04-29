@@ -124,31 +124,44 @@ In order to setup the cluster:
 For more detailed explanation of tasks present in ansible script (infrastructure.yml) or the extensive steps to replicate, please go to [this link](https://github.com/oscardoudou/markdown-microservice)
  
 Multiple instances of Checkbox via Infrastructure upgrade:
+
 ![instances](/images/sc1.PNG?raw=true "instances")
 
 
-Kubernetes pods being described for multiple microservices:
+Kubernetes pods (5) being described which host the microservice:
+
 ![pods](/images/sc2.PNG?raw=true "pods")
 
 
 
 ### 4. Special Component
+
 We use New Relic as a software monitoring tool. It provides customized analytics and application performance management solution that gives in-depth data visibility and analytics. New Relic's Application Monitoring tool or APM, provides us with detailed performance metrics for every aspect of our environment. We can see metrics like throughput, memory usage and CPU usage to monitor the system. We also show the web transaction time chart and the database transaction performance given by the underlying MongoDB database. 
+
+To set up New Relic, we first install the NodeJS APM distribution available for New Relic. We copy the license key to newrelic.js file to connect our app with New Relic dashboard and finally include it in our startup script to send real time app data to New Relic. 
+
+* Make an account on [New Relic](https://newrelic.com/), set an environment variable NEW_RELIC_LICENSE_KEY in the local VM using the license key available on your account. 
+* Follow the steps to deploy Checkbox.io on AWS
+* After completion, you should be able to see the data reported from the application on New Relic dashbobard.
 
 We load tested the monitoring task by using [Siege](https://en.wikipedia.org/wiki/Siege_(software)). Concurrent users were simulated and the difference in flame graphs were noted for CPU utilization, memory usage etc. We noticed spikes for the same in sudden increase of users.
 
 Some of the results of montoring are displayed below:
 
 Web transaction time by Checkbox:
+
 ![time](/images/sc9.PNG?raw=true "time")
 
 Top 5 web transactions:
+
 ![web](/images/sc10.PNG?raw=true "web")
 
 MongoDB overview and transaction trends:
+
 ![db](/images/sc11.PNG?raw=true "db")
 
-Entire web post transaction report:
+Web transaction report:
+
 ![post](/images/sc14.PNG?raw=true "post")
 
 Memory usage by the application:
@@ -158,11 +171,3 @@ CPU utilization by the system due to the application over time:
 ![CPU](/images/sc13.PNG?raw=true "CPU")
 
 
-
-To set up New Relic, we first install the NodeJS APM distribution available for New Relic. We copy the license key to newrelic.js file to connect our app with New Relic dashboard and finally include it in our startup script to send real time app data to New Relic. 
-
-
-
-* Make an account on [New Relic](https://newrelic.com/), set an environment variable NEW_RELIC_LICENSE_KEY in the local VM using the license key available on your account. 
-* Follow the steps to deploy Checkbox.io on AWS
-* After completion, you should be able to see the data reported from the application on New Relic dashbobard.
