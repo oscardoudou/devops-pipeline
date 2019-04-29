@@ -46,6 +46,12 @@ You need to have [VirtualBox 5.2](https://www.virtualbox.org/wiki/Download_Old_B
 * CLUSTER_NAME
 * NEW_RELIC_LICENSE_KEY
 
+## Repositories used at several stages:
+
+* [Checkbox local repository](https://github.com/arpitashekhar/checkbox.io)
+* [iTrust local repository](https://github.com/arpitashekhar/iTrust2-v4)
+* [Infrastructure setup explanation for convenience](https://github.ncsu.edu/yzhan222/markdown-microservice)
+
 
 ## Project Setup
 
