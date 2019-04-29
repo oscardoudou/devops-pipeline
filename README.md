@@ -16,6 +16,8 @@ A detailed video with the steps can be found [here]().
 ## Prerequisites
 You need to have [VirtualBox 5.2](https://www.virtualbox.org/wiki/Download_Old_Builds_5_2) installed on your machine along with [Baker](https://docs.getbaker.io/installation/) which will be used to create the virtual machines (Ubuntu 16.04 LTS).
 
+An [AWS](https://aws.amazon.com/premiumsupport/plans/) account is needed to access the EC2 instances created. 
+
 ## Systems and tools used:
 
 * Ansible : v2.7.7
@@ -78,7 +80,7 @@ For the deployment component we provision the Jenkins EC2 instance from our loca
 work well.
 
 ### 2. Feature Flag
-The configuration server for feature flag is same as iTrust EC2 instance. We are using the Java Redis client (Jedis)[https://www.baeldung.com/jedis-java-redis-client-library] to implement feature flag in production. We have selected the reset password API as the feature to enable and disable. 
+The configuration server for feature flag is same as iTrust EC2 instance. We are using the Java Redis client [Jedis](https://www.baeldung.com/jedis-java-redis-client-library) to implement feature flag in production. We have selected the reset password API as the feature to enable and disable. 
 It will display "Feature Disabled" and the submit button will be disabled on the username page when the redis key is assigned to false whereas it will display the originally intended messages and the button will work as usual when the key is turned to true.
  
 ### 3. Infrastructure Component
@@ -98,6 +100,8 @@ If first 2 step is already done during Deployment Component, then no need create
  
 ### 4. Special Component
 We use New Relic as a software monitoring tool. It provides customized analytics and application performance management solution that gives in-depth data visibility and analytics. New Relic's Application Monitoring tool or APM, provides us with detailed performance metrics for every aspect of our environment. We can see metrics like throughput, memory usage and CPU usage to monitor the system. We also show the web transaction time chart and the database transaction performance given by the underlying MongoDB database. 
+
+We load tested the monitoring task by using [Siege](https://en.wikipedia.org/wiki/Siege_(software)). Concurrent users were simulated and the difference in flame graphs were noted for CPU utilization, memory usage etc. We noticed spikes for the same in sudden increase of users.
 
 To set up New Relic, we first install the NodeJS APM distribution available for New Relic. We copy the license key to newrelic.js file to connect our app with New Relic dashboard and finally include it in our startup script to send real time app data to New Relic. 
 
