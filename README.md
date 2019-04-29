@@ -1,7 +1,7 @@
 # Deployment, Infrastucture and Special - Milestone 3
 
 ### Project Demo
-A detailed video for project demo including our entire pipeline can be found [here](). 
+A detailed video for project demo including our entire pipeline can be found [here](https://drive.google.com/file/d/1pq_ddWmJsAMA_zs85JFEIaK7tE4jTZ01/view?usp=sharing). 
 
 ### Screencast
 A detailed video with the steps can be found [here](https://drive.google.com/file/d/1ZvrcKc1lSJfHIAJZZzDB9kdt3oHDjiC8/view?usp=sharing).
@@ -99,6 +99,9 @@ If first 2 step is already done during Deployment Component, then no need create
 * cd servers and run node aws-dev.js to provision Dev server, where we run our infrastructure playbook.
 * Set Environment variable CLUSTER_NAME
  For more detailed explanation of tasks present in ansible script (infrastructure.yml) or the extensive steps to replicate,please go to [this link](https://github.com/oscardoudou/markdown-microservice)
+ 
+ 
+ 
  
 ### 4. Special Component
 We use New Relic as a software monitoring tool. It provides customized analytics and application performance management solution that gives in-depth data visibility and analytics. New Relic's Application Monitoring tool or APM, provides us with detailed performance metrics for every aspect of our environment. We can see metrics like throughput, memory usage and CPU usage to monitor the system. We also show the web transaction time chart and the database transaction performance given by the underlying MongoDB database. 
