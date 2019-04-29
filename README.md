@@ -67,6 +67,7 @@ This milestone consisted of 4 major tasks:
 For the deployment component we provision the Jenkins EC2 instance from our local ansible-server VM using [aws-jenkins.js](https://github.ncsu.edu/ashekha/DevOps-Project/blob/DeploymentInfraMilestone/servers/aws-jenkins.js) file. From the Jenkins server we build the iTrust and Checkbox application and run the appications on two seperate EC2 instances using the file [aws-checkbox.js](https://github.ncsu.edu/ashekha/DevOps-Project/blob/DeploymentInfraMilestone/servers/aws-checkbox.js) and [aws-itrust.js](https://github.ncsu.edu/ashekha/DevOps-Project/blob/DeploymentInfraMilestone/servers/aws-itrust.js). The post-receive hooks trigger the set up of applications on these EC2 instances.
 
 The Jenkins dashboard with build jobs for applications:
+
 ![jobs](/images/sc19.png?raw=true "jobs")
 
 
@@ -85,11 +86,13 @@ The Jenkins dashboard with build jobs for applications:
 * Go to AWS dashboard to see the Checkbox and iTrust running green and copy the public IP to a browser to see the Checkbox and iTrust applications
 work well.
 
+![awsconsole](/images/sc18.png?raw=true "awsconsole")
+
 ### 2. Feature Flag
 The configuration server for feature flag is same as iTrust EC2 instance. We are using the Java Redis client [Jedis](https://www.baeldung.com/jedis-java-redis-client-library) to implement feature flag in production. We have selected the reset password API as the feature to enable and disable.
 
 We modified the pom.xml to include Redis as the dependency and also modified the APIPasswordController.java to include the following changes:
-![javacode](/images/sc20.PNG?raw=true "javacode")
+![javacode](/images/sc20.png?raw=true "javacode")
 
 iTrust application will display "Feature Disabled" and the submit button will be disabled on the username page when the redis key is set to 'false' whereas it will display the originally intended messages and the button will work as usual when the key is set to 'true'.
 
