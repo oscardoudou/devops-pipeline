@@ -4,7 +4,7 @@
 A detailed video for project demo including our entire pipeline can be found [here](). 
 
 ### Screencast
-A detailed video with the steps can be found [here]().
+A detailed video with the steps can be found [here](https://drive.google.com/file/d/1ZvrcKc1lSJfHIAJZZzDB9kdt3oHDjiC8/view?usp=sharing).
 
 ### Team Members:
 
@@ -14,9 +14,11 @@ A detailed video with the steps can be found [here]().
 * Yichi  (yzhan222) - Infrastructure.
 
 ## Prerequisites
-You need to have [VirtualBox 5.2](https://www.virtualbox.org/wiki/Download_Old_Builds_5_2) installed on your machine along with [Baker](https://docs.getbaker.io/installation/) which will be used to create the virtual machines (Ubuntu 16.04 LTS).
+* You need to have [VirtualBox 5.2](https://www.virtualbox.org/wiki/Download_Old_Builds_5_2) installed on your machine along with [Baker](https://docs.getbaker.io/installation/) which will be used to create the virtual machines (Ubuntu 16.04 LTS).
+* An [AWS](https://aws.amazon.com/premiumsupport/plans/) account is needed to access the EC2 instances created. 
+* A [New Relic](https://newrelic.com/) account is needed to see the monitoring results.
 
-An [AWS](https://aws.amazon.com/premiumsupport/plans/) account is needed to access the EC2 instances created. 
+
 
 ## Systems and tools used:
 
