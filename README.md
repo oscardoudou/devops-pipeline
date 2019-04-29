@@ -31,6 +31,22 @@ You need to have [VirtualBox 5.2](https://www.virtualbox.org/wiki/Download_Old_B
 * Docker 
 * Kubernetes 
 
+## Environment variables to be set:
+
+* AWS_ACCESS_KEY_ID
+* AWS_SECRET_ACCESS_KEY
+* MONGO_USER
+* MONGO_PASSWORD
+* MONGO_IP
+* MONGO_PORT
+* APP_PORT
+* MAIL_USER
+* MAIL_PASSWORD
+* MAIL_SMTP
+* CLUSTER_NAME
+* NEW_RELIC_LICENSE_KEY
+
+
 ## Project Setup
 
 We detail our milestone in terms of separate tasks to explain the functionalities achieved in each of them.
