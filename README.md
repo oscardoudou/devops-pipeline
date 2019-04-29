@@ -86,10 +86,14 @@ The Jenkins dashboard with deployed applications:
 work well.
 
 ### 2. Feature Flag
-The configuration server for feature flag is same as iTrust EC2 instance. We are using the Java Redis client [Jedis](https://www.baeldung.com/jedis-java-redis-client-library) to implement feature flag in production. We have selected the reset password API as the feature to enable and disable. 
-It will display "Feature Disabled" and the submit button will be disabled on the username page when the redis key is assigned to false whereas it will display the originally intended messages and the button will work as usual when the key is turned to true.
+The configuration server for feature flag is same as iTrust EC2 instance. We are using the Java Redis client [Jedis](https://www.baeldung.com/jedis-java-redis-client-library) to implement feature flag in production. We have selected the reset password API as the feature to enable and disable.
 
-When key is set to false in redis-cli, iTrust feature is disabled::
+We modified the pom.xml to include Redis as the dependency and also modified the APIPasswordController.java to include the following changes:
+![javacode](/images/sc20.PNG?raw=true "javacode")
+
+iTrust application will display "Feature Disabled" and the submit button will be disabled on the username page when the redis key is set to 'false' whereas it will display the originally intended messages and the button will work as usual when the key is set to 'true'.
+
+When key is set to false in redis-cli, iTrust feature is disabled:
 ![redis](/images/sc4.PNG?raw=true "redis")
 
 ![ff](/images/sc5.PNG?raw=true "ff")
@@ -104,22 +108,19 @@ When key is set to true in redis-cli, iTrust feature is enabled:
  
 ### 3. Infrastructure Component
 
-We extract microservice code, containerlize that part of code and modify original server.js
+We extract microservice code, containerize that part of code and modify original server.js
 
 For this task, we require access to S3 bucket service(backup k8s state) and ECR(Elastic Container Registry register docker images) and we assume you have one bucket in S3 and one repo in ECR.
 
 Kubernetes pods being described for multiple microservices:
 ![pods](/images/sc2.PNG?raw=true "pods")
 
-
-If first 2 step is already done during Deployment Component, then no need create a VM or install node again. Jump to step 3
-
-* Run baker bake && baker ssh
-* cd /DevOps-Project and run install.sh file to install node dependencies
+In order to setup the cluster:
 * Set Environment variables: AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY
 * cd servers and run node aws-dev.js to provision Dev server, where we run our infrastructure playbook.
 * Set Environment variable CLUSTER_NAME
- For more detailed explanation of tasks present in ansible script (infrastructure.yml) or the extensive steps to replicate,please go to [this link](https://github.com/oscardoudou/markdown-microservice)
+
+For more detailed explanation of tasks present in ansible script (infrastructure.yml) or the extensive steps to replicate, please go to [this link](https://github.com/oscardoudou/markdown-microservice)
  
 Multiple instances of Checkbox via Infrastructure upgrade:
 ![instances](/images/sc1.PNG?raw=true "instances")
