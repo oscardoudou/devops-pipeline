@@ -1,0 +1,18 @@
+- project:
+    name: project-example
+    jobs:
+        - '{name}_job':
+            name: checkbox.io
+            command: |
+                rm -rf *
+                git clone https://github.com/arpitashekhar/checkbox.io.git
+                cd checkbox.io/server-side/site/
+                npm install
+        - '{name}_job':
+            name: iTrust2
+            command: |
+                rm -rf * 
+                git clone https://github.com/arpitashekhar/iTrust2-v4.git
+                cd iTrust2-v4/iTrust2
+                mvn -f pom-data.xml process-test-classes
+                mvn clean test verify checkstyle:checkstyle

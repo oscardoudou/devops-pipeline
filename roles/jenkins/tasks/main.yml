@@ -1,0 +1,225 @@
+---
+# tasks file for jenkins
+
+# - name: Install jre8
+#   apt:
+#     name: openjdk-8-jre
+#     state: present
+#     update_cache: yes
+#   become: true
+
+# - name: Adding Oracle Java Repository
+#   become: true
+#   apt_repository: 
+#     repo: 'ppa:webupd8team/java'
+
+# - name: Accept Java 8 License
+#   become: true
+#   become_user: root
+#   debconf: 
+#     name: 'oracle-java8-installer' 
+#     question: 'shared/accepted-oracle-license-v1-1' 
+#     value: 'true' 
+#     vtype: 'select'
+
+# - name: Install Oracle Java 8
+#   become: true
+#   apt: 
+#     name: ['oracle-java8-installer', 'ca-certificates', 'oracle-java8-set-default'] 
+#     state: latest
+
+- name: Update system
+  become: true
+  command: apt-get update
+
+- name: Install java 8
+  become: true
+  command: apt-get install -y default-jdk  
+
+- name: Add jenkins repo key
+  apt_key:
+    url: https://pkg.jenkins.io/debian/jenkins.io.key
+    state: present
+  become: true
+  
+- name: Add jenkins repo list file into sources.list.d
+  apt_repository:
+    repo: deb http://pkg.jenkins.io/debian-stable binary/
+    state: present
+  become: true
+
+- name: Updating and upgrading apt-get packages
+  become: true
+  apt:
+    force_apt_get: yes
+    update_cache: yes
+    cache_valid_time: 86400
+
+- name: Setting MySQL root password before installing
+  become: true
+  debconf:
+    name: mysql-server
+    question: mysql-server/root_password
+    value: ""
+    vtype: password
+
+- name: Confirm MySQL password before installing
+  become: true
+  debconf:
+    name: mysql-server
+    question: mysql-server/root_password_again
+    value: ""
+    vtype: password
+
+- name: Install Jenkins, Ansible, Git, Maven, pip, npm, Node.js
+  apt:
+    name: ['ansible', 'git', 'jenkins', 'maven', 'mysql-server', 'python-pip', 'python3-pip', 'npm', 'nodejs']
+    state: latest
+    update_cache: yes
+  become: true
+
+- name: Start Jenkins service and enable on boot
+  service:
+    name: jenkins
+    state: started
+    enabled: yes
+
+- name: Wait until the file /var/lib/jenkins/secrets/initialAdminPassword is present before continuing
+  become: true
+  wait_for:
+    path: /var/lib/jenkins/secrets/initialAdminPassword
+
+# configuring
+- name: Reading admin password
+  shell: cat /var/lib/jenkins/secrets/initialAdminPassword
+  register: adminpwd
+  become_user: root
+  become: true
+
+- name: Ensure Jenkins is up and running
+  wait_for: 
+    timeout: 30
+  
+- name: Add admin and unlock Jenkins automatically
+  jenkins_script: 
+    script: "{{ lookup('file' , '../templates/groovy_add_user.groovy') }}"
+    user: admin
+    password: "{{ adminpwd.stdout }}"
+
+- name: Sign into jenkins and complete setup
+  jenkins_script:
+    script: "{{ lookup('file' , '../templates/groovy_setup_user.groovy') }}"
+    user: admin
+    password: "{{ adminpwd.stdout }}"
+
+- name: Disable security for installation
+  become: true
+  lineinfile: 
+    dest: /var/lib/jenkins/config.xml
+    regexp: '<useSecurity>true</useSecurity>'
+    line: '  <useSecurity>false</useSecurity>'
+
+- name: Plugins installation
+  become: true
+  jenkins_plugin:
+    name: "{{ item }}"
+    state: latest
+    url_username: "{{jenkins_username}}"
+    url_password: "{{jenkins_password}}"
+    validate_certs: no
+    with_dependencies: yes
+  with_items: "{{ plugins }}"
+
+- name: Changing default port for Jenkins
+  become: true
+  replace:
+    dest: /etc/default/jenkins
+    regexp: 'HTTP_PORT=8080'
+    replace: 'HTTP_PORT=8090'
+    backup: yes
+
+- name: Add sudo permissions for jenkins user
+  become: true
+  lineinfile:
+    path: /etc/sudoers
+    line: "jenkins ALL=(ALL) NOPASSWD: ALL"
+
+- name: Update the configuration file for mySQL
+  copy: 
+    src: "../templates/my.cnf"
+    dest: /etc/mysql/my.cnf 
+    force: yes
+  become: true
+
+- name: Restart MySQL
+  service: 
+    name: mysql 
+    state: restarted
+  become: true
+
+- name: Restart Jenkins
+  become: yes
+  service:
+    name: jenkins
+    state: restarted
+
+- name: Ensure Jenkins is up and running
+  become: true
+  uri:
+    url: "http://{{ jenkins_ip }}:8090/cli/"
+    status_code: "200"
+    timeout: 5
+  register: jenkins_service_status
+  # Keep trying for 5 mins in 5 sec intervals
+  retries: 5
+  delay: 5
+  until: >
+    'status' in jenkins_service_status and
+    jenkins_service_status['status'] == 200
+
+- name: Install jenkins-job-builder package
+  become: true
+  pip:
+    name: jenkins-job-builder
+    executable: pip3
+    state: latest
+
+- name: Create jenkins_jobs directory
+  become: true
+  file:
+    path: /etc/jenkins_jobs
+    state: directory
+    mode: 0755
+
+- name: Copy jenkins_jobs.ini script
+  become: true
+  template:
+    src: ../templates/jenkins_jobs.ini
+    dest: /etc/jenkins_jobs/jenkins_jobs.ini
+    mode: 0755
+    force: yes
+
+- name: Create jobs directory
+  become: true
+  file:
+    path: /home/{{ ansible_user }}/jobs
+    state: directory
+    mode: 0755
+
+- name: Copy job file templates
+  become: true
+  template:
+    src: ../templates/{{ item }}
+    dest: /home/{{ ansible_user }}/jobs/{{ item }}
+    force: yes
+    mode: 0755
+  with_items:
+  - "defaults.yml"
+  - "projects.yml"
+  - "test.yml"
+
+- name: Update jobs
+  become: true
+  command: "jenkins-jobs update jobs"
+
+- include: deploy.yml

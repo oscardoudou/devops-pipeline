@@ -1,0 +1,364 @@
+---
+# tasks file for infrastruture
+- name: Add docker GPG key to apt source
+  shell: curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+  args:
+    warn: no
+
+- name: Get ubuntu distribution name
+  command: lsb_release -cs
+  register: release
+
+- debug:
+    var: release.stdout
+
+- name: Add docker repo list to source
+  command: add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu {{release.stdout}} stable"
+  become: true
+
+# - name: Update package list
+#   apt:
+#     update_cache: yes
+#   become: true
+
+- name: Update package list
+  command: apt-get update
+  become: true
+
+- name: Install docker ce
+  become: true
+  command: apt-get install -y docker-ce
+  
+- name: Ensure group docker exists
+  become: true
+  group:
+    name: docker
+    state: present
+
+- name: Get group output
+  command: groups
+  register: groups_before
+
+- debug:
+    var: groups_before.stdout
+
+- name: Add user ubuntu to the docker group
+  become: true
+  user: 
+    name: ubuntu
+    groups: docker
+    append: yes
+
+- name: Reset ssh connection to allow user changes to affect
+  meta: reset_connection
+
+- name: Get which group ubuntu belongs to output
+  command: groups ubuntu
+  register: groups_after
+  
+- debug:
+    var: groups_after.stdout
+
+- name: Restart docker daemon in case still got permision deny when trying to connect socket
+  become: true
+  command: service docker restart
+
+# - name: Create markdown-microservice directory
+#   file:
+#     path: "/home/ubuntu/markdown-microservice"
+#     state: directory
+#     mode: 0644
+
+- name: Git clone markdown-microservice repo
+  git:
+    repo: "https://github.com/oscardoudou/markdown-microservice"
+    dest: "/home/ubuntu/markdown-microservice"
+
+- name: Install pip 
+  become: true
+  apt:
+    name: python3-pip
+
+- name: Install and make sure aws-cli update to date
+  pip:
+    name: awscli
+    extra_args: --upgrade --user
+
+- name: Aws-cli configure AWS_ACCESS_KEY_ID
+  shell: /home/ubuntu/.local/bin/aws configure set aws_access_key_id {{lookup('env', 'AWS_ACCESS_KEY_ID')}}
+
+- name: Aws-cli configure AWS_SECRET_ACCESS_KEY
+  command: /home/ubuntu/.local/bin/aws configure set aws_secret_access_key {{lookup('env','AWS_SECRET_ACCESS_KEY')}}
+
+- name: Aws-cli configure region
+  command: /home/ubuntu/.local/bin/aws configure set default.region us-east-2
+
+- name: Get docker login authenticate command for your registry
+  command: /home/ubuntu/.local/bin/aws ecr get-login --no-include-email
+  register: auth_command
+
+# this is actually not a big deal, since if he doesn't have you aws credential there's no way he print off this docker auth command
+# - debug:
+#     var: auth_command.stdout
+
+- name: Run docker login auth command
+  command: "{{auth_command.stdout}}"
+
+- name: Install jq for json parsing
+  become: true
+  apt:
+    name: jq
+
+- name: Check test-repository exist or not(A repo wont have image until docker push)
+#   shell: /home/ubuntu/.local/bin/aws ecr describe-repositories | awk '$2 == "\"demo-repository\"," {print prev} {prev=$2} '
+  shell: /home/ubuntu/.local/bin/aws ecr describe-repositories | jq -r '.repositories[].repositoryUri' | awk ' /test-repository/ {print $1}'
+  register: uri
+
+- debug:
+    var: uri.stdout
+
+- name: Check latest images exist on ecr or not 
+#   shell: /home/ubuntu/.local/bin/aws ecr describe-images --repository-name demo-repository | awk ' $1 == "\"v1\"" {print $1}'
+  shell: /home/ubuntu/.local/bin/aws ecr describe-images --repository-name test-repository | jq '.imageDetails[].imageTags'
+  when: uri.stdout != "" 
+  register: image
+
+- debug:
+    var: image.stdout
+
+- name: Pull image from ecr only if latest images exist
+  command: docker pull 187167544325.dkr.ecr.us-east-2.amazonaws.com/test-repository:latest
+  when: 
+    - uri.stdout != "" 
+    # - image.stdout != "VARIABLE IS NOT DEFINED!"
+    - image.stdout != ""
+
+- name: Create repository
+#   shell: /home/ubuntu/.local/bin/aws ecr create-repository --repository-name test-repository | awk ' $1 =="\"repositoryUri\":" {print $2}'
+  shell: /home/ubuntu/.local/bin/aws ecr create-repository --repository-name test-repository | jq -r '.repository.repositoryUri'
+  register: uri_new
+  when: uri.stdout == ""
+
+- debug:
+    var: uri_new.stdout
+
+- name: Check if have a latest image locally if dont have latest on cloud repo(ecr)
+  shell: docker images | awk ' $2 == "latest" { print $2 }' 
+#   image var is skipped not actually "", so when access its stdout field would have error, however local_latest_tag.stdout is actually ""  
+#   when: (image.stdout == "VARIABLE IS NOT DEFINED!") or (image.stdout == "") 
+  register: local_latest_tag
+
+- debug:
+    var: local_latest_tag.stdout
+
+- name: Build image if don't even have local latest image
+  shell: docker build . -t test:latest
+  args:
+    chdir: /home/ubuntu/markdown-microservice
+#   when: 
+    # - local_latest_tag.stdout == ""
+    # - image.stdout == ""
+
+- name : Tag image just created with new repositoryUri value 
+  shell: docker tag test:latest {{uri_new.stdout}}:latest 
+  when: 
+    uri.stdout == ""
+    # - local_latest_tag.stdout == ""
+    # - image.stdout == ""
+
+- name : Tag image just created with  existed repositoryUrivalue 
+  shell: docker tag test:latest {{uri.stdout}}:latest
+  when: 
+    uri.stdout != ""
+
+- name: Docker push uri_new repo and show result
+  shell: docker push {{uri_new.stdout}}:latest
+  register: result
+  when: 
+    uri.stdout == ""
+    # - local_latest_tag.stdout == ""
+    # - image.stdout == ""
+
+- debug:
+    var: result.stdout
+
+- name: Docker push uri repo and show result
+  shell: docker push {{uri.stdout}}:latest
+  register: result
+  when: 
+    uri.stdout != ""
+
+- debug:
+    var: result.stdout
+
+- name: Retrieve kops_version
+  shell: curl -s https://api.github.com/repos/kubernetes/kops/releases/latest | grep tag_name | cut -d '"' -f 4
+  register: kops_version
+
+- debug:
+    var: kops_version.stdout
+
+- name: Download kops script
+  command: curl -Lo kops https://github.com/kubernetes/kops/releases/download/{{kops_version.stdout}}/kops-linux-amd64
+
+- name: Make kops script executable
+  file: 
+    path: ./kops
+    mode: a+x
+
+- name: Move kops script to /usr/local/bin/
+  become: true
+  command: mv ./kops /usr/local/bin/
+  
+
+- name: Retrieve kubectl_version
+  shell: curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt
+  register: kubectl_version
+
+- debug:
+    var: kubectl_version.stdout
+
+- name: Download kubectl script
+  command: curl -Lo kubectl https://storage.googleapis.com/kubernetes-release/release/{{kubectl_version.stdout}}/bin/linux/amd64/kubectl
+
+- name: Make kubectl script executable
+  file: 
+    path: ./kubectl
+    mode: a+x
+
+- name: Move kubectl script to /usr/local/bin/
+  become: true
+  command: mv ./kubectl /usr/local/bin/
+
+# - name: Check s3 bucket created or not
+#   shell: home/ubuntu/.local/bin/aws s3 ls | awk '$3 == "{{lookup('env','KOPS_STATE_STORE')}" {print $3}'
+#   register: bucket
+
+# - debug: 
+#     var: bucket.stdout
+
+# - name: Create bucket if not exist
+#   shell: home/ubuntu/.local/bin/aws s3api create-bucket \
+#     --bucket {{lookup('env','KOPS_STATE_STORE')} \
+#     --region us-east-1
+#   register: KOPS_STATE_STORE1   
+#   when: bucket.stdout == ""
+
+- name: Retrieve S3 bucket name
+  shell: /home/ubuntu/.local/bin/aws s3 ls | awk '{print $3}'
+  register: KOPS_STATE_STORE
+#   when: bucket.stdout != ""
+
+- debug:
+    var: KOPS_STATE_STORE.stdout
+
+- name: Describe aws availability zones so status become available
+  command: /home/ubuntu/.local/bin/aws ec2 describe-availability-zones --region us-east-2
+
+- name: Generate ~/.ssh RSA key if not exist 
+  command: ssh-keygen -q -t rsa -f /home/ubuntu/.ssh/id_rsa -C "" -N ""
+  args:
+    creates: /home/ubuntu/.ssh/id_rsa
+
+- name: Check whether cluster exist in kops state store(S3) 
+  shell: kops get cluster --state=s3://{{KOPS_STATE_STORE.stdout}} | awk ' $1 == "{{lookup('env','CLUSTER_NAME')}}" {print $1}' 
+  register: result
+
+- debug:
+    var: result.stdout
+#skip create and update if cluster exist
+- name: Create cluster config file if no such cluster
+  command: kops create cluster --name={{lookup('env','CLUSTER_NAME')}} \ --zones=us-east-2a \ --state=s3://{{KOPS_STATE_STORE.stdout}}
+  when: result.stdout == ""
+
+- name: Actually build the clutser
+  command: kops update cluster --name={{lookup('env','CLUSTER_NAME')}} \ --state=s3://{{KOPS_STATE_STORE.stdout}} --yes
+  when: result.stdout == ""
+   
+- name: Wait until cluster is ready
+  shell: kops validate cluster --state=s3://{{KOPS_STATE_STORE.stdout}}
+  register: result
+  until: result.stdout.find("is ready") != -1
+  retries: 25
+  delay: 10
+
+- name: Check whether deployment already exist
+  shell: kubectl get deployments | awk '$1 == "test" { print $1}'
+  register: result
+
+- debug:
+    var: result.stdout
+
+- name: Create deployment object then run application in cluster if not such deployment
+  command: kubectl run test --replicas=5 --labels="run=load-balancer-example" --image=187167544325.dkr.ecr.us-east-2.amazonaws.com/test-repository:latest --port=8080
+  when: result.stdout == ""
+
+# - name: show deployment
+#   command: kubectl describe deployment test
+#   register: result
+
+# - debug:
+#     var: result.stdout 
+
+- name: Check whether service already exist
+  shell: kubectl get services markdown | awk ' $1 == "markdown" { print $1}'
+  register: result
+
+- debug:
+    var: result.stdout
+
+- name: Create service object that expose the deployment
+  command: kubectl expose deployment test --port=8080 --target-port=3001 --type=LoadBalancer --name=markdown
+  when: result.stdout == ""
+ 
+- name: Show info about the service
+  command: kubectl get services markdown
+  register: result
+
+- debug:
+    var: result.stdout
+
+- name: Show external IP address to access the applicatin
+  shell: kubectl describe services markdown | awk ' $1 == "LoadBalancer" { print $3 }'
+  register: external_ip
+
+- debug:
+    var: external_ip.stdout
+
+- name: Git clone checkbox repo
+  git:
+    repo: "https://github.com/arpitashekhar/checkbox.io"
+    dest: "/home/ubuntu/checkbox.io"
+
+- name: Replace url in server.js
+  shell: sed -i "/url/c\            url{{':'}} \'http:\/\/{{external_ip.stdout}}:8080\/markdown\'," server.js
+  args:
+    chdir: /home/ubuntu/checkbox.io/server-side/site/
+
+- name: Git config  
+  shell: echo "[push]" > /home/ubuntu/.gitconfig && echo "        default = matching" >> /home/ubuntu/.gitconfig &&  echo "[user]" >> /home/ubuntu/.gitconfig && echo "        name = {{lookup('env','git_username')}}" >> /home/ubuntu/.gitconfig && echo "        email = {{lookup('env','git_email')}}" >> /home/ubuntu/.gitconfig
+
+- name: Git credentials if you have special char follow (https://www.w3schools.com/tags/ref_urlencode.asp) mapping
+  shell: echo "https://{{lookup('env','git_username')}}:{{lookup('env','git_password')}}@github.com" > /home/ubuntu/.git-credentials
+
+# - name: modify
+#   shell: touch a.txt
+#   args:
+#     chdir: /home/ubuntu/test-credential
+
+- name: Git commit
+  shell: git add server.js && git commit -m "update url"
+  args: 
+    chdir: /home/ubuntu/checkbox.io/server-side/site/
+
+- name: Git credential.helper store and push
+  shell: git config credential.helper store && git push origin master 
+  args: 
+    chdir: /home/ubuntu/checkbox.io/server-side/site/
+
+# - name: Make sure image is built
+#     docker_image:
+#       path: /home/ubuntu/markdown-microservice
+#       name: {}
+#       tag: v1
+#       push:

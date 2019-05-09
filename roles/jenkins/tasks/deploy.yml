@@ -1,0 +1,145 @@
+---
+# task file to deploy checkbox and iTrust
+
+- name: Create deploy directory
+  become: true
+  file:
+    path: "/home/{{ ansible_user }}/deploy"
+    state: directory
+    mode: 0755
+
+- name: Clone checkbox.io, iTrust2-v2, and JenkinsDeploy projects
+  become: true
+  git:
+    repo: "https://github.com/arpitashekhar/{{ item }}.git"
+    dest: "/home/{{ ansible_user }}/{{ item }}"
+    force: yes
+  with_items:
+  - checkbox.io
+  - iTrust2-v4
+  - deploy-instances
+
+- name: Copy New Relic key 
+  become: true
+  template:
+    src: "../templates/newrelic.js"
+    dest: "/home/{{ ansible_user }}/deploy-instances/templates/newrelic.js"
+
+
+- name: Create deploy subdirectories
+  become: true
+  file:
+    path: "/home/{{ ansible_user }}/deploy/{{ item }}"
+    state: directory
+    mode: 0755
+  with_items:
+  - checkbox.git
+  - checkbox-www
+  - itrust.git
+  - itrust-www
+
+- name: Create bare git repositories
+  become: true
+  shell: "git init --bare"
+  args:
+    chdir: "/home/{{ ansible_user }}/deploy/{{ item }}/"
+  with_items:
+  - checkbox.git
+  - itrust.git
+
+- name: Copy post-receive templates
+  become: true
+  template:
+    src: "../templates/post-receive-{{ item }}"
+    dest: "/home/{{ ansible_user }}/deploy/{{ item }}.git/hooks/post-receive"
+    mode: 0755
+  with_items:
+  - checkbox
+  - itrust
+
+- name: Add checkbox remote to checkbox.io
+  become: true
+  shell: "git remote add checkbox file:///home/{{ ansible_user }}/deploy/checkbox.git"
+  args:
+    chdir: "/home/{{ ansible_user }}/checkbox.io"
+
+- name: Add iTrust remote to iTrust
+  become: true
+  shell: "git remote add itrust file:///home/{{ ansible_user }}/deploy/itrust.git"
+  args:
+    chdir: "/home/{{ ansible_user }}/iTrust2-v4"
+
+- name: Copy instance provisioning template
+  become: true
+  template:
+    src: "../../../servers/aws-{{ item }}.js"
+    dest: "/home/{{ ansible_user }}/deploy/checkbox.git/aws-{{ item }}.js"
+    mode: 0755
+  with_items:
+  - checkbox 
+  
+- name: Copy instance provisioning template
+  become: true
+  template:
+    src: "../../../servers/aws-{{ item }}.js"
+    dest: "/home/{{ ansible_user }}/deploy/itrust.git/aws-{{ item }}.js"
+    mode: 0755
+  with_items:
+  - itrust   
+
+- name: Symlink nodejs and node
+  become: true
+  file:
+    src: /usr/bin/nodejs
+    dest: /usr/bin/node
+    state: link  
+
+ #create package.json for this checkbox.git   
+- name: Copy package.json to repo
+  become: true
+  copy:
+    src: "../templates/checkbox_package.json"
+    dest: "/home/{{ ansible_user }}/deploy/package.json" 
+    force: yes
+ 
+  
+- name: Install packages
+  become: true
+  command: npm install
+  args:
+    chdir: "/home/{{ ansible_user }}/deploy" 
+
+- name: Create checkbox directory for the pem key later
+  become: true
+  file:
+    path: "/home/{{ ansible_user }}/checkbox/" 
+    state: directory
+    mode: 0777  
+ 
+
+- name: Change owner of directory
+  become: true
+  command: chown -R ubuntu /home
+
+- name: Update ansible version of jenkins - apt-get update
+  become: true
+  apt:
+    force_apt_get: yes
+    update_cache: yes
+
+- name: Update ansible version of jenkins - apt-get install software-properties-common
+  become: true
+  command: apt-get install -y software-properties-common
+
+- name: add repositories for ansible
+  become: true
+  command: apt-add-repository --yes --update ppa:ansible/ansible
+
+- name: Install latest ansible version
+  become: true
+  command: apt-get install -y ansible     
+
+  
+
+
+

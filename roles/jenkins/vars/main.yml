@@ -1,0 +1,53 @@
+---
+# vars file for jenkins
+plugins: 
+  - script-security
+  - command-launcher
+  - git-client
+  - scm-api
+  - credentials
+  - workflow-scm-step
+  - matrix-project
+  - structs
+  - workflow-step-api
+  - mailer
+  - display-url-api
+  - junit
+  - token-macro
+  - plain-credentials
+  - ssh-credentials
+  - workflow-api 
+  - apache-httpcomponents-client-4-api
+  - jsch
+  - workflow-cps 
+  - workflow-durable-task-step
+  - docker-commons
+  - workflow-basic-steps
+  - workflow-support
+  - durable-task 
+  - ace-editor
+  - jquery-detached
+  - authentication-tokens
+  - credentials-binding
+  - git
+  - docker-workflow
+  - template-project
+  - config-file-provider
+  - disk-usage
+  - slack
+  - javadoc
+  - cloudbees-folder
+  - icon-shim
+  - jackson2-api
+  - workflow-job
+  - github-api 
+  - maven-plugin
+  - nodejs
+  - pipeline-npm
+  - postbuild-task
+
+#ansible_user: vagrant
+jenkins_username: user
+jenkins_password: password
+
+jenkins_ip: 3.19.119.179
