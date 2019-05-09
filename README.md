@@ -17,7 +17,7 @@ A detailed video with the steps can be found in following videos.
 
 ### Team Members:
 
-* Arpita (ashekha) - Jenkins coverage setup , commit fuzzer , test prioritization
+* Arpita (ashekha) - Jenkins coverage setup , commit fuzzer
 * Srija  (sgangul2) - Jenkins coverage setup , commit fuzzer operations , analysis
 * Dyuti  (dde) - Jenkins setup , post-commit hook, analysis
 * Yichi  (yzhan222) - test prioritization
