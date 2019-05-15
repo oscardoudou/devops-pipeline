@@ -117,9 +117,18 @@ For this task, we require access to S3 bucket service(backup k8s state) and ECR(
 
 
 In order to setup the cluster:
-* Set Environment variables: AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY
-* cd servers and run node aws-dev.js to provision Dev server, where we run our infrastructure playbook.
-* Set Environment variable CLUSTER_NAME
+1. Set Environment variables: AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY
+2. `cd servers` and run `node aws-dev.js` to provision Dev server, where we run our infrastructure playbook `ansible-playbook infrastructure.yml -i ~/inventory`.
+3. Set Environment variable CLUSTER_NAME, equivalent to specify `-name` for kops command, keep consistent with playbook script, just set CLUSTER_NAME env var. 
+4. Currently KOPS_STATE_STORE is retrieving from `aws s3 ls | awk '{print $3}` rather retrieving identical named env var on vagrant VM, so in order to run script need to has a exist S3 bucket
+
+Notes:
+* Remove the previous private key Dev.pem under `~/dev` if exist to avoid undefined pem file
+* Remove previous security group on aws console
+* Don't forget manually using kops delete the cluster if you don't need infrastruture anymore, otherwise cluster would be brought up even terminate on aws console and you aws billing would frighten you.
+* To delete cluster you need specify state store and cluster name, latter could be retrieved by cluster list, both cluster list and furhter cluster validate need kops state store argument, using existed one would be `--state=s3://checkbox-state-store`, as said above playbook currently dont support create fresh s3 bucket on the fly.
+* Last flaw setting environment var using ansible module on target machine(in our case dev machine) is not feasible now, so simply retrieve those env var from vagrant VM.
+
 
 For more detailed explanation of tasks present in ansible script (infrastructure.yml) or the extensive steps to replicate, please go to [this link](https://github.com/oscardoudou/markdown-microservice)
  
