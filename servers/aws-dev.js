@@ -131,11 +131,11 @@ EC2.createSecurityGroup(securityGroup, function(err, data) {
         
                                                 // append variable for Dev Server IP to vars.yml
                                                 var devIp = `\n\ndev_ip: ${publicIpAddress}`
-                                                fs.open('/DevOps-Project/roles/dev/vars/main.yml', 'a', function(err) {
+                                                fs.open('/DevOps-Project/roles/infrastructure/vars/main.yml', 'a', function(err) {
                                                     if (err) console.log('\n Failed to open variable file', err);
                                                     else console.log('\n Successfully opened variable file');
         
-                                                    fs.appendFile('/DevOps-Project/roles/dev/vars/main.yml', devIp, function(err) {
+                                                    fs.appendFile('/DevOps-Project/roles/infrastructure/vars/main.yml', devIp, function(err) {
                                                         if (err) console.log('\n Failed to append Dev IP', err);
                                                         else console.log('\n Successfully appended Dev IP');
                                                     });
